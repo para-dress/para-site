@@ -7,6 +7,7 @@
   --color-rose: #efe3dc;
   --color-blush: #f4ece7;
   --color-ink: #9d7a3f;
+  --color-ink-strong: #6f4d1f;
   --color-muted: #9e8761;
   --color-line: rgba(157, 122, 63, 0.18);
 }
@@ -28,7 +29,6 @@ html {
 }
 
 body {
-  scroll-snap-type: y mandatory;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
