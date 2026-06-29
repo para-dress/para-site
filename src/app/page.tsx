@@ -91,7 +91,7 @@ const faqs = [
 export default function Home() {
   return (
     <main className="bg-[var(--color-cream)] text-[var(--color-ink)]">
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center bg-[var(--color-cream)]/78 px-6 py-7 backdrop-blur-[2px] sm:px-10 lg:px-16">
+      <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-7 sm:px-10 lg:px-16">
         <div className="text-center opacity-78">
           <p className="font-display text-[2.2rem] font-medium tracking-[0.34em] text-[var(--color-ink)] sm:text-[3rem]">
             PARA
@@ -102,9 +102,9 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="snap-y snap-mandatory pt-22 sm:pt-28">
+      <section className="snap-y snap-mandatory">
         {slides.map((slide) => (
-          <section key={slide.title} className="relative min-h-[calc(100vh-5.5rem)] snap-start overflow-hidden bg-[#ece2da] sm:min-h-[calc(100vh-7rem)]">
+          <section key={slide.title} className="relative h-screen snap-start overflow-hidden bg-[#ece2da]">
             <Image
               src={slide.image}
               alt={slide.alt}
@@ -115,7 +115,7 @@ export default function Home() {
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.08)_0%,rgba(247,240,234,0.14)_34%,rgba(247,240,234,0.4)_100%)]" />
 
-            <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-end px-6 pb-12 pt-32 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20 lg:pt-36">
+            <div className="relative z-10 mx-auto flex h-screen max-w-7xl flex-col justify-end px-6 pb-12 pt-32 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20 lg:pt-36">
               <div className={`${slide.panelClass} rounded-[1.5rem] bg-[rgba(247,240,234,0.08)] p-6 sm:p-8`}>
                 <p className="text-xs uppercase tracking-[0.28em] text-[rgba(120,82,25,0.95)]">{slide.eyebrow}</p>
                 <h1 className="font-display mt-3 text-3xl font-medium leading-tight text-[rgba(110,72,18,0.96)] sm:text-4xl lg:text-5xl">
