@@ -104,7 +104,7 @@ export default function Home() {
   return (
     <main className="bg-[var(--color-cream)] text-[var(--color-ink)]">
       <header
-        className={`pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-7 sm:px-10 lg:px-16 ${
+        className={`pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-7 transition-colors duration-500 sm:px-10 lg:px-16 ${
           isScrolled ? "bg-transparent" : "bg-[var(--color-cream)]/92"
         }`}
       >
@@ -131,7 +131,7 @@ export default function Home() {
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.08)_0%,rgba(247,240,234,0.14)_34%,rgba(247,240,234,0.4)_100%)]" />
 
-            <div className="relative z-10 mx-auto flex h-screen max-w-7xl flex-col justify-end px-6 pb-12 pt-32 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20 lg:pt-36">
+            <div className="relative z-10 mx-auto flex h-screen max-w-7xl flex-col justify-end px-6 pb-24 pt-32 sm:px-10 sm:pb-20 lg:px-16 lg:pb-24 lg:pt-36">
               <div className={`${slide.panelClass} rounded-[1.5rem] bg-[rgba(247,240,234,0.08)] p-6 sm:p-8`}>
                 <p className="text-xs uppercase tracking-[0.28em] text-[rgba(120,82,25,0.95)]">{slide.eyebrow}</p>
                 <h1 className="font-display mt-3 text-3xl font-medium leading-tight text-[rgba(110,72,18,0.96)] sm:text-4xl lg:text-5xl">
@@ -165,38 +165,29 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="collections" className="px-6 py-18 sm:px-10 lg:px-16 lg:py-24">
-        <div className="mx-auto max-w-7xl space-y-10">
-          <div className="space-y-4">
-            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Collections</p>
-            <h2 className="font-display max-w-3xl text-4xl font-medium sm:text-5xl">
-              Two distinct directions, one consistent bridal point of view.
-            </h2>
-          </div>
-          <div className="grid gap-6 lg:grid-cols-2">
-            {collections.map((collection) => (
-              <article key={collection.name} className="overflow-hidden rounded-[2rem] border border-[var(--color-line)] bg-white">
-                <div className="relative h-[34rem] w-full bg-[#ece2da]">
-                  <Image
-                    src={collection.image}
-                    alt={collection.alt}
-                    fill
-                    className="object-contain object-center"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                  />
-                </div>
-                <div className="space-y-4 p-8">
-                  <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">{collection.accent}</p>
-                  <h3 className="font-display text-3xl font-medium">{collection.name}</h3>
-                  <p className="text-base leading-7 text-[var(--color-muted)]">{collection.description}</p>
-                  <a href="#contact" className="inline-flex text-sm font-medium uppercase tracking-[0.18em] text-[var(--color-ink)]">
-                    Enquire about this direction
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
+      <section id="collections" className="snap-y snap-mandatory">
+        {collections.map((collection) => (
+          <section key={collection.name} className="relative h-screen snap-start snap-always overflow-hidden bg-[#ece2da]">
+            <Image
+              src={collection.image}
+              alt={collection.alt}
+              fill
+              className="object-contain object-center"
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.04)_0%,rgba(247,240,234,0.1)_38%,rgba(247,240,234,0.3)_100%)]" />
+            <div className="relative z-10 mx-auto flex h-screen max-w-7xl flex-col justify-end px-6 pb-24 pt-32 sm:px-10 sm:pb-20 lg:px-16 lg:pb-24 lg:pt-36">
+              <div className="max-w-lg rounded-[1.5rem] bg-[rgba(247,240,234,0.08)] p-6 sm:p-8">
+                <p className="text-xs uppercase tracking-[0.24em] text-[rgba(120,82,25,0.95)]">{collection.accent}</p>
+                <h3 className="font-display mt-3 text-4xl font-medium text-[rgba(110,72,18,0.96)] sm:text-5xl">{collection.name}</h3>
+                <p className="mt-4 text-base leading-7 text-[rgba(97,70,33,0.95)] sm:text-lg">{collection.description}</p>
+                <a href="#contact" className="mt-6 inline-flex text-sm font-medium uppercase tracking-[0.18em] text-[rgba(110,72,18,0.96)]">
+                  Enquire about this direction
+                </a>
+              </div>
+            </div>
+          </section>
+        ))}
       </section>
 
       <section id="process" className="border-y border-black/5 bg-white px-6 py-18 sm:px-10 lg:px-16 lg:py-24">
