@@ -1,15 +1,21 @@
+import Image from "next/image";
+
 const collections = [
   {
     name: "Modern Minimal",
     description:
       "Clean silhouettes with soft structure, designed for brides who want a refined and quietly luxurious look.",
     accent: "Elegant lines, effortless confidence",
+    image: "/site-assets/an3002.jpg",
+    alt: "Minimal strapless bridal gown with a clean silhouette.",
   },
   {
     name: "Romantic Detail",
     description:
       "Feminine textures, statement sleeves, and embellished finishing that still feels polished rather than excessive.",
     accent: "Soft drama with a couture feel",
+    image: "/site-assets/an3001.jpg",
+    alt: "Romantic embellished wedding dress with delicate detail.",
   },
 ];
 
@@ -17,14 +23,20 @@ const featuredLooks = [
   {
     name: "AN 3000",
     mood: "Clean luxury",
-  },
-  {
-    name: "AN 3001",
-    mood: "Romantic statement",
+    image: "/site-assets/an3000.jpg",
+    alt: "Elegant clean bridal gown photographed in a studio archway.",
   },
   {
     name: "AN 2211",
     mood: "Modern femininity",
+    image: "/site-assets/an2211.jpg",
+    alt: "Modern bridal gown with a soft structured silhouette.",
+  },
+  {
+    name: "AN 3003",
+    mood: "Romantic statement",
+    image: "/site-assets/an3003.jpg",
+    alt: "Romantic statement wedding dress with dramatic volume.",
   },
 ];
 
@@ -64,7 +76,7 @@ export default function Home() {
       <section className="relative overflow-hidden border-b border-black/5 px-6 pb-16 pt-8 sm:px-10 lg:px-16 lg:pb-24 lg:pt-10">
         <div className="mx-auto flex max-w-7xl items-center justify-between pb-8 lg:pb-10">
           <div>
-            <p className="text-2xl font-semibold tracking-[0.18em] sm:text-3xl">PARA DRESS</p>
+            <p className="font-display text-2xl font-semibold tracking-[0.18em] sm:text-3xl">PARA DRESS</p>
             <p className="mt-2 text-xs uppercase tracking-[0.26em] text-[var(--color-muted)] sm:text-sm">
               UK Bridal
             </p>
@@ -91,7 +103,7 @@ export default function Home() {
               Elegant bridal for modern women
             </p>
             <div className="space-y-6">
-              <h1 className="max-w-2xl text-5xl font-semibold leading-[1.02] tracking-[-0.03em] sm:text-6xl lg:text-7xl">
+              <h1 className="font-display max-w-2xl text-5xl font-medium leading-[0.96] tracking-[-0.03em] sm:text-6xl lg:text-7xl">
                 Wedding dresses that feel calm, refined, and quietly luxurious.
               </h1>
               <p className="max-w-xl text-lg leading-8 text-[var(--color-muted)] sm:text-xl">
@@ -114,29 +126,37 @@ export default function Home() {
             </div>
             <div className="grid gap-6 border-t border-black/8 pt-8 sm:grid-cols-3">
               <div>
-                <p className="text-2xl font-semibold">£699–£950</p>
+                <p className="font-display text-3xl font-medium">£699–£950</p>
                 <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">A premium bridal range with clear pricing guidance.</p>
               </div>
               <div>
-                <p className="text-2xl font-semibold">Custom sizing</p>
+                <p className="font-display text-3xl font-medium">Custom sizing</p>
                 <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">Available for brides who want a more personalised fit.</p>
               </div>
               <div>
-                <p className="text-2xl font-semibold">Guided process</p>
+                <p className="font-display text-3xl font-medium">Guided process</p>
                 <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">We support you with measurements, timelines, and next steps.</p>
               </div>
             </div>
           </div>
 
           <div className="order-1 lg:order-2">
-            <div className="relative min-h-[520px] overflow-hidden rounded-[2rem] bg-[linear-gradient(180deg,#efe5df_0%,#d9c2b5_100%)] shadow-[0_28px_70px_rgba(35,25,20,0.12)] sm:min-h-[640px] lg:min-h-[760px]">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.38),transparent_48%)]" />
+            <div className="relative min-h-[520px] overflow-hidden rounded-[2rem] bg-[#eadfd8] shadow-[0_28px_70px_rgba(35,25,20,0.12)] sm:min-h-[640px] lg:min-h-[760px]">
+              <Image
+                src="/site-assets/an3000.jpg"
+                alt="Hero bridal look for Para Dress homepage"
+                fill
+                priority
+                className="object-cover object-center"
+                sizes="(max-width: 1024px) 100vw, 52vw"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,14,11,0.06)_0%,rgba(20,14,11,0.2)_100%)]" />
               <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
-                <div className="max-w-xs rounded-[1.5rem] border border-white/30 bg-white/68 p-5 backdrop-blur-md">
-                  <p className="text-xs uppercase tracking-[0.28em] text-[var(--color-muted)]">Hero image direction</p>
-                  <p className="mt-3 text-lg font-semibold">Use one of the selected full-quality bridal shots here.</p>
+                <div className="max-w-xs rounded-[1.5rem] border border-white/25 bg-white/70 p-5 backdrop-blur-md">
+                  <p className="text-xs uppercase tracking-[0.28em] text-[var(--color-muted)]">Featured bridal look</p>
+                  <p className="font-display mt-3 text-2xl font-medium">Minimal elegance with a fashion-led edge.</p>
                   <p className="mt-3 text-sm leading-6 text-[var(--color-muted)]">
-                    Best fit: a clean editorial look with strong silhouette, soft background, and premium calm energy.
+                    A calm first impression, chosen to set the tone for the collection and build trust from the first screen.
                   </p>
                 </div>
               </div>
@@ -149,7 +169,7 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">About Para Dress</p>
-            <h2 className="max-w-lg text-3xl font-semibold leading-tight sm:text-4xl">
+            <h2 className="font-display max-w-lg text-4xl font-medium leading-tight sm:text-5xl">
               A bridal experience built around trust, clarity, and a more elevated way to shop for your dress.
             </h2>
           </div>
@@ -169,7 +189,7 @@ export default function Home() {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-4">
               <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Selected looks</p>
-              <h2 className="text-3xl font-semibold sm:text-4xl">A first impression of the styles shaping the collection.</h2>
+              <h2 className="font-display text-4xl font-medium sm:text-5xl">A first impression of the styles shaping the collection.</h2>
             </div>
             <p className="max-w-xl text-base leading-7 text-[var(--color-muted)]">
               We are curating a bridal wardrobe that moves between clean modern silhouettes and softer, more romantic statement looks.
@@ -184,13 +204,18 @@ export default function Home() {
                   index === 0 ? "bg-[var(--color-rose)]" : "bg-[var(--color-blush)]"
                 }`}
               >
-                <div className={`w-full ${index === 0 ? "h-[26rem]" : "h-80"} bg-[linear-gradient(180deg,#eee3dc_0%,#d7c0b1_100%)]`} />
+                <div className={`relative w-full ${index === 0 ? "h-[26rem]" : "h-80"}`}>
+                  <Image
+                    src={look.image}
+                    alt={look.alt}
+                    fill
+                    className="object-cover object-center"
+                    sizes={index === 0 ? "(max-width: 1024px) 100vw, 42vw" : "(max-width: 1024px) 100vw, 28vw"}
+                  />
+                </div>
                 <div className="space-y-3 p-6">
                   <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">{look.mood}</p>
-                  <h3 className="text-2xl font-semibold">{look.name}</h3>
-                  <p className="text-sm leading-6 text-[var(--color-muted)]">
-                    Replace this block with the selected final image asset from Drive for the next visual pass.
-                  </p>
+                  <h3 className="font-display text-3xl font-medium">{look.name}</h3>
                 </div>
               </article>
             ))}
@@ -202,17 +227,25 @@ export default function Home() {
         <div className="mx-auto max-w-7xl space-y-10">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Collections</p>
-            <h2 className="max-w-3xl text-3xl font-semibold sm:text-4xl">
+            <h2 className="font-display max-w-3xl text-4xl font-medium sm:text-5xl">
               Two distinct directions, one consistent bridal point of view.
             </h2>
           </div>
           <div className="grid gap-6 lg:grid-cols-2">
-            {collections.map((collection, index) => (
+            {collections.map((collection) => (
               <article key={collection.name} className="overflow-hidden rounded-[2rem] border border-[var(--color-line)] bg-white">
-                <div className={`h-96 w-full ${index === 0 ? "bg-[linear-gradient(180deg,#eee1d8_0%,#d8bfaf_100%)]" : "bg-[linear-gradient(180deg,#f0e5df_0%,#cfb4a4_100%)]"}`} />
+                <div className="relative h-96 w-full">
+                  <Image
+                    src={collection.image}
+                    alt={collection.alt}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                </div>
                 <div className="space-y-4 p-8">
                   <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">{collection.accent}</p>
-                  <h3 className="text-2xl font-semibold">{collection.name}</h3>
+                  <h3 className="font-display text-3xl font-medium">{collection.name}</h3>
                   <p className="text-base leading-7 text-[var(--color-muted)]">{collection.description}</p>
                   <a href="#contact" className="inline-flex text-sm font-medium uppercase tracking-[0.18em] text-[var(--color-ink)]">
                     Enquire about this direction
@@ -228,7 +261,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl space-y-10">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">How it works</p>
-            <h2 className="max-w-3xl text-3xl font-semibold sm:text-4xl">
+            <h2 className="font-display max-w-3xl text-4xl font-medium sm:text-5xl">
               A made-to-order process with more guidance and less uncertainty.
             </h2>
           </div>
@@ -250,7 +283,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl space-y-10">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">FAQ</p>
-            <h2 className="max-w-3xl text-3xl font-semibold sm:text-4xl">
+            <h2 className="font-display max-w-3xl text-4xl font-medium sm:text-5xl">
               The practical details, explained in a calm and supportive way.
             </h2>
           </div>
@@ -270,7 +303,7 @@ export default function Home() {
           <div className="grid gap-8 lg:grid-cols-[1fr_0.8fr]">
             <div className="space-y-6 px-8 py-10 sm:px-12 sm:py-14">
               <p className="text-sm uppercase tracking-[0.28em] text-white/65">Enquiry</p>
-              <h2 className="max-w-xl text-3xl font-semibold sm:text-4xl">
+              <h2 className="font-display max-w-xl text-4xl font-medium sm:text-5xl">
                 Ready to explore your dress options with Para Dress?
               </h2>
               <p className="max-w-2xl text-base leading-8 text-white/72 sm:text-lg">
@@ -293,19 +326,24 @@ export default function Home() {
                 </a>
               </div>
             </div>
-            <div className="min-h-[320px] bg-[linear-gradient(180deg,rgba(255,255,255,0.12)_0%,rgba(255,255,255,0.03)_100%)] p-8 sm:p-10">
-              <div className="flex h-full flex-col justify-between rounded-[1.5rem] border border-white/12 bg-white/6 p-6 backdrop-blur-sm">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.24em] text-white/60">Suggested CTA flow</p>
+            <div className="relative min-h-[320px] overflow-hidden">
+              <Image
+                src="/site-assets/an3001.jpg"
+                alt="Romantic bridal look used in the contact section"
+                fill
+                className="object-cover object-center"
+                sizes="(max-width: 1024px) 100vw, 40vw"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,8,7,0.1)_0%,rgba(12,8,7,0.5)_100%)]" />
+              <div className="absolute inset-x-0 bottom-0 p-8 sm:p-10">
+                <div className="rounded-[1.5rem] border border-white/12 bg-white/8 p-6 backdrop-blur-sm">
+                  <p className="text-xs uppercase tracking-[0.24em] text-white/60">Suggested flow</p>
                   <ul className="mt-5 space-y-4 text-sm leading-7 text-white/78">
                     <li>• Primary: consultation or enquiry form</li>
                     <li>• Secondary: Instagram for quick questions</li>
                     <li>• Future: WhatsApp, richer contact form, collection pages</li>
                   </ul>
                 </div>
-                <p className="text-sm leading-7 text-white/58">
-                  This block can later become a real enquiry form once we wire the contact flow.
-                </p>
               </div>
             </div>
           </div>
