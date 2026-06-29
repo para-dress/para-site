@@ -231,6 +231,32 @@ export default function Home() {
         </div>
       </section>
 
+      <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-3 sm:bottom-6 sm:right-6">
+        <a
+          href="https://instagram.com/para.dress"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Open Instagram"
+          className="flex h-14 w-14 items-center justify-center rounded-full border border-[rgba(157,122,63,0.18)] bg-[rgba(247,240,234,0.92)] text-[var(--color-ink)] shadow-[0_10px_24px_rgba(35,27,24,0.12)] backdrop-blur-sm transition hover:scale-[1.03]"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="5" ry="5" />
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+          </svg>
+        </a>
+        <a
+          href="#contact"
+          aria-label="Open enquiry section"
+          className="flex h-14 w-14 items-center justify-center rounded-full border border-[rgba(157,122,63,0.18)] bg-[var(--color-ink)] text-[var(--color-cream)] shadow-[0_10px_24px_rgba(35,27,24,0.16)] transition hover:scale-[1.03]"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M4 4h16v16H4z" />
+            <path d="m22 6-10 7L2 6" />
+          </svg>
+        </a>
+      </div>
+
       <section id="contact" className="px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-[var(--color-line)] bg-[var(--color-ink)] text-white">
           <div className="grid gap-8 lg:grid-cols-[1fr_0.8fr]">
