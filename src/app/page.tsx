@@ -7,7 +7,7 @@ const heroSlides = [
   {
     eyebrow: "Para Dress",
     title: "Handcrafted in Ukraine, guided personally, and offered directly from our own atelier.",
-    body: "Para Dress works directly with brides across the UK, offering made-to-order gowns with personal sizing guidance and without bridal boutique markups.",
+    body: "Made-to-order gowns for brides across the UK, with personal sizing guidance and no bridal boutique markups.",
     image: "/site-assets/an3000.jpg",
     alt: "Two minimal bridal gowns standing in an arched studio setting.",
     imageClass: "object-contain object-center object-[center_58%]",
@@ -15,7 +15,7 @@ const heroSlides = [
   {
     eyebrow: "Direct bridal experience",
     title: "A calmer, more personal way to find the right gown.",
-    body: "From first enquiry to final measurements, every step is shaped around direct communication, clarity, and trust.",
+    body: "Direct communication, clear guidance, and a closer connection to the people making the dress.",
     image: "/site-assets/an2211.jpg",
     alt: "Modern bridal gown shown with full figure visible.",
     imageClass: "object-contain object-center",
@@ -40,7 +40,7 @@ const collectionCards = [
   },
   {
     name: "Romantic Detail",
-    description: "Texture, embellishment, and softness with a couture mood.",
+    description: "Texture and softness with a couture mood.",
     image: "/site-assets/an3001.jpg",
     alt: "Romantic embellished wedding dress with delicate detail.",
   },
@@ -115,47 +115,40 @@ export default function Home() {
         {heroSlides.map((slide, index) => (
           <section key={slide.title} className="relative h-screen snap-start snap-always overflow-hidden bg-[#ece2da]">
             <Image src={slide.image} alt={slide.alt} fill priority={index === 0} className={slide.imageClass} sizes="100vw" />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.03)_0%,rgba(247,240,234,0.08)_32%,rgba(247,240,234,0.26)_100%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(246,239,233,0.12)_0%,rgba(246,239,233,0.1)_24%,rgba(27,20,15,0.16)_60%,rgba(27,20,15,0.42)_100%)]" />
 
             <div className="relative z-10 mx-auto flex h-screen max-w-7xl flex-col justify-end px-6 pb-18 pt-32 sm:px-10 sm:pb-20 lg:px-16 lg:pb-24 lg:pt-36">
               <div className="max-w-[46rem] space-y-5">
-                <p className="text-[0.72rem] uppercase tracking-[0.34em] text-[rgba(120,82,25,0.94)]">{slide.eyebrow}</p>
-                <h1 className={`${index === 0 ? "max-w-4xl text-4xl sm:text-5xl lg:text-6xl" : "max-w-2xl text-3xl sm:text-4xl lg:text-5xl"} font-display font-medium leading-[0.95] text-[rgba(110,72,18,0.97)]`}>
+                <p className="text-[0.72rem] uppercase tracking-[0.34em] text-white/82">{slide.eyebrow}</p>
+                <h1 className={`${index === 0 ? "max-w-4xl text-4xl sm:text-5xl lg:text-6xl" : "max-w-2xl text-3xl sm:text-4xl lg:text-5xl"} font-display font-medium leading-[0.95] text-white`}>
                   {slide.title}
                 </h1>
-                <p className="max-w-2xl text-sm leading-7 text-[rgba(97,70,33,0.94)] sm:text-base sm:leading-8">
+                <p className="max-w-xl text-sm leading-7 text-white/84 sm:text-base sm:leading-8">
                   {slide.body}
                 </p>
                 {index === 0 ? (
                   <div className="flex flex-col gap-3 pt-2 sm:flex-row">
                     <a
                       href="#collections"
-                      className="inline-flex min-h-14 items-center justify-center rounded-full bg-[var(--color-ink-strong)] px-7 text-sm font-medium uppercase tracking-[0.14em] text-white transition hover:opacity-92"
+                      className="inline-flex min-h-14 items-center justify-center rounded-full bg-white px-7 text-sm font-medium uppercase tracking-[0.14em] text-[var(--color-ink-strong)] transition hover:opacity-92"
                     >
                       Explore Collection
                     </a>
                     <a
                       href="#contact"
-                      className="inline-flex min-h-14 items-center justify-center rounded-full border border-[rgba(110,72,18,0.18)] bg-[rgba(247,240,234,0.7)] px-7 text-sm font-medium uppercase tracking-[0.14em] text-[var(--color-ink-strong)] backdrop-blur-[2px] transition hover:bg-[rgba(247,240,234,0.84)]"
+                      className="inline-flex min-h-14 items-center justify-center rounded-full border border-white/24 bg-[rgba(255,255,255,0.08)] px-7 text-sm font-medium uppercase tracking-[0.14em] text-white backdrop-blur-[3px] transition hover:bg-[rgba(255,255,255,0.14)]"
                     >
                       Book Consultation
                     </a>
                   </div>
-                ) : (
-                  <a
-                    href="#collections-grid"
-                    className="inline-flex pt-2 text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)]"
-                  >
-                    View Collection
-                  </a>
-                )}
+                ) : null}
               </div>
             </div>
           </section>
         ))}
       </section>
 
-      <section className="bg-white px-6 py-10 sm:px-10 sm:py-12 lg:px-16 lg:py-14">
+      <section className="bg-white px-6 py-12 sm:px-10 sm:py-14 lg:px-16 lg:py-16">
         <div className="mx-auto max-w-7xl border-y border-[var(--color-line)] py-6 sm:py-7">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {trustPoints.map((point) => (
@@ -168,71 +161,47 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Brand story</p>
-            <h2 className="font-display max-w-lg text-4xl font-medium leading-[1.02] sm:text-5xl">
-              Para Dress exists for brides who want something more personal than a boutique experience.
+            <h2 className="font-display max-w-md text-4xl font-medium leading-[1.02] sm:text-5xl">
+              Direct, personal, and closer to the making of the gown.
             </h2>
           </div>
-          <div className="space-y-5 text-base leading-8 text-[var(--color-muted)] sm:text-lg">
+          <div className="max-w-2xl space-y-4 text-base leading-8 text-[var(--color-muted)] sm:text-lg">
             <p>
-              Para Dress brings together premium bridal styling, direct guidance, and a calmer way to choose your dress.
+              Para Dress brings together premium bridal styling and direct guidance.
             </p>
             <p>
-              Each gown is handcrafted in Ukraine and offered directly from our atelier, with a more transparent path from first conversation to final choice.
+              Each gown is handcrafted in Ukraine and offered straight from our atelier.
             </p>
             <p>
-              For the bride, that means personal support, clearer communication, and a closer connection to the people making the dress.
+              For the bride, that means more clarity, more support, and a more personal experience.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="border-y border-black/5 bg-[var(--color-cream)] px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-          <div className="space-y-4">
-            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Why ordering online is safe</p>
-            <h2 className="font-display max-w-xl text-4xl font-medium leading-[1.02] sm:text-5xl">
-              Ordering your wedding gown online should feel reassuring, not uncertain.
-            </h2>
+      <section id="collections-grid" className="px-0 py-20 sm:py-24 lg:py-28">
+        <div className="space-y-12">
+          <div className="px-6 sm:px-10 lg:px-16">
+            <div className="mx-auto max-w-6xl space-y-4">
+              <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Collection direction</p>
+              <h2 className="font-display max-w-xl text-4xl font-medium leading-[1.02] sm:text-5xl">
+                Two bridal moods, one refined point of view.
+              </h2>
+            </div>
           </div>
-          <div className="grid gap-px bg-[var(--color-line)]">
-            {[
-              "We guide every bride through measurements personally.",
-              "Sizing is reviewed with individual support before production begins.",
-              "Each set of measurements is checked carefully, not processed automatically.",
-              "Every gown is made individually, rather than pulled from boutique stock.",
-            ].map((item) => (
-              <div key={item} className="bg-[var(--color-cream)] px-6 py-6">
-                <p className="max-w-xl text-base leading-7 text-[var(--color-ink-strong)]">{item}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="collections-grid" className="px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
-        <div className="mx-auto max-w-7xl space-y-10">
-          <div className="max-w-2xl space-y-4">
-            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Collection direction</p>
-            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">
-              Two distinct bridal moods, held within one premium point of view.
-            </h2>
-          </div>
-          <div className="grid gap-5 lg:grid-cols-2">
-            {collectionCards.map((item) => (
-              <article key={item.name} className="overflow-hidden bg-[var(--color-blush)]">
-                <div className="relative aspect-[0.84/1] overflow-hidden">
+          <div className="grid gap-16 lg:grid-cols-2 lg:gap-8">
+            {collectionCards.map((item, index) => (
+              <article key={item.name} className="space-y-6">
+                <div className={`relative aspect-[0.88/1] overflow-hidden ${index === 1 ? "lg:mt-20" : ""}`}>
                   <Image src={item.image} alt={item.alt} fill className="object-contain object-center" sizes="(max-width: 1024px) 100vw, 50vw" />
                 </div>
-                <div className="space-y-4 px-1 pb-2 pt-6 sm:pr-12">
+                <div className="px-6 sm:px-10 lg:px-12">
                   <h3 className="font-display text-3xl font-medium sm:text-4xl">{item.name}</h3>
-                  <p className="max-w-md text-base leading-7 text-[var(--color-muted)]">{item.description}</p>
-                  <a href="#contact" className="inline-flex text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)]">
-                    Enquire about this dress
-                  </a>
+                  <p className="mt-3 max-w-sm text-base leading-7 text-[var(--color-muted)]">{item.description}</p>
                 </div>
               </article>
             ))}
@@ -249,28 +218,14 @@ export default function Home() {
             className="object-contain object-center"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.02)_0%,rgba(247,240,234,0.08)_34%,rgba(247,240,234,0.24)_100%)]" />
-        </div>
-        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-end px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
-          <div className="max-w-xl space-y-5">
-            <p className="text-sm uppercase tracking-[0.28em] text-[rgba(120,82,25,0.94)]">Editorial focus</p>
-            <h2 className="font-display text-4xl font-medium leading-[0.98] text-[rgba(110,72,18,0.97)] sm:text-5xl lg:text-6xl">
-              A slower, more visual way to discover the right bridal direction.
-            </h2>
-            <p className="text-base leading-8 text-[rgba(97,70,33,0.94)] sm:text-lg">
-              Less noise, stronger imagery, and clearer choices for the bride who wants confidence from the first impression.
-            </p>
-            <a href="#contact" className="inline-flex text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)]">
-              Book a consultation
-            </a>
-          </div>
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(246,239,233,0.02)_0%,rgba(246,239,233,0.02)_36%,rgba(22,16,12,0.22)_70%,rgba(22,16,12,0.52)_100%)]" />
         </div>
       </section>
 
-      <section className="bg-white px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+        <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
           <div className="grid gap-5 sm:grid-cols-2">
-            <div className="relative aspect-[0.82/1] overflow-hidden bg-[var(--color-blush)]">
+            <div className="relative aspect-[0.82/1] overflow-hidden">
               <Image
                 src="/site-assets/an3001.jpg"
                 alt="Romantic embellished wedding dress with delicate detail."
@@ -279,7 +234,7 @@ export default function Home() {
                 sizes="(max-width: 1024px) 100vw, 30vw"
               />
             </div>
-            <div className="relative aspect-[0.82/1] overflow-hidden bg-[var(--color-blush)] sm:translate-y-10">
+            <div className="relative aspect-[0.82/1] overflow-hidden sm:translate-y-12">
               <Image
                 src="/site-assets/an3002.jpg"
                 alt="Minimal strapless bridal gown with a clean silhouette."
@@ -289,38 +244,58 @@ export default function Home() {
               />
             </div>
           </div>
-          <div className="space-y-5 lg:pl-8">
+          <div className="max-w-lg space-y-4 lg:pb-8">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Craftsmanship</p>
             <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">
-              Details, fabrics, and finish deserve their own moment.
+              Fabric, finish, and detail deserve room to breathe.
             </h2>
-            <p className="max-w-xl text-base leading-8 text-[var(--color-muted)] sm:text-lg">
+            <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">
               Needs Updating
             </p>
-            <a href="#contact" className="inline-flex text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)]">
-              Enquire about craftsmanship
-            </a>
           </div>
         </div>
       </section>
 
-      <section className="border-y border-black/5 bg-[var(--color-cream)] px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+      <section className="bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+        <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div className="space-y-4">
-            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">The people behind Para Dress</p>
-            <h2 className="font-display max-w-xl text-4xl font-medium leading-[1.02] sm:text-5xl">
-              Real people, real craftsmanship, and a more human bridal experience.
+            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Why ordering online is safe</p>
+            <h2 className="font-display max-w-lg text-4xl font-medium leading-[1.02] sm:text-5xl">
+              Reassurance should be built into the experience.
             </h2>
-            <p className="max-w-xl text-base leading-8 text-[var(--color-muted)] sm:text-lg">
+          </div>
+          <div className="space-y-7">
+            {[
+              "We guide every bride through measurements personally.",
+              "Sizing is reviewed with individual support before production begins.",
+              "Each set of measurements is checked carefully.",
+              "Every gown is made individually.",
+            ].map((item) => (
+              <div key={item} className="border-b border-[var(--color-line)] pb-5 last:border-b-0 last:pb-0">
+                <p className="max-w-xl text-base leading-7 text-[var(--color-ink-strong)]">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+        <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+          <div className="max-w-md space-y-4">
+            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">The people behind Para Dress</p>
+            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">
+              Real people, real craftsmanship, a more human bridal experience.
+            </h2>
+            <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">
               Needs Updating
             </p>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div className="min-h-[220px] border border-[var(--color-line)] bg-[var(--color-cream)] px-6 py-7">
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div className="min-h-[220px] border-b border-[var(--color-line)] pb-6">
               <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">Atelier</p>
               <p className="mt-6 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">Needs Updating</p>
             </div>
-            <div className="min-h-[220px] border border-[var(--color-line)] bg-[var(--color-cream)] px-6 py-7">
+            <div className="min-h-[220px] border-b border-[var(--color-line)] pb-6">
               <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">Production process</p>
               <p className="mt-6 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">Needs Updating</p>
             </div>
@@ -328,61 +303,55 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-y border-black/5 bg-[var(--color-cream)] px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
-        <div className="mx-auto max-w-7xl space-y-10">
-          <div className="max-w-3xl space-y-4">
+      <section className="bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+        <div className="mx-auto max-w-6xl space-y-10">
+          <div className="max-w-2xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Bridal journey</p>
             <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">
-              A clear process, designed to feel more guided and less overwhelming.
+              A clear process, guided from enquiry to production.
             </h2>
           </div>
-          <div className="grid gap-px bg-[var(--color-line)] md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
             {[
               "Choose a style direction and send your enquiry.",
-              "Receive guidance on fit, measurements, and sizing options.",
+              "Receive guidance on fit, measurements, and sizing.",
               "Confirm your order with a 50% deposit.",
               "Production takes up to 50 days standard or 60 days custom.",
             ].map((step, index) => (
-              <div key={step} className="bg-[var(--color-cream)] px-6 py-8">
+              <div key={step} className="space-y-4">
                 <p className="text-xs uppercase tracking-[0.26em] text-[var(--color-muted)]">Step {index + 1}</p>
-                <p className="mt-5 max-w-[18rem] text-base leading-7 text-[var(--color-ink-strong)]">{step}</p>
+                <p className="max-w-[16rem] text-base leading-7 text-[var(--color-ink-strong)]">{step}</p>
               </div>
             ))}
           </div>
-          <a href="#contact" className="inline-flex text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)]">
-            Book consultation
-          </a>
         </div>
       </section>
 
-      <section className="px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
-        <div className="mx-auto max-w-7xl space-y-10">
-          <div className="max-w-2xl space-y-4">
+      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+        <div className="mx-auto max-w-6xl space-y-10">
+          <div className="max-w-xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Social proof</p>
             <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">
-              Trust should feel present throughout the experience.
+              Trust should feel present, but never loud.
             </h2>
           </div>
-          <div className="grid gap-5 lg:grid-cols-3">
+          <div className="grid gap-10 lg:grid-cols-3">
             {socialProof.map((item) => (
-              <article key={item.title} className="min-h-[220px] border border-[var(--color-line)] bg-white px-6 py-7">
+              <article key={item.title} className="space-y-4 border-b border-[var(--color-line)] pb-8">
                 <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">{item.title}</p>
-                <p className="mt-8 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">{item.body}</p>
+                <p className="font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">{item.body}</p>
               </article>
             ))}
           </div>
-          <a href="#contact" className="inline-flex text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)]">
-            View collection
-          </a>
         </div>
       </section>
 
-      <section id="faq" className="bg-white px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
-        <div className="mx-auto max-w-5xl space-y-10">
-          <div className="max-w-3xl space-y-4">
+      <section id="faq" className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+        <div className="mx-auto max-w-4xl space-y-10">
+          <div className="max-w-2xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">FAQ</p>
             <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">
-              The practical details, kept clear and understated.
+              Practical details, kept clear.
             </h2>
           </div>
           <div className="border-t border-[var(--color-line)]">
@@ -400,7 +369,7 @@ export default function Home() {
                     <span className="text-2xl leading-none text-[var(--color-muted)]">{isOpen ? "−" : "+"}</span>
                   </button>
                   {isOpen ? (
-                    <div className="max-w-2xl pb-7 pr-10 text-base leading-8 text-[var(--color-muted)]">
+                    <div className="max-w-xl pb-7 pr-10 text-base leading-8 text-[var(--color-muted)]">
                       {faq.answer}
                     </div>
                   ) : null}
@@ -415,39 +384,39 @@ export default function Home() {
         <a
           href="#contact"
           aria-label="Open contact section"
-          className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(110,72,18,0.12)] bg-[rgba(247,240,234,0.82)] px-4 text-[0.72rem] font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)] shadow-[0_10px_22px_rgba(35,27,24,0.08)] backdrop-blur-[6px] transition hover:bg-[rgba(247,240,234,0.9)] sm:min-h-13 sm:px-5"
+          className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(110,72,18,0.1)] bg-[rgba(247,240,234,0.72)] px-4 text-[0.72rem] font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)] shadow-[0_10px_22px_rgba(35,27,24,0.06)] backdrop-blur-[8px] transition hover:bg-[rgba(247,240,234,0.84)] sm:min-h-13 sm:px-5"
         >
           Contact
         </a>
       </div>
 
-      <section id="contact" className="px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
-        <div className="mx-auto max-w-6xl border border-[var(--color-line)] bg-[var(--color-ink-strong)] text-white">
-          <div className="grid gap-8 lg:grid-cols-[1fr_0.86fr]">
+      <section id="contact" className="px-6 py-18 sm:px-10 lg:px-16 lg:py-22">
+        <div className="mx-auto max-w-5xl border border-[rgba(255,255,255,0.08)] bg-[var(--color-ink-strong)] text-white">
+          <div className="grid gap-8 lg:grid-cols-[1fr_0.78fr]">
             <div className="space-y-5 px-8 py-8 sm:px-12 sm:py-10">
-              <p className="text-sm uppercase tracking-[0.28em] text-white/60">Consultation</p>
-              <h2 className="font-display max-w-xl text-4xl font-medium text-white sm:text-5xl">
-                A premium enquiry experience should feel just as considered as the dress itself.
+              <p className="text-sm uppercase tracking-[0.28em] text-white/56">Consultation</p>
+              <h2 className="font-display max-w-lg text-4xl font-medium text-white sm:text-5xl">
+                A considered start to your bridal journey.
               </h2>
-              <p className="max-w-2xl text-base leading-8 text-white/74 sm:text-lg">
-                Start with an enquiry and we will guide you through style direction, pricing, sizing, and next steps.
+              <p className="max-w-xl text-base leading-8 text-white/74 sm:text-lg">
+                Share the styles you love, and we will guide you personally.
               </p>
               <div className="grid gap-3 sm:grid-cols-2">
                 <input
                   type="text"
                   placeholder="Your name"
-                  className="min-h-13 border border-white/14 bg-transparent px-4 text-sm text-white placeholder:text-white/42 outline-none transition focus:border-white/30"
+                  className="min-h-13 border border-white/12 bg-transparent px-4 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-white/28"
                 />
                 <input
                   type="email"
                   placeholder="Email address"
-                  className="min-h-13 border border-white/14 bg-transparent px-4 text-sm text-white placeholder:text-white/42 outline-none transition focus:border-white/30"
+                  className="min-h-13 border border-white/12 bg-transparent px-4 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-white/28"
                 />
               </div>
               <textarea
-                placeholder="Tell us which styles you love, your size, or where you would like guidance."
+                placeholder="Tell us which styles you love or where you would like guidance."
                 rows={4}
-                className="min-h-[132px] w-full resize-none border border-white/14 bg-transparent px-4 py-4 text-sm text-white placeholder:text-white/42 outline-none transition focus:border-white/30"
+                className="min-h-[124px] w-full resize-none border border-white/12 bg-transparent px-4 py-4 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-white/28"
               />
               <div className="flex flex-col gap-4 sm:flex-row">
                 <a
@@ -460,25 +429,25 @@ export default function Home() {
                   href="https://instagram.com/para.dress"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex min-h-13 items-center justify-center border border-white/14 px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-white transition hover:bg-white/8"
+                  className="inline-flex min-h-13 items-center justify-center border border-white/12 px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-white transition hover:bg-white/8"
                 >
                   Message on Instagram
                 </a>
               </div>
             </div>
-            <div className="border-l-0 border-white/10 px-8 py-8 sm:px-12 sm:py-10 lg:border-l">
+            <div className="border-l-0 border-white/8 px-8 py-8 sm:px-12 sm:py-10 lg:border-l">
               <div className="space-y-6">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.24em] text-white/55">Craftsmanship details</p>
-                  <p className="mt-3 text-base leading-7 text-white/74">Needs Updating</p>
+                  <p className="text-xs uppercase tracking-[0.24em] text-white/50">Craftsmanship details</p>
+                  <p className="mt-3 text-base leading-7 text-white/72">Needs Updating</p>
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-[0.24em] text-white/55">Client proof</p>
-                  <p className="mt-3 text-base leading-7 text-white/74">Needs Updating</p>
+                  <p className="text-xs uppercase tracking-[0.24em] text-white/50">Client proof</p>
+                  <p className="mt-3 text-base leading-7 text-white/72">Needs Updating</p>
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-[0.24em] text-white/55">Instagram gallery</p>
-                  <p className="mt-3 text-base leading-7 text-white/74">Needs Updating</p>
+                  <p className="text-xs uppercase tracking-[0.24em] text-white/50">Instagram gallery</p>
+                  <p className="mt-3 text-base leading-7 text-white/72">Needs Updating</p>
                 </div>
               </div>
             </div>
