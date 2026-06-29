@@ -73,98 +73,39 @@ const faqs = [
 export default function Home() {
   return (
     <main className="bg-[var(--color-cream)] text-[var(--color-ink)]">
-      <section className="relative overflow-hidden border-b border-black/5 px-6 pb-16 pt-8 sm:px-10 lg:px-16 lg:pb-24 lg:pt-10">
-        <div className="mx-auto flex max-w-7xl items-center justify-between pb-8 lg:pb-10">
-          <div className="relative h-20 w-[17rem] sm:h-24 sm:w-[22rem]">
-            <Image
-              src="/site-assets/logo-full.jpg"
-              alt="Para Dress logo"
-              fill
-              className="object-contain object-left"
-              sizes="(max-width: 640px) 272px, 352px"
-              priority
-            />
-          </div>
-          <div className="hidden items-center gap-8 text-sm uppercase tracking-[0.16em] text-[var(--color-muted)] lg:flex">
-            <a href="#collections" className="transition hover:text-[var(--color-ink)]">
-              Collections
-            </a>
-            <a href="#process" className="transition hover:text-[var(--color-ink)]">
-              How to Order
-            </a>
-            <a href="#faq" className="transition hover:text-[var(--color-ink)]">
-              FAQ
-            </a>
-            <a href="#contact" className="transition hover:text-[var(--color-ink)]">
-              Contact
-            </a>
-          </div>
+      <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-5 sm:px-10 lg:px-16">
+        <div className="relative h-20 w-[20rem] opacity-70 sm:h-24 sm:w-[28rem]">
+          <Image
+            src="/site-assets/logo-full.jpg"
+            alt="Para Dress logo"
+            fill
+            className="object-contain"
+            sizes="(max-width: 640px) 320px, 448px"
+            priority
+          />
         </div>
+      </header>
 
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
-          <div className="order-2 space-y-8 lg:order-1 lg:pb-10">
-            <p className="text-sm uppercase tracking-[0.32em] text-[var(--color-muted)]">
-              Elegant bridal for modern women
+      <section className="relative min-h-screen overflow-hidden">
+        <Image
+          src="/site-assets/an3000.jpg"
+          alt="Hero bridal look for Para Dress homepage"
+          fill
+          priority
+          className="object-cover object-center"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.08)_0%,rgba(247,240,234,0.18)_30%,rgba(247,240,234,0.78)_100%)]" />
+
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-end px-6 pb-12 pt-32 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20 lg:pt-36">
+          <div className="max-w-xl rounded-[1.75rem] border border-white/10 bg-white/20 p-6 backdrop-blur-[6px] sm:p-8">
+            <p className="text-xs uppercase tracking-[0.28em] text-[rgba(157,122,63,0.82)]">Featured bridal look</p>
+            <p className="font-display mt-3 text-3xl font-medium leading-tight text-[rgba(157,122,63,0.72)] sm:text-4xl">
+              Minimal elegance with a fashion-led edge.
             </p>
-            <div className="space-y-6">
-              <h1 className="font-display max-w-2xl text-5xl font-medium leading-[0.96] tracking-[-0.03em] sm:text-6xl lg:text-7xl">
-                Wedding dresses that feel calm, refined, and quietly luxurious.
-              </h1>
-              <p className="max-w-xl text-lg leading-8 text-[var(--color-muted)] sm:text-xl">
-                Para Dress is a premium bridal brand for UK brides who want a beautiful, confident experience, from the first enquiry to the final fitting decision.
-              </p>
-            </div>
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <a
-                href="#contact"
-                className="inline-flex items-center justify-center rounded-full bg-[var(--color-ink)] px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-white transition hover:opacity-90"
-              >
-                Book a Consultation
-              </a>
-              <a
-                href="#collections"
-                className="inline-flex items-center justify-center rounded-full border border-[var(--color-line)] px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] transition hover:bg-white/70"
-              >
-                Explore the Collection
-              </a>
-            </div>
-            <div className="grid gap-6 border-t border-black/8 pt-8 sm:grid-cols-3">
-              <div>
-                <p className="font-display text-3xl font-medium">£699–£950</p>
-                <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">A premium bridal range with clear pricing guidance.</p>
-              </div>
-              <div>
-                <p className="font-display text-3xl font-medium">Custom sizing</p>
-                <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">Available for brides who want a more personalised fit.</p>
-              </div>
-              <div>
-                <p className="font-display text-3xl font-medium">Guided process</p>
-                <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">We support you with measurements, timelines, and next steps.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="order-1 lg:order-2">
-            <div className="relative min-h-[520px] overflow-hidden bg-[#eadfd8] sm:min-h-[640px] lg:min-h-[760px]">
-              <Image
-                src="/site-assets/an3000.jpg"
-                alt="Hero bridal look for Para Dress homepage"
-                fill
-                priority
-                className="object-cover object-center"
-                sizes="(max-width: 1024px) 100vw, 52vw"
-              />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,14,11,0.06)_0%,rgba(20,14,11,0.2)_100%)]" />
-              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
-                <div className="max-w-xs rounded-[1.5rem] border border-white/12 bg-white/42 p-5 backdrop-blur-sm">
-                  <p className="text-xs uppercase tracking-[0.28em] text-[var(--color-muted)]">Featured bridal look</p>
-                  <p className="font-display mt-3 text-2xl font-medium text-[rgba(35,27,24,0.78)]">Minimal elegance with a fashion-led edge.</p>
-                  <p className="mt-3 text-sm leading-6 text-[rgba(111,98,90,0.84)]">
-                    A calm first impression, chosen to set the tone for the collection and build trust from the first screen.
-                  </p>
-                </div>
-              </div>
-            </div>
+            <p className="mt-4 max-w-md text-sm leading-7 text-[rgba(122,98,63,0.78)] sm:text-base">
+              A calm first impression, chosen to set the tone for the collection and build trust from the first screen.
+            </p>
           </div>
         </div>
       </section>
@@ -307,7 +248,7 @@ export default function Home() {
           <div className="grid gap-8 lg:grid-cols-[1fr_0.8fr]">
             <div className="space-y-6 px-8 py-10 sm:px-12 sm:py-14">
               <p className="text-sm uppercase tracking-[0.28em] text-white/65">Enquiry</p>
-              <h2 className="font-display max-w-xl text-4xl font-medium sm:text-5xl">
+              <h2 className="font-display max-w-xl text-4xl font-medium text-white sm:text-5xl">
                 Ready to explore your dress options with Para Dress?
               </h2>
               <p className="max-w-2xl text-base leading-8 text-white/72 sm:text-lg">

@@ -2,13 +2,13 @@
 
 :root {
   --background: #f7f0ea;
-  --foreground: #231b18;
+  --foreground: #9d7a3f;
   --color-cream: #f7f0ea;
   --color-rose: #efe3dc;
   --color-blush: #f4ece7;
-  --color-ink: #231b18;
-  --color-muted: #6f625a;
-  --color-line: rgba(35, 27, 24, 0.1);
+  --color-ink: #9d7a3f;
+  --color-muted: #9e8761;
+  --color-line: rgba(157, 122, 63, 0.18);
 }
 
 @theme inline {
