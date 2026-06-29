@@ -7,7 +7,7 @@ const slides = [
     body: "A calm first impression, chosen to set the tone for the collection and build trust from the first screen.",
     image: "/site-assets/an3000.jpg",
     alt: "Two minimal bridal gowns standing in an arched studio setting.",
-    imageClass: "object-contain object-center",
+    imageClass: "object-contain object-center object-[center_58%]",
     panelClass: "max-w-xl",
   },
   {
@@ -113,15 +113,15 @@ export default function Home() {
               className={slide.imageClass}
               sizes="100vw"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.04)_0%,rgba(247,240,234,0.12)_42%,rgba(247,240,234,0.34)_100%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.08)_0%,rgba(247,240,234,0.14)_34%,rgba(247,240,234,0.4)_100%)]" />
 
             <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-end px-6 pb-12 pt-32 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20 lg:pt-36">
               <div className={`${slide.panelClass} rounded-[1.5rem] bg-[rgba(247,240,234,0.08)] p-6 sm:p-8`}>
-                <p className="text-xs uppercase tracking-[0.28em] text-[rgba(157,122,63,0.82)]">{slide.eyebrow}</p>
-                <h1 className="font-display mt-3 text-3xl font-medium leading-tight text-[rgba(157,122,63,0.86)] sm:text-4xl lg:text-5xl">
+                <p className="text-xs uppercase tracking-[0.28em] text-[rgba(120,82,25,0.95)]">{slide.eyebrow}</p>
+                <h1 className="font-display mt-3 text-3xl font-medium leading-tight text-[rgba(110,72,18,0.96)] sm:text-4xl lg:text-5xl">
                   {slide.title}
                 </h1>
-                <p className="mt-4 max-w-md text-sm leading-7 text-[rgba(122,98,63,0.88)] sm:text-base">
+                <p className="mt-4 max-w-md text-sm leading-7 text-[rgba(97,70,33,0.95)] sm:text-base">
                   {slide.body}
                 </p>
               </div>
