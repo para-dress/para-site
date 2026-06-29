@@ -91,7 +91,7 @@ const faqs = [
 export default function Home() {
   return (
     <main className="bg-[var(--color-cream)] text-[var(--color-ink)]">
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center bg-[var(--color-cream)] px-6 py-7 sm:px-10 lg:px-16">
+      <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center bg-[var(--color-cream)]/78 px-6 py-7 backdrop-blur-[2px] sm:px-10 lg:px-16">
         <div className="text-center opacity-78">
           <p className="font-display text-[2.2rem] font-medium tracking-[0.34em] text-[var(--color-ink)] sm:text-[3rem]">
             PARA
@@ -102,9 +102,9 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="snap-y snap-mandatory pt-24 sm:pt-28">
+      <section className="snap-y snap-mandatory pt-22 sm:pt-28">
         {slides.map((slide) => (
-          <section key={slide.title} className="relative min-h-[calc(100vh-6rem)] snap-start overflow-hidden bg-[#ece2da] sm:min-h-[calc(100vh-7rem)]">
+          <section key={slide.title} className="relative min-h-[calc(100vh-5.5rem)] snap-start overflow-hidden bg-[#ece2da] sm:min-h-[calc(100vh-7rem)]">
             <Image
               src={slide.image}
               alt={slide.alt}
