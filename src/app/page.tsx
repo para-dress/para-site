@@ -95,7 +95,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="bg-[var(--color-cream)] text-[var(--color-ink)]">
+    <main className="snap-container bg-[var(--color-cream)] text-[var(--color-ink)]">
       <header
         className={`fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-7 transition-[transform,opacity,background-color] duration-500 sm:px-10 lg:px-16 ${
           isScrolled ? "-translate-y-8 opacity-0 bg-transparent" : "translate-y-0 opacity-100 bg-[var(--color-cream)]/92"
@@ -113,7 +113,7 @@ export default function Home() {
 
       <section className="snap-y snap-mandatory">
         {heroSlides.map((slide, index) => (
-          <section key={slide.title} className="relative h-screen snap-start snap-always overflow-hidden bg-[#ece2da]">
+          <section key={slide.title} className="snap-section snap-section-screen relative h-screen snap-start snap-always overflow-hidden bg-[#ece2da]">
             <Image src={slide.image} alt={slide.alt} fill priority={index === 0} className={slide.imageClass} sizes="100vw" />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(246,239,233,0.12)_0%,rgba(246,239,233,0.1)_24%,rgba(27,20,15,0.16)_60%,rgba(27,20,15,0.42)_100%)]" />
 
@@ -150,7 +150,7 @@ export default function Home() {
         ))}
       </section>
 
-      <section className="bg-white px-6 py-12 sm:px-10 sm:py-14 lg:px-16 lg:py-16">
+      <section className="snap-section bg-white px-6 py-12 sm:px-10 sm:py-14 lg:px-16 lg:py-16">
         <div className="mx-auto max-w-7xl border-y border-[var(--color-line)] py-6 sm:py-7">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {trustPoints.map((point) => (
@@ -163,7 +163,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <section className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Brand story</p>
@@ -185,7 +185,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="collections-grid" className="px-0 py-20 sm:py-24 lg:py-28">
+      <section id="collections-grid" className="snap-section px-0 py-20 sm:py-24 lg:py-28">
         <div className="space-y-12">
           <div className="px-6 sm:px-10 lg:px-16">
             <div className="mx-auto max-w-6xl space-y-4">
@@ -211,7 +211,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="collections" className="relative min-h-screen overflow-hidden bg-[#ece2da]">
+      <section id="collections" className="snap-section snap-section-screen relative min-h-screen overflow-hidden bg-[#ece2da]">
         <div className="absolute inset-0">
           <Image
             src="/site-assets/an3003.jpg"
@@ -224,7 +224,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <section className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
           <div className="grid gap-5 sm:grid-cols-2">
             <div className="relative aspect-[0.82/1] overflow-hidden">
@@ -258,7 +258,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <section className="snap-section bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Why ordering online is safe</p>
@@ -281,7 +281,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <section className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div className="max-w-md space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">The people behind Para Dress</p>
@@ -309,7 +309,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <section className="snap-section bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-6xl space-y-10">
           <div className="max-w-2xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Bridal journey</p>
@@ -333,7 +333,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <section className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-6xl space-y-10">
           <div className="max-w-xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Social proof</p>
@@ -352,7 +352,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative min-h-[78vh] overflow-hidden bg-[#ece2da]">
+      <section className="snap-section snap-section-screen relative min-h-[78vh] overflow-hidden bg-[#ece2da]">
         <Image
           src="/site-assets/an3000.jpg"
           alt="Editorial bridal image for emotional brand statement."
@@ -368,7 +368,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="faq" className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <section id="faq" className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-4xl space-y-10">
           <div className="max-w-2xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">FAQ</p>
@@ -412,7 +412,7 @@ export default function Home() {
         </a>
       </div>
 
-      <section id="contact" className="px-6 py-18 sm:px-10 lg:px-16 lg:py-22">
+      <section id="contact" className="snap-section bg-[var(--color-cream)] px-6 py-18 sm:px-10 lg:px-16 lg:py-22">
         <div className="mx-auto max-w-5xl border border-[rgba(255,255,255,0.08)] bg-[var(--color-ink-strong)] text-white">
           <div className="grid gap-8 lg:grid-cols-[1fr_0.78fr]">
             <div className="space-y-5 px-8 py-8 sm:px-12 sm:py-10">
@@ -483,7 +483,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="border-t border-[var(--color-line)] bg-white px-6 py-10 sm:px-10 lg:px-16">
+      <footer className="snap-section bg-white border-t border-[var(--color-line)] px-6 py-10 sm:px-10 lg:px-16">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="font-display text-[1.65rem] font-medium tracking-[0.24em] text-[var(--color-ink)] sm:text-[2rem]">
