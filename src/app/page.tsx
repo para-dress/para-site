@@ -49,15 +49,15 @@ const collectionCards = [
 const socialProof = [
   {
     title: "Bride feedback",
-    body: "Needs Updating",
+    body: "Kind words from brides who valued both the gowns and the care behind the experience.",
   },
   {
     title: "Client moments",
-    body: "Needs Updating",
+    body: "Real bridal moments, shared with warmth, trust, and a sense of occasion.",
   },
   {
     title: "Instagram gallery",
-    body: "Needs Updating",
+    body: "A visual diary of silhouettes, details, fittings, and finished bridal looks.",
   },
 ];
 
@@ -250,7 +250,7 @@ export default function Home() {
               Fabric, finish, and detail deserve room to breathe.
             </h2>
             <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">
-              Needs Updating
+              Fine fabrics, careful construction, and a couture sensibility sit at the heart of each gown.
             </p>
           </div>
         </div>
@@ -287,17 +287,21 @@ export default function Home() {
               Real people, real craftsmanship, a more human bridal experience.
             </h2>
             <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">
-              Needs Updating
+              Para Dress is shaped by an atelier team that values detail, femininity, and a more personal relationship with every bride.
             </p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="min-h-[220px] border-b border-[var(--color-line)] pb-6">
               <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">Atelier</p>
-              <p className="mt-6 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">Needs Updating</p>
+              <p className="mt-6 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">
+                Crafted in Ukraine, with care, precision, and close attention to every silhouette.
+              </p>
             </div>
             <div className="min-h-[220px] border-b border-[var(--color-line)] pb-6">
               <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">Production process</p>
-              <p className="mt-6 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">Needs Updating</p>
+              <p className="mt-6 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">
+                Each gown is made to order, then checked with the bride’s sizing and finishing details in mind.
+              </p>
             </div>
           </div>
         </div>
@@ -346,6 +350,22 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="relative min-h-[78vh] overflow-hidden bg-[#ece2da]">
+        <Image
+          src="/site-assets/an3000.jpg"
+          alt="Editorial bridal image for emotional brand statement."
+          fill
+          className="object-contain object-center"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,15,12,0.14)_0%,rgba(20,15,12,0.2)_48%,rgba(20,15,12,0.38)_100%)]" />
+        <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-6xl items-end px-6 py-14 sm:px-10 lg:px-16 lg:py-18">
+          <h2 className="font-display max-w-2xl text-4xl font-medium leading-[1.02] text-white sm:text-5xl lg:text-6xl">
+            Every bride remembers how she felt, not only how she looked.
+          </h2>
+        </div>
+      </section>
+
       <section id="faq" className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-4xl space-y-10">
           <div className="max-w-2xl space-y-4">
@@ -369,7 +389,7 @@ export default function Home() {
                     <span className="text-2xl leading-none text-[var(--color-muted)]">{isOpen ? "−" : "+"}</span>
                   </button>
                   {isOpen ? (
-                    <div className="max-w-xl pb-7 pr-10 text-base leading-8 text-[var(--color-muted)]">
+                    <div className="max-w-xl pb-5 pr-10 text-base leading-8 text-[var(--color-muted)]">
                       {faq.answer}
                     </div>
                   ) : null}
@@ -405,18 +425,18 @@ export default function Home() {
                 <input
                   type="text"
                   placeholder="Your name"
-                  className="min-h-13 border border-white/12 bg-transparent px-4 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-white/28"
+                  className="min-h-13 border border-white/18 bg-[rgba(255,255,255,0.04)] px-4 text-sm text-white placeholder:text-white/46 outline-none transition focus:border-white/32"
                 />
                 <input
                   type="email"
                   placeholder="Email address"
-                  className="min-h-13 border border-white/12 bg-transparent px-4 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-white/28"
+                  className="min-h-13 border border-white/18 bg-[rgba(255,255,255,0.04)] px-4 text-sm text-white placeholder:text-white/46 outline-none transition focus:border-white/32"
                 />
               </div>
               <textarea
                 placeholder="Tell us which styles you love or where you would like guidance."
                 rows={4}
-                className="min-h-[124px] w-full resize-none border border-white/12 bg-transparent px-4 py-4 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-white/28"
+                className="min-h-[124px] w-full resize-none border border-white/18 bg-[rgba(255,255,255,0.04)] px-4 py-4 text-sm text-white placeholder:text-white/46 outline-none transition focus:border-white/32"
               />
               <div className="flex flex-col gap-4 sm:flex-row">
                 <a
@@ -429,7 +449,7 @@ export default function Home() {
                   href="https://instagram.com/para.dress"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex min-h-13 items-center justify-center border border-white/12 px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-white transition hover:bg-white/8"
+                  className="inline-flex min-h-13 items-center justify-center border border-white/16 px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-white transition hover:bg-white/8"
                 >
                   Message on Instagram
                 </a>
@@ -439,15 +459,21 @@ export default function Home() {
               <div className="space-y-6">
                 <div>
                   <p className="text-xs uppercase tracking-[0.24em] text-white/50">Craftsmanship details</p>
-                  <p className="mt-3 text-base leading-7 text-white/72">Needs Updating</p>
+                  <p className="mt-3 text-base leading-7 text-white/72">
+                    Each gown is made with close attention to structure, fabric, fit, and finishing.
+                  </p>
                 </div>
                 <div>
                   <p className="text-xs uppercase tracking-[0.24em] text-white/50">Client proof</p>
-                  <p className="mt-3 text-base leading-7 text-white/72">Needs Updating</p>
+                  <p className="mt-3 text-base leading-7 text-white/72">
+                    Brides are guided personally, with sizing support and direct communication throughout the process.
+                  </p>
                 </div>
                 <div>
                   <p className="text-xs uppercase tracking-[0.24em] text-white/50">Instagram gallery</p>
-                  <p className="mt-3 text-base leading-7 text-white/72">Needs Updating</p>
+                  <p className="mt-3 text-base leading-7 text-white/72">
+                    Explore the evolving visual world of Para Dress through fittings, details, and bridal looks.
+                  </p>
                 </div>
               </div>
             </div>
