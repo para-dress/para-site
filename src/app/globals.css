@@ -28,7 +28,7 @@ html {
 }
 
 body {
-  scroll-snap-type: y proximity;
+  scroll-snap-type: y mandatory;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }

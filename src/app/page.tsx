@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const slides = [
   {
@@ -89,10 +92,23 @@ const faqs = [
 ];
 
 export default function Home() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <main className="bg-[var(--color-cream)] text-[var(--color-ink)]">
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-7 sm:px-10 lg:px-16">
-        <div className="text-center opacity-78">
+      <header
+        className={`pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-7 sm:px-10 lg:px-16 ${
+          isScrolled ? "bg-transparent" : "bg-[var(--color-cream)]/92"
+        }`}
+      >
+        <div className={`text-center transition-opacity duration-300 ${isScrolled ? "opacity-72" : "opacity-88"}`}>
           <p className="font-display text-[2.2rem] font-medium tracking-[0.34em] text-[var(--color-ink)] sm:text-[3rem]">
             PARA
           </p>
@@ -104,7 +120,7 @@ export default function Home() {
 
       <section className="snap-y snap-mandatory">
         {slides.map((slide) => (
-          <section key={slide.title} className="relative h-screen snap-start overflow-hidden bg-[#ece2da]">
+          <section key={slide.title} className="relative h-screen snap-start snap-always overflow-hidden bg-[#ece2da]">
             <Image
               src={slide.image}
               alt={slide.alt}
