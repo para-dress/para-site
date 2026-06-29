@@ -6,20 +6,29 @@ import { useEffect, useState } from "react";
 const heroSlides = [
   {
     eyebrow: "Para Dress",
-    title: "Luxury bridalwear for the bride who wants calm elegance.",
-    body: "A refined collection shaped for modern brides in the UK, with a more personal path from first enquiry to final dress.",
+    title: "Handcrafted in Ukraine, guided personally, and offered directly from our own atelier.",
+    body: "Para Dress works directly with brides across the UK, offering made-to-order gowns with personal sizing guidance and without bridal boutique markups.",
     image: "/site-assets/an3000.jpg",
     alt: "Two minimal bridal gowns standing in an arched studio setting.",
     imageClass: "object-contain object-center object-[center_58%]",
   },
   {
-    eyebrow: "Modern minimal",
-    title: "Clean lines, soft structure, and quiet confidence.",
-    body: "For brides drawn to clarity, restraint, and a more elevated silhouette.",
+    eyebrow: "Direct bridal experience",
+    title: "A calmer, more personal way to find the right gown.",
+    body: "From first enquiry to final measurements, every step is shaped around direct communication, clarity, and trust.",
     image: "/site-assets/an2211.jpg",
     alt: "Modern bridal gown shown with full figure visible.",
     imageClass: "object-contain object-center",
   },
+];
+
+const trustPoints = [
+  "Handcrafted in Ukraine",
+  "Direct from our atelier",
+  "Made to order",
+  "Personal sizing guidance",
+  "No bridal boutique markups",
+  "Delivered across the UK",
 ];
 
 const collectionCards = [
@@ -60,8 +69,7 @@ const faqItems = [
   },
   {
     question: "Do you offer custom sizing?",
-    answer:
-      "Yes. Custom sizing is available for an additional £100.",
+    answer: "Yes. Custom sizing is available for an additional £100.",
   },
   {
     question: "How long does production take?",
@@ -89,11 +97,11 @@ export default function Home() {
   return (
     <main className="bg-[var(--color-cream)] text-[var(--color-ink)]">
       <header
-        className={`pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-7 transition-colors duration-500 sm:px-10 lg:px-16 ${
+        className={`fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-7 transition-colors duration-500 sm:px-10 lg:px-16 ${
           isScrolled ? "bg-transparent" : "bg-[var(--color-cream)]/92"
         }`}
       >
-        <div className={`text-center transition-opacity duration-300 ${isScrolled ? "opacity-72" : "opacity-88"}`}>
+        <div className={`pointer-events-none text-center transition-opacity duration-300 ${isScrolled ? "opacity-72" : "opacity-88"}`}>
           <p className="font-display text-[2.2rem] font-medium tracking-[0.34em] text-[var(--color-ink)] sm:text-[3rem]">
             PARA
           </p>
@@ -110,12 +118,12 @@ export default function Home() {
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.03)_0%,rgba(247,240,234,0.08)_32%,rgba(247,240,234,0.26)_100%)]" />
 
             <div className="relative z-10 mx-auto flex h-screen max-w-7xl flex-col justify-end px-6 pb-18 pt-32 sm:px-10 sm:pb-20 lg:px-16 lg:pb-24 lg:pt-36">
-              <div className="max-w-2xl space-y-5">
+              <div className="max-w-[46rem] space-y-5">
                 <p className="text-[0.72rem] uppercase tracking-[0.34em] text-[rgba(120,82,25,0.94)]">{slide.eyebrow}</p>
-                <h1 className={`${index === 0 ? "max-w-3xl text-4xl sm:text-5xl lg:text-6xl" : "max-w-2xl text-3xl sm:text-4xl lg:text-5xl"} font-display font-medium leading-[0.95] text-[rgba(110,72,18,0.97)]`}>
+                <h1 className={`${index === 0 ? "max-w-4xl text-4xl sm:text-5xl lg:text-6xl" : "max-w-2xl text-3xl sm:text-4xl lg:text-5xl"} font-display font-medium leading-[0.95] text-[rgba(110,72,18,0.97)]`}>
                   {slide.title}
                 </h1>
-                <p className="max-w-xl text-sm leading-7 text-[rgba(97,70,33,0.94)] sm:text-base sm:leading-8">
+                <p className="max-w-2xl text-sm leading-7 text-[rgba(97,70,33,0.94)] sm:text-base sm:leading-8">
                   {slide.body}
                 </p>
                 {index === 0 ? (
@@ -128,7 +136,7 @@ export default function Home() {
                     </a>
                     <a
                       href="#contact"
-                      className="inline-flex min-h-14 items-center justify-center rounded-full border border-[rgba(110,72,18,0.22)] bg-[rgba(247,240,234,0.74)] px-7 text-sm font-medium uppercase tracking-[0.14em] text-[var(--color-ink-strong)] backdrop-blur-[2px] transition hover:bg-[rgba(247,240,234,0.88)]"
+                      className="inline-flex min-h-14 items-center justify-center rounded-full border border-[rgba(110,72,18,0.18)] bg-[rgba(247,240,234,0.7)] px-7 text-sm font-medium uppercase tracking-[0.14em] text-[var(--color-ink-strong)] backdrop-blur-[2px] transition hover:bg-[rgba(247,240,234,0.84)]"
                     >
                       Book Consultation
                     </a>
@@ -147,12 +155,25 @@ export default function Home() {
         ))}
       </section>
 
-      <section className="bg-white px-6 py-18 sm:px-10 lg:px-16 lg:py-24">
+      <section className="bg-white px-6 py-10 sm:px-10 sm:py-12 lg:px-16 lg:py-14">
+        <div className="mx-auto max-w-7xl border-y border-[var(--color-line)] py-6 sm:py-7">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+            {trustPoints.map((point) => (
+              <div key={point} className="flex items-start gap-3">
+                <span className="mt-[0.45rem] h-[0.32rem] w-[0.32rem] rounded-full bg-[var(--color-ink-strong)]/70" />
+                <p className="text-sm leading-6 text-[var(--color-ink-strong)]">{point}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Brand story</p>
             <h2 className="font-display max-w-lg text-4xl font-medium leading-[1.02] sm:text-5xl">
-              Para Dress exists for brides who want something more personal than a catalogue.
+              Para Dress exists for brides who want something more personal than a boutique experience.
             </h2>
           </div>
           <div className="space-y-5 text-base leading-8 text-[var(--color-muted)] sm:text-lg">
@@ -160,16 +181,39 @@ export default function Home() {
               Para Dress brings together premium bridal styling, direct guidance, and a calmer way to choose your dress.
             </p>
             <p>
-              The collection is produced in Ukraine, where craftsmanship, detail, and femininity remain at the centre of each piece.
+              Each gown is handcrafted in Ukraine and offered directly from our atelier, with a more transparent path from first conversation to final choice.
             </p>
             <p>
-              For the bride, that means a more thoughtful experience, from first conversation to final choice.
+              For the bride, that means personal support, clearer communication, and a closer connection to the people making the dress.
             </p>
           </div>
         </div>
       </section>
 
-      <section id="collections-grid" className="px-6 py-18 sm:px-10 lg:px-16 lg:py-24">
+      <section className="border-y border-black/5 bg-[var(--color-cream)] px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+          <div className="space-y-4">
+            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Why ordering online is safe</p>
+            <h2 className="font-display max-w-xl text-4xl font-medium leading-[1.02] sm:text-5xl">
+              Ordering your wedding gown online should feel reassuring, not uncertain.
+            </h2>
+          </div>
+          <div className="grid gap-px bg-[var(--color-line)]">
+            {[
+              "We guide every bride through measurements personally.",
+              "Sizing is reviewed with individual support before production begins.",
+              "Each set of measurements is checked carefully, not processed automatically.",
+              "Every gown is made individually, rather than pulled from boutique stock.",
+            ].map((item) => (
+              <div key={item} className="bg-[var(--color-cream)] px-6 py-6">
+                <p className="max-w-xl text-base leading-7 text-[var(--color-ink-strong)]">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="collections-grid" className="px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
         <div className="mx-auto max-w-7xl space-y-10">
           <div className="max-w-2xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Collection direction</p>
@@ -223,7 +267,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-18 sm:px-10 lg:px-16 lg:py-24">
+      <section className="bg-white px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_0.9fr] lg:items-center">
           <div className="grid gap-5 sm:grid-cols-2">
             <div className="relative aspect-[0.82/1] overflow-hidden bg-[var(--color-blush)]">
@@ -260,7 +304,31 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-y border-black/5 bg-[var(--color-cream)] px-6 py-18 sm:px-10 lg:px-16 lg:py-24">
+      <section className="border-y border-black/5 bg-[var(--color-cream)] px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+          <div className="space-y-4">
+            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">The people behind Para Dress</p>
+            <h2 className="font-display max-w-xl text-4xl font-medium leading-[1.02] sm:text-5xl">
+              Real people, real craftsmanship, and a more human bridal experience.
+            </h2>
+            <p className="max-w-xl text-base leading-8 text-[var(--color-muted)] sm:text-lg">
+              Needs Updating
+            </p>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div className="min-h-[220px] border border-[var(--color-line)] bg-[var(--color-cream)] px-6 py-7">
+              <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">Atelier</p>
+              <p className="mt-6 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">Needs Updating</p>
+            </div>
+            <div className="min-h-[220px] border border-[var(--color-line)] bg-[var(--color-cream)] px-6 py-7">
+              <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">Production process</p>
+              <p className="mt-6 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">Needs Updating</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-black/5 bg-[var(--color-cream)] px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
         <div className="mx-auto max-w-7xl space-y-10">
           <div className="max-w-3xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Bridal journey</p>
@@ -287,7 +355,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 py-18 sm:px-10 lg:px-16 lg:py-24">
+      <section className="px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
         <div className="mx-auto max-w-7xl space-y-10">
           <div className="max-w-2xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Social proof</p>
@@ -309,7 +377,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="faq" className="bg-white px-6 py-18 sm:px-10 lg:px-16 lg:py-24">
+      <section id="faq" className="bg-white px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
         <div className="mx-auto max-w-5xl space-y-10">
           <div className="max-w-3xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">FAQ</p>
@@ -347,16 +415,16 @@ export default function Home() {
         <a
           href="#contact"
           aria-label="Open contact section"
-          className="inline-flex min-h-13 items-center justify-center rounded-full bg-[var(--color-ink-strong)] px-5 text-sm font-medium uppercase tracking-[0.14em] text-white shadow-[0_10px_24px_rgba(35,27,24,0.16)] transition hover:opacity-92 sm:min-h-14 sm:px-6"
+          className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(110,72,18,0.12)] bg-[rgba(247,240,234,0.82)] px-4 text-[0.72rem] font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)] shadow-[0_10px_22px_rgba(35,27,24,0.08)] backdrop-blur-[6px] transition hover:bg-[rgba(247,240,234,0.9)] sm:min-h-13 sm:px-5"
         >
           Contact
         </a>
       </div>
 
-      <section id="contact" className="px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <section id="contact" className="px-6 py-16 sm:px-10 lg:px-16 lg:py-20">
         <div className="mx-auto max-w-6xl border border-[var(--color-line)] bg-[var(--color-ink-strong)] text-white">
           <div className="grid gap-8 lg:grid-cols-[1fr_0.86fr]">
-            <div className="space-y-6 px-8 py-10 sm:px-12 sm:py-14">
+            <div className="space-y-5 px-8 py-8 sm:px-12 sm:py-10">
               <p className="text-sm uppercase tracking-[0.28em] text-white/60">Consultation</p>
               <h2 className="font-display max-w-xl text-4xl font-medium text-white sm:text-5xl">
                 A premium enquiry experience should feel just as considered as the dress itself.
@@ -364,10 +432,27 @@ export default function Home() {
               <p className="max-w-2xl text-base leading-8 text-white/74 sm:text-lg">
                 Start with an enquiry and we will guide you through style direction, pricing, sizing, and next steps.
               </p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <input
+                  type="text"
+                  placeholder="Your name"
+                  className="min-h-13 border border-white/14 bg-transparent px-4 text-sm text-white placeholder:text-white/42 outline-none transition focus:border-white/30"
+                />
+                <input
+                  type="email"
+                  placeholder="Email address"
+                  className="min-h-13 border border-white/14 bg-transparent px-4 text-sm text-white placeholder:text-white/42 outline-none transition focus:border-white/30"
+                />
+              </div>
+              <textarea
+                placeholder="Tell us which styles you love, your size, or where you would like guidance."
+                rows={4}
+                className="min-h-[132px] w-full resize-none border border-white/14 bg-transparent px-4 py-4 text-sm text-white placeholder:text-white/42 outline-none transition focus:border-white/30"
+              />
               <div className="flex flex-col gap-4 sm:flex-row">
                 <a
                   href="mailto:hello@paradress.co.uk"
-                  className="inline-flex min-h-14 items-center justify-center bg-white px-7 py-4 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[#6f4d1f] transition hover:opacity-92"
+                  className="inline-flex min-h-13 items-center justify-center bg-white px-7 py-4 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[#6f4d1f] transition hover:opacity-92"
                 >
                   Book a Consultation
                 </a>
@@ -375,13 +460,13 @@ export default function Home() {
                   href="https://instagram.com/para.dress"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex min-h-14 items-center justify-center border border-white/20 px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-white transition hover:bg-white/8"
+                  className="inline-flex min-h-13 items-center justify-center border border-white/14 px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-white transition hover:bg-white/8"
                 >
                   Message on Instagram
                 </a>
               </div>
             </div>
-            <div className="border-l-0 border-white/10 px-8 py-10 sm:px-12 sm:py-14 lg:border-l">
+            <div className="border-l-0 border-white/10 px-8 py-8 sm:px-12 sm:py-10 lg:border-l">
               <div className="space-y-6">
                 <div>
                   <p className="text-xs uppercase tracking-[0.24em] text-white/55">Craftsmanship details</p>
@@ -400,6 +485,22 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <footer className="border-t border-[var(--color-line)] bg-white px-6 py-10 sm:px-10 lg:px-16">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="font-display text-[1.65rem] font-medium tracking-[0.24em] text-[var(--color-ink)] sm:text-[2rem]">
+              PARA
+            </p>
+            <p className="-mt-1 text-[0.68rem] uppercase tracking-[0.48em] text-[var(--color-muted)]">
+              DRESS
+            </p>
+          </div>
+          <p className="max-w-md text-sm leading-6 text-[var(--color-muted)]">
+            Handcrafted in Ukraine and offered directly to brides across the UK.
+          </p>
+        </div>
+      </footer>
     </main>
   );
 }
