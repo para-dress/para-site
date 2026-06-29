@@ -74,15 +74,13 @@ export default function Home() {
   return (
     <main className="bg-[var(--color-cream)] text-[var(--color-ink)]">
       <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-5 sm:px-10 lg:px-16">
-        <div className="relative h-20 w-[20rem] opacity-70 sm:h-24 sm:w-[28rem]">
-          <Image
-            src="/site-assets/logo-full.jpg"
-            alt="Para Dress logo"
-            fill
-            className="object-contain"
-            sizes="(max-width: 640px) 320px, 448px"
-            priority
-          />
+        <div className="text-center opacity-78">
+          <p className="font-display text-[2.2rem] font-medium tracking-[0.34em] text-[var(--color-ink)] sm:text-[3rem]">
+            PARA
+          </p>
+          <p className="-mt-1 text-[0.72rem] uppercase tracking-[0.55em] text-[var(--color-muted)] sm:text-[0.82rem]">
+            DRESS
+          </p>
         </div>
       </header>
 
@@ -95,15 +93,15 @@ export default function Home() {
           className="object-cover object-center"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.08)_0%,rgba(247,240,234,0.18)_30%,rgba(247,240,234,0.78)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.02)_0%,rgba(247,240,234,0.06)_38%,rgba(247,240,234,0.34)_100%)]" />
 
         <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-end px-6 pb-12 pt-32 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20 lg:pt-36">
-          <div className="max-w-xl rounded-[1.75rem] border border-white/10 bg-white/20 p-6 backdrop-blur-[6px] sm:p-8">
+          <div className="max-w-xl rounded-[1.75rem] border border-white/14 bg-[rgba(247,240,234,0.14)] p-6 sm:p-8">
             <p className="text-xs uppercase tracking-[0.28em] text-[rgba(157,122,63,0.82)]">Featured bridal look</p>
-            <p className="font-display mt-3 text-3xl font-medium leading-tight text-[rgba(157,122,63,0.72)] sm:text-4xl">
+            <p className="font-display mt-3 text-3xl font-medium leading-tight text-[rgba(157,122,63,0.82)] sm:text-4xl">
               Minimal elegance with a fashion-led edge.
             </p>
-            <p className="mt-4 max-w-md text-sm leading-7 text-[rgba(122,98,63,0.78)] sm:text-base">
+            <p className="mt-4 max-w-md text-sm leading-7 text-[rgba(122,98,63,0.86)] sm:text-base">
               A calm first impression, chosen to set the tone for the collection and build trust from the first screen.
             </p>
           </div>
