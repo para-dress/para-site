@@ -97,11 +97,11 @@ export default function Home() {
   return (
     <main className="bg-[var(--color-cream)] text-[var(--color-ink)]">
       <header
-        className={`fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-7 transition-colors duration-500 sm:px-10 lg:px-16 ${
-          isScrolled ? "bg-transparent" : "bg-[var(--color-cream)]/92"
+        className={`fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-7 transition-[transform,opacity,background-color] duration-500 sm:px-10 lg:px-16 ${
+          isScrolled ? "-translate-y-8 opacity-0 bg-transparent" : "translate-y-0 opacity-100 bg-[var(--color-cream)]/92"
         }`}
       >
-        <div className={`pointer-events-none text-center transition-opacity duration-300 ${isScrolled ? "opacity-72" : "opacity-88"}`}>
+        <div className="pointer-events-none text-center">
           <p className="font-display text-[2.2rem] font-medium tracking-[0.34em] text-[var(--color-ink)] sm:text-[3rem]">
             PARA
           </p>
@@ -119,7 +119,9 @@ export default function Home() {
 
             <div className="relative z-10 mx-auto flex h-screen max-w-7xl flex-col justify-end px-6 pb-18 pt-32 sm:px-10 sm:pb-20 lg:px-16 lg:pb-24 lg:pt-36">
               <div className="max-w-[46rem] space-y-5">
-                <p className="text-[0.72rem] uppercase tracking-[0.34em] text-white/82">{slide.eyebrow}</p>
+                {index === 0 ? null : (
+                  <p className="text-[0.72rem] uppercase tracking-[0.34em] text-white/82">{slide.eyebrow}</p>
+                )}
                 <h1 className={`${index === 0 ? "max-w-4xl text-4xl sm:text-5xl lg:text-6xl" : "max-w-2xl text-3xl sm:text-4xl lg:text-5xl"} font-display font-medium leading-[0.95] text-white`}>
                   {slide.title}
                 </h1>
