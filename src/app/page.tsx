@@ -248,7 +248,7 @@ export default function Home() {
         <a
           href="#contact"
           aria-label="Open enquiry section"
-          className="flex h-14 w-14 items-center justify-center rounded-full border border-[rgba(157,122,63,0.18)] bg-[var(--color-ink)] text-[var(--color-cream)] shadow-[0_10px_24px_rgba(35,27,24,0.16)] transition hover:scale-[1.03]"
+          className="flex h-14 w-14 items-center justify-center rounded-full border border-[rgba(157,122,63,0.18)] bg-[var(--color-ink)] text-white shadow-[0_10px_24px_rgba(35,27,24,0.16)] transition hover:scale-[1.03]"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <rect x="3.5" y="6" width="17" height="12" rx="2.5" />
@@ -271,7 +271,7 @@ export default function Home() {
               <div className="flex flex-col gap-4 sm:flex-row">
                 <a
                   href="mailto:hello@paradress.co.uk"
-                  className="inline-flex items-center justify-center rounded-full bg-white px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-[var(--color-ink)] transition hover:opacity-90"
+                  className="inline-flex items-center justify-center rounded-full bg-white px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-[#6f4d1f] transition hover:opacity-90"
                 >
                   Book a Consultation
                 </a>
