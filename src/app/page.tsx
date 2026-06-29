@@ -75,11 +75,15 @@ export default function Home() {
     <main className="bg-[var(--color-cream)] text-[var(--color-ink)]">
       <section className="relative overflow-hidden border-b border-black/5 px-6 pb-16 pt-8 sm:px-10 lg:px-16 lg:pb-24 lg:pt-10">
         <div className="mx-auto flex max-w-7xl items-center justify-between pb-8 lg:pb-10">
-          <div>
-            <p className="font-display text-2xl font-semibold tracking-[0.18em] sm:text-3xl">PARA DRESS</p>
-            <p className="mt-2 text-xs uppercase tracking-[0.26em] text-[var(--color-muted)] sm:text-sm">
-              UK Bridal
-            </p>
+          <div className="relative h-20 w-[17rem] sm:h-24 sm:w-[22rem]">
+            <Image
+              src="/site-assets/logo-full.jpg"
+              alt="Para Dress logo"
+              fill
+              className="object-contain object-left"
+              sizes="(max-width: 640px) 272px, 352px"
+              priority
+            />
           </div>
           <div className="hidden items-center gap-8 text-sm uppercase tracking-[0.16em] text-[var(--color-muted)] lg:flex">
             <a href="#collections" className="transition hover:text-[var(--color-ink)]">
@@ -141,7 +145,7 @@ export default function Home() {
           </div>
 
           <div className="order-1 lg:order-2">
-            <div className="relative min-h-[520px] overflow-hidden rounded-[2rem] bg-[#eadfd8] shadow-[0_28px_70px_rgba(35,25,20,0.12)] sm:min-h-[640px] lg:min-h-[760px]">
+            <div className="relative min-h-[520px] overflow-hidden bg-[#eadfd8] sm:min-h-[640px] lg:min-h-[760px]">
               <Image
                 src="/site-assets/an3000.jpg"
                 alt="Hero bridal look for Para Dress homepage"
@@ -152,10 +156,10 @@ export default function Home() {
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,14,11,0.06)_0%,rgba(20,14,11,0.2)_100%)]" />
               <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
-                <div className="max-w-xs rounded-[1.5rem] border border-white/25 bg-white/70 p-5 backdrop-blur-md">
+                <div className="max-w-xs rounded-[1.5rem] border border-white/12 bg-white/42 p-5 backdrop-blur-sm">
                   <p className="text-xs uppercase tracking-[0.28em] text-[var(--color-muted)]">Featured bridal look</p>
-                  <p className="font-display mt-3 text-2xl font-medium">Minimal elegance with a fashion-led edge.</p>
-                  <p className="mt-3 text-sm leading-6 text-[var(--color-muted)]">
+                  <p className="font-display mt-3 text-2xl font-medium text-[rgba(35,27,24,0.78)]">Minimal elegance with a fashion-led edge.</p>
+                  <p className="mt-3 text-sm leading-6 text-[rgba(111,98,90,0.84)]">
                     A calm first impression, chosen to set the tone for the collection and build trust from the first screen.
                   </p>
                 </div>
