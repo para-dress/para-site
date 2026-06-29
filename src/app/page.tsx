@@ -198,8 +198,8 @@ export default function Home() {
           <div className="grid gap-16 lg:grid-cols-2 lg:gap-8">
             {collectionCards.map((item, index) => (
               <article key={item.name} className="space-y-6">
-                <div className={`relative aspect-[0.88/1] overflow-hidden ${index === 1 ? "lg:mt-20" : ""}`}>
-                  <Image src={item.image} alt={item.alt} fill className="object-contain object-center" sizes="(max-width: 1024px) 100vw, 50vw" />
+                <div className={`relative aspect-[0.88/1] w-full overflow-hidden ${index === 1 ? "lg:mt-20" : ""}`}>
+                  <Image src={item.image} alt={item.alt} fill className="object-cover object-center" sizes="(max-width: 1024px) 100vw, 50vw" />
                 </div>
                 <div className="px-6 sm:px-10 lg:px-12">
                   <h3 className="font-display text-3xl font-medium sm:text-4xl">{item.name}</h3>
@@ -217,7 +217,7 @@ export default function Home() {
             src="/site-assets/an3003.jpg"
             alt="Full bridal look with dramatic silhouette and visible head."
             fill
-            className="object-contain object-center"
+            className="object-cover object-center"
             sizes="100vw"
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(246,239,233,0.02)_0%,rgba(246,239,233,0.02)_36%,rgba(22,16,12,0.22)_70%,rgba(22,16,12,0.52)_100%)]" />
@@ -227,21 +227,21 @@ export default function Home() {
       <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
           <div className="grid gap-5 sm:grid-cols-2">
-            <div className="relative aspect-[0.82/1] overflow-hidden">
+            <div className="relative aspect-[0.82/1] w-full overflow-hidden">
               <Image
                 src="/site-assets/an3001.jpg"
                 alt="Romantic embellished wedding dress with delicate detail."
                 fill
-                className="object-contain object-center"
+                className="object-cover object-center"
                 sizes="(max-width: 1024px) 100vw, 30vw"
               />
             </div>
-            <div className="relative aspect-[0.82/1] overflow-hidden sm:translate-y-12">
+            <div className="relative aspect-[0.82/1] w-full overflow-hidden sm:translate-y-12">
               <Image
                 src="/site-assets/an3002.jpg"
                 alt="Minimal strapless bridal gown with a clean silhouette."
                 fill
-                className="object-contain object-center"
+                className="object-cover object-center"
                 sizes="(max-width: 1024px) 100vw, 30vw"
               />
             </div>
@@ -357,7 +357,7 @@ export default function Home() {
           src="/site-assets/an3000.jpg"
           alt="Editorial bridal image for emotional brand statement."
           fill
-          className="object-contain object-center"
+          className="object-cover object-center"
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,15,12,0.14)_0%,rgba(20,15,12,0.2)_48%,rgba(20,15,12,0.38)_100%)]" />
