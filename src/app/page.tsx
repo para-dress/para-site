@@ -1,5 +1,44 @@
 import Image from "next/image";
 
+const slides = [
+  {
+    eyebrow: "Featured bridal look",
+    title: "Minimal elegance with a fashion-led edge.",
+    body: "A calm first impression, chosen to set the tone for the collection and build trust from the first screen.",
+    image: "/site-assets/an3000.jpg",
+    alt: "Two minimal bridal gowns standing in an arched studio setting.",
+    imageClass: "object-contain object-center",
+    panelClass: "max-w-xl",
+  },
+  {
+    eyebrow: "Clean luxury",
+    title: "Refined silhouettes for brides who want quiet confidence.",
+    body: "Modern shapes, clean lines, and an elegant sense of restraint for a premium bridal look that feels effortless.",
+    image: "/site-assets/an2211.jpg",
+    alt: "Modern bridal gown shown with full figure visible.",
+    imageClass: "object-contain object-center",
+    panelClass: "max-w-lg",
+  },
+  {
+    eyebrow: "Romantic statement",
+    title: "Soft detail, feminine texture, and a more expressive bridal mood.",
+    body: "For brides who still want elegance, but with more texture, softness, and visual depth in the dress itself.",
+    image: "/site-assets/an3001.jpg",
+    alt: "Romantic embellished wedding dress with visible head and full silhouette.",
+    imageClass: "object-contain object-center",
+    panelClass: "max-w-lg",
+  },
+  {
+    eyebrow: "Modern femininity",
+    title: "A bridal wardrobe shaped by balance, elegance, and clarity.",
+    body: "Para Dress is being built for women who want more than a catalogue, with a calmer and more elevated way to discover the right dress.",
+    image: "/site-assets/an3003.jpg",
+    alt: "Full bridal look with dramatic silhouette and visible head.",
+    imageClass: "object-contain object-center",
+    panelClass: "max-w-xl",
+  },
+];
+
 const collections = [
   {
     name: "Modern Minimal",
@@ -16,27 +55,6 @@ const collections = [
     accent: "Soft drama with a couture feel",
     image: "/site-assets/an3001.jpg",
     alt: "Romantic embellished wedding dress with delicate detail.",
-  },
-];
-
-const featuredLooks = [
-  {
-    name: "AN 3000",
-    mood: "Clean luxury",
-    image: "/site-assets/an3000.jpg",
-    alt: "Elegant clean bridal gown photographed in a studio archway.",
-  },
-  {
-    name: "AN 2211",
-    mood: "Modern femininity",
-    image: "/site-assets/an2211.jpg",
-    alt: "Modern bridal gown with a soft structured silhouette.",
-  },
-  {
-    name: "AN 3003",
-    mood: "Romantic statement",
-    image: "/site-assets/an3003.jpg",
-    alt: "Romantic statement wedding dress with dramatic volume.",
   },
 ];
 
@@ -84,28 +102,32 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="relative min-h-screen overflow-hidden">
-        <Image
-          src="/site-assets/an3000.jpg"
-          alt="Hero bridal look for Para Dress homepage"
-          fill
-          priority
-          className="object-cover object-center"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.02)_0%,rgba(247,240,234,0.06)_38%,rgba(247,240,234,0.34)_100%)]" />
+      <section className="snap-y snap-mandatory">
+        {slides.map((slide) => (
+          <section key={slide.title} className="relative min-h-screen snap-start overflow-hidden bg-[#ece2da]">
+            <Image
+              src={slide.image}
+              alt={slide.alt}
+              fill
+              priority
+              className={slide.imageClass}
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.04)_0%,rgba(247,240,234,0.12)_42%,rgba(247,240,234,0.34)_100%)]" />
 
-        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-end px-6 pb-12 pt-32 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20 lg:pt-36">
-          <div className="max-w-xl rounded-[1.75rem] border border-white/14 bg-[rgba(247,240,234,0.14)] p-6 sm:p-8">
-            <p className="text-xs uppercase tracking-[0.28em] text-[rgba(157,122,63,0.82)]">Featured bridal look</p>
-            <p className="font-display mt-3 text-3xl font-medium leading-tight text-[rgba(157,122,63,0.82)] sm:text-4xl">
-              Minimal elegance with a fashion-led edge.
-            </p>
-            <p className="mt-4 max-w-md text-sm leading-7 text-[rgba(122,98,63,0.86)] sm:text-base">
-              A calm first impression, chosen to set the tone for the collection and build trust from the first screen.
-            </p>
-          </div>
-        </div>
+            <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-end px-6 pb-12 pt-32 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20 lg:pt-36">
+              <div className={`${slide.panelClass} rounded-[1.5rem] bg-[rgba(247,240,234,0.08)] p-6 sm:p-8`}>
+                <p className="text-xs uppercase tracking-[0.28em] text-[rgba(157,122,63,0.82)]">{slide.eyebrow}</p>
+                <h1 className="font-display mt-3 text-3xl font-medium leading-tight text-[rgba(157,122,63,0.86)] sm:text-4xl lg:text-5xl">
+                  {slide.title}
+                </h1>
+                <p className="mt-4 max-w-md text-sm leading-7 text-[rgba(122,98,63,0.88)] sm:text-base">
+                  {slide.body}
+                </p>
+              </div>
+            </div>
+          </section>
+        ))}
       </section>
 
       <section className="px-6 py-18 sm:px-10 lg:px-16 lg:py-24">
@@ -127,45 +149,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-y border-black/5 bg-white px-6 py-18 sm:px-10 lg:px-16 lg:py-24">
-        <div className="mx-auto max-w-7xl space-y-10">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div className="space-y-4">
-              <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Selected looks</p>
-              <h2 className="font-display text-4xl font-medium sm:text-5xl">A first impression of the styles shaping the collection.</h2>
-            </div>
-            <p className="max-w-xl text-base leading-7 text-[var(--color-muted)]">
-              We are curating a bridal wardrobe that moves between clean modern silhouettes and softer, more romantic statement looks.
-            </p>
-          </div>
-
-          <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr_0.85fr]">
-            {featuredLooks.map((look, index) => (
-              <article
-                key={look.name}
-                className={`overflow-hidden rounded-[2rem] border border-[var(--color-line)] ${
-                  index === 0 ? "bg-[var(--color-rose)]" : "bg-[var(--color-blush)]"
-                }`}
-              >
-                <div className={`relative w-full ${index === 0 ? "h-[26rem]" : "h-80"}`}>
-                  <Image
-                    src={look.image}
-                    alt={look.alt}
-                    fill
-                    className="object-cover object-center"
-                    sizes={index === 0 ? "(max-width: 1024px) 100vw, 42vw" : "(max-width: 1024px) 100vw, 28vw"}
-                  />
-                </div>
-                <div className="space-y-3 p-6">
-                  <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">{look.mood}</p>
-                  <h3 className="font-display text-3xl font-medium">{look.name}</h3>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section id="collections" className="px-6 py-18 sm:px-10 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-7xl space-y-10">
           <div className="space-y-4">
@@ -177,12 +160,12 @@ export default function Home() {
           <div className="grid gap-6 lg:grid-cols-2">
             {collections.map((collection) => (
               <article key={collection.name} className="overflow-hidden rounded-[2rem] border border-[var(--color-line)] bg-white">
-                <div className="relative h-96 w-full">
+                <div className="relative h-[34rem] w-full bg-[#ece2da]">
                   <Image
                     src={collection.image}
                     alt={collection.alt}
                     fill
-                    className="object-cover object-center"
+                    className="object-contain object-center"
                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                 </div>
@@ -269,15 +252,15 @@ export default function Home() {
                 </a>
               </div>
             </div>
-            <div className="relative min-h-[320px] overflow-hidden">
+            <div className="relative min-h-[320px] overflow-hidden bg-[#ece2da]">
               <Image
                 src="/site-assets/an3001.jpg"
                 alt="Romantic bridal look used in the contact section"
                 fill
-                className="object-cover object-center"
+                className="object-contain object-center"
                 sizes="(max-width: 1024px) 100vw, 40vw"
               />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,8,7,0.1)_0%,rgba(12,8,7,0.5)_100%)]" />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,8,7,0.08)_0%,rgba(12,8,7,0.4)_100%)]" />
               <div className="absolute inset-x-0 bottom-0 p-8 sm:p-10">
                 <div className="rounded-[1.5rem] border border-white/12 bg-white/8 p-6 backdrop-blur-sm">
                   <p className="text-xs uppercase tracking-[0.24em] text-white/60">Suggested flow</p>
