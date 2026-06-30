@@ -87,6 +87,7 @@ export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
   const snapLockRef = useRef(false);
+  const snapPausedRef = useRef(false);
   const touchStartYRef = useRef<number | null>(null);
   const touchStartTimeRef = useRef<number>(0);
   const wheelAccumRef = useRef(0);
@@ -106,7 +107,7 @@ export default function Home() {
     const releaseLock = () => {
       window.setTimeout(() => {
         snapLockRef.current = false;
-      }, 620);
+      }, 480);
     };
 
     const getCurrentSectionIndex = () => {
@@ -144,7 +145,7 @@ export default function Home() {
     };
 
     const onWheel = (event: WheelEvent) => {
-      if (Math.abs(event.deltaY) < 4 || snapLockRef.current) return;
+      if (Math.abs(event.deltaY) < 4 || snapLockRef.current || snapPausedRef.current) return;
 
       wheelAccumRef.current += event.deltaY;
 
@@ -156,19 +157,20 @@ export default function Home() {
         wheelAccumRef.current = 0;
       }, 140);
 
-      if (Math.abs(wheelAccumRef.current) > 28) {
+      if (Math.abs(wheelAccumRef.current) > 34) {
         snapToSection(wheelAccumRef.current > 0 ? 1 : -1);
         wheelAccumRef.current = 0;
       }
     };
 
     const onTouchStart = (event: TouchEvent) => {
+      if (snapPausedRef.current) return;
       touchStartYRef.current = event.touches[0]?.clientY ?? null;
       touchStartTimeRef.current = Date.now();
     };
 
     const onTouchEnd = (event: TouchEvent) => {
-      if (snapLockRef.current || touchStartYRef.current === null) return;
+      if (snapLockRef.current || snapPausedRef.current || touchStartYRef.current === null) return;
 
       const endY = event.changedTouches[0]?.clientY;
       if (typeof endY !== "number") return;
@@ -178,19 +180,37 @@ export default function Home() {
 
       touchStartYRef.current = null;
 
-      if (Math.abs(deltaY) < 24 || elapsed > 420) return;
+      if (Math.abs(deltaY) < 28 || elapsed > 360) return;
 
       snapToSection(deltaY > 0 ? 1 : -1);
+    };
+
+    const onFocusIn = (event: FocusEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest("input, textarea, select, [contenteditable='true']")) {
+        snapPausedRef.current = true;
+      }
+    };
+
+    const onFocusOut = () => {
+      window.setTimeout(() => {
+        const active = document.activeElement as HTMLElement | null;
+        snapPausedRef.current = Boolean(active?.closest("input, textarea, select, [contenteditable='true']"));
+      }, 0);
     };
 
     window.addEventListener("wheel", onWheel, { passive: true });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("focusin", onFocusIn);
+    window.addEventListener("focusout", onFocusOut);
 
     return () => {
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("focusin", onFocusIn);
+      window.removeEventListener("focusout", onFocusOut);
       if (wheelResetRef.current) clearTimeout(wheelResetRef.current);
     };
   }, []);
