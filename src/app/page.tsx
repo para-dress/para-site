@@ -106,7 +106,7 @@ export default function Home() {
     const releaseLock = () => {
       window.setTimeout(() => {
         snapLockRef.current = false;
-      }, 520);
+      }, 620);
     };
 
     const getCurrentSectionIndex = () => {
@@ -116,7 +116,7 @@ export default function Home() {
       for (let index = 0; index < sections.length; index += 1) {
         const sectionTop = sections[index].offsetTop;
         const nextTop = sections[index + 1]?.offsetTop ?? Number.POSITIVE_INFINITY;
-        const threshold = sectionTop + (nextTop - sectionTop) * 0.45;
+        const threshold = sectionTop + (nextTop - sectionTop) * 0.38;
 
         if (scrollY < threshold) {
           currentIndex = index;
@@ -156,7 +156,7 @@ export default function Home() {
         wheelAccumRef.current = 0;
       }, 140);
 
-      if (Math.abs(wheelAccumRef.current) > 22) {
+      if (Math.abs(wheelAccumRef.current) > 28) {
         snapToSection(wheelAccumRef.current > 0 ? 1 : -1);
         wheelAccumRef.current = 0;
       }
@@ -178,7 +178,7 @@ export default function Home() {
 
       touchStartYRef.current = null;
 
-      if (Math.abs(deltaY) < 18 || elapsed > 450) return;
+      if (Math.abs(deltaY) < 24 || elapsed > 420) return;
 
       snapToSection(deltaY > 0 ? 1 : -1);
     };
