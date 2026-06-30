@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const heroSlides = [
   {
@@ -86,12 +86,6 @@ const faqItems = [
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
-  const snapLockRef = useRef(false);
-  const snapPausedRef = useRef(false);
-  const touchStartYRef = useRef<number | null>(null);
-  const touchStartTimeRef = useRef<number>(0);
-  const wheelAccumRef = useRef(0);
-  const wheelResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 24);
@@ -100,123 +94,8 @@ export default function Home() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    const sections = Array.from(document.querySelectorAll<HTMLElement>(".snap-section[data-snap='true']"));
-    if (!sections.length) return;
-
-    const releaseLock = () => {
-      window.setTimeout(() => {
-        snapLockRef.current = false;
-      }, 480);
-    };
-
-    const getCurrentSectionIndex = () => {
-      const scrollY = window.scrollY;
-      let currentIndex = 0;
-
-      for (let index = 0; index < sections.length; index += 1) {
-        const sectionTop = sections[index].offsetTop;
-        const nextTop = sections[index + 1]?.offsetTop ?? Number.POSITIVE_INFINITY;
-        const threshold = sectionTop + (nextTop - sectionTop) * 0.38;
-
-        if (scrollY < threshold) {
-          currentIndex = index;
-          break;
-        }
-
-        currentIndex = index;
-      }
-
-      return currentIndex;
-    };
-
-    const snapToSection = (direction: 1 | -1) => {
-      if (snapLockRef.current) return;
-
-      const currentIndex = getCurrentSectionIndex();
-      const targetIndex = Math.max(0, Math.min(sections.length - 1, currentIndex + direction));
-      const target = sections[targetIndex];
-
-      if (!target || targetIndex === currentIndex) return;
-
-      snapLockRef.current = true;
-      window.scrollTo({ top: target.offsetTop, behavior: "smooth" });
-      releaseLock();
-    };
-
-    const onWheel = (event: WheelEvent) => {
-      if (Math.abs(event.deltaY) < 4 || snapLockRef.current || snapPausedRef.current) return;
-
-      wheelAccumRef.current += event.deltaY;
-
-      if (wheelResetRef.current) {
-        clearTimeout(wheelResetRef.current);
-      }
-
-      wheelResetRef.current = setTimeout(() => {
-        wheelAccumRef.current = 0;
-      }, 140);
-
-      if (Math.abs(wheelAccumRef.current) > 34) {
-        snapToSection(wheelAccumRef.current > 0 ? 1 : -1);
-        wheelAccumRef.current = 0;
-      }
-    };
-
-    const onTouchStart = (event: TouchEvent) => {
-      if (snapPausedRef.current) return;
-      touchStartYRef.current = event.touches[0]?.clientY ?? null;
-      touchStartTimeRef.current = Date.now();
-    };
-
-    const onTouchEnd = (event: TouchEvent) => {
-      if (snapLockRef.current || snapPausedRef.current || touchStartYRef.current === null) return;
-
-      const endY = event.changedTouches[0]?.clientY;
-      if (typeof endY !== "number") return;
-
-      const deltaY = touchStartYRef.current - endY;
-      const elapsed = Date.now() - touchStartTimeRef.current;
-
-      touchStartYRef.current = null;
-
-      if (Math.abs(deltaY) < 28 || elapsed > 360) return;
-
-      snapToSection(deltaY > 0 ? 1 : -1);
-    };
-
-    const onFocusIn = (event: FocusEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (target?.closest("input, textarea, select, [contenteditable='true']")) {
-        snapPausedRef.current = true;
-      }
-    };
-
-    const onFocusOut = () => {
-      window.setTimeout(() => {
-        const active = document.activeElement as HTMLElement | null;
-        snapPausedRef.current = Boolean(active?.closest("input, textarea, select, [contenteditable='true']"));
-      }, 0);
-    };
-
-    window.addEventListener("wheel", onWheel, { passive: true });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
-    window.addEventListener("focusin", onFocusIn);
-    window.addEventListener("focusout", onFocusOut);
-
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchend", onTouchEnd);
-      window.removeEventListener("focusin", onFocusIn);
-      window.removeEventListener("focusout", onFocusOut);
-      if (wheelResetRef.current) clearTimeout(wheelResetRef.current);
-    };
-  }, []);
-
   return (
-    <main className="snap-container bg-[var(--color-cream)] text-[var(--color-ink)]">
+    <main className="bg-[var(--color-cream)] text-[var(--color-ink)]">
       <header
         className={`fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-7 transition-[transform,opacity,background-color] duration-500 sm:px-10 lg:px-16 ${
           isScrolled ? "-translate-y-8 opacity-0 bg-transparent" : "translate-y-0 opacity-100 bg-[var(--color-cream)]/92"
@@ -232,9 +111,9 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="snap-y snap-mandatory">
+      <section>
         {heroSlides.map((slide, index) => (
-          <section key={slide.title} data-snap="true" className="snap-section snap-section-screen relative h-screen snap-start overflow-hidden bg-[#ece2da]">
+          <section key={slide.title} className="relative h-screen overflow-hidden bg-[#ece2da]">
             <Image src={slide.image} alt={slide.alt} fill priority={index === 0} className={slide.imageClass} sizes="100vw" />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(246,239,233,0.12)_0%,rgba(246,239,233,0.1)_24%,rgba(27,20,15,0.16)_60%,rgba(27,20,15,0.42)_100%)]" />
 
@@ -271,7 +150,7 @@ export default function Home() {
         ))}
       </section>
 
-      <section data-snap="true" className="snap-section bg-white px-6 py-12 sm:px-10 sm:py-14 lg:px-16 lg:py-16">
+      <section className="bg-white px-6 py-12 sm:px-10 sm:py-14 lg:px-16 lg:py-16">
         <div className="mx-auto max-w-7xl border-y border-[var(--color-line)] py-6 sm:py-7">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {trustPoints.map((point) => (
@@ -284,7 +163,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section data-snap="true" className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Brand story</p>
@@ -300,7 +179,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="collections-grid" data-snap="true" className="snap-section px-0 py-20 sm:py-24 lg:py-28">
+      <section id="collections-grid" className="px-0 py-20 sm:py-24 lg:py-28">
         <div className="space-y-12">
           <div className="px-6 sm:px-10 lg:px-16">
             <div className="mx-auto max-w-6xl space-y-4">
@@ -326,7 +205,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="collections" data-snap="true" className="snap-section snap-section-screen relative min-h-screen overflow-hidden bg-[#ece2da]">
+      <section id="collections" className="relative min-h-screen overflow-hidden bg-[#ece2da]">
         <div className="absolute inset-0">
           <Image
             src="/site-assets/an3003.jpg"
@@ -339,7 +218,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section data-snap="true" className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
           <div className="grid gap-5 sm:grid-cols-2">
             <div className="relative aspect-[0.82/1] overflow-hidden">
@@ -357,7 +236,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section data-snap="true" className="snap-section bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <section className="bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Why ordering online is safe</p>
@@ -378,7 +257,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section data-snap="true" className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div className="max-w-md space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">The people behind Para Dress</p>
@@ -398,7 +277,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section data-snap="true" className="snap-section bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <section className="bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-6xl space-y-10">
           <div className="max-w-2xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Bridal journey</p>
@@ -420,7 +299,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section data-snap="true" className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-6xl space-y-10">
           <div className="max-w-xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Social proof</p>
@@ -437,7 +316,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section data-snap="true" className="snap-section snap-section-screen relative min-h-[78vh] overflow-hidden bg-[#ece2da]">
+      <section className="relative min-h-[78vh] overflow-hidden bg-[#ece2da]">
         <Image src="/site-assets/an3000.jpg" alt="Editorial bridal image for emotional brand statement." fill className="object-contain object-center" sizes="100vw" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,15,12,0.14)_0%,rgba(20,15,12,0.2)_48%,rgba(20,15,12,0.38)_100%)]" />
         <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-6xl items-end px-6 py-14 sm:px-10 lg:px-16 lg:py-18">
@@ -445,7 +324,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="faq" data-snap="true" className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <section id="faq" className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-4xl space-y-10">
           <div className="max-w-2xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">FAQ</p>
@@ -475,7 +354,7 @@ export default function Home() {
         </a>
       </div>
 
-      <section id="contact" data-snap="true" className="snap-section bg-[var(--color-cream)] px-6 py-18 sm:px-10 lg:px-16 lg:py-22">
+      <section id="contact" className="bg-[var(--color-cream)] px-6 py-18 sm:px-10 lg:px-16 lg:py-22">
         <div className="mx-auto max-w-5xl border border-[rgba(255,255,255,0.08)] bg-[var(--color-ink-strong)] text-white">
           <div className="grid gap-8 lg:grid-cols-[1fr_0.78fr]">
             <div className="space-y-5 px-8 py-8 sm:px-12 sm:py-10">
@@ -516,7 +395,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer data-snap="true" className="snap-section bg-white border-t border-[var(--color-line)] px-6 py-10 sm:px-10 lg:px-16">
+      <footer className="bg-white border-t border-[var(--color-line)] px-6 py-10 sm:px-10 lg:px-16">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="font-display text-[1.65rem] font-medium tracking-[0.24em] text-[var(--color-ink)] sm:text-[2rem]">PARA</p>

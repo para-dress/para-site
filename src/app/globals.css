@@ -30,7 +30,6 @@ html {
 
 html,
 body {
-  scroll-snap-type: y mandatory;
   scroll-padding-top: 0;
 }
 
@@ -53,19 +52,6 @@ a {
 
 .font-display {
   font-family: var(--font-display-serif), Georgia, serif;
-}
-
-.snap-container {
-  scroll-snap-type: y mandatory;
-}
-
-.snap-section {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-}
-
-.snap-section-screen {
-  min-height: 100svh;
 }
 
 @media (prefers-reduced-motion: reduce) {
