@@ -109,26 +109,30 @@ export default function Home() {
       }, 520);
     };
 
-    const getClosestSectionIndex = () => {
+    const getCurrentSectionIndex = () => {
       const scrollY = window.scrollY;
-      let closestIndex = 0;
-      let closestDistance = Number.POSITIVE_INFINITY;
+      let currentIndex = 0;
 
-      sections.forEach((section, index) => {
-        const distance = Math.abs(section.offsetTop - scrollY);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestIndex = index;
+      for (let index = 0; index < sections.length; index += 1) {
+        const sectionTop = sections[index].offsetTop;
+        const nextTop = sections[index + 1]?.offsetTop ?? Number.POSITIVE_INFINITY;
+        const threshold = sectionTop + (nextTop - sectionTop) * 0.45;
+
+        if (scrollY < threshold) {
+          currentIndex = index;
+          break;
         }
-      });
 
-      return closestIndex;
+        currentIndex = index;
+      }
+
+      return currentIndex;
     };
 
     const snapToSection = (direction: 1 | -1) => {
       if (snapLockRef.current) return;
 
-      const currentIndex = getClosestSectionIndex();
+      const currentIndex = getCurrentSectionIndex();
       const targetIndex = Math.max(0, Math.min(sections.length - 1, currentIndex + direction));
       const target = sections[targetIndex];
 
