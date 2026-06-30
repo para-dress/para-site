@@ -30,7 +30,7 @@ html {
 
 html,
 body {
-  scroll-snap-type: y proximity;
+  scroll-snap-type: y mandatory;
   scroll-padding-top: 0;
 }
 
@@ -56,12 +56,12 @@ a {
 }
 
 .snap-container {
-  scroll-snap-type: y proximity;
+  scroll-snap-type: y mandatory;
 }
 
 .snap-section {
   scroll-snap-align: start;
-  scroll-snap-stop: normal;
+  scroll-snap-stop: always;
 }
 
 .snap-section-screen {

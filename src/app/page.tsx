@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const heroSlides = [
   {
@@ -86,12 +86,109 @@ const faqItems = [
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
+  const snapLockRef = useRef(false);
+  const touchStartYRef = useRef<number | null>(null);
+  const touchStartTimeRef = useRef<number>(0);
+  const wheelAccumRef = useRef(0);
+  const wheelResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const sections = Array.from(document.querySelectorAll<HTMLElement>(".snap-section[data-snap='true']"));
+    if (!sections.length) return;
+
+    const releaseLock = () => {
+      window.setTimeout(() => {
+        snapLockRef.current = false;
+      }, 520);
+    };
+
+    const getClosestSectionIndex = () => {
+      const scrollY = window.scrollY;
+      let closestIndex = 0;
+      let closestDistance = Number.POSITIVE_INFINITY;
+
+      sections.forEach((section, index) => {
+        const distance = Math.abs(section.offsetTop - scrollY);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+      });
+
+      return closestIndex;
+    };
+
+    const snapToSection = (direction: 1 | -1) => {
+      if (snapLockRef.current) return;
+
+      const currentIndex = getClosestSectionIndex();
+      const targetIndex = Math.max(0, Math.min(sections.length - 1, currentIndex + direction));
+      const target = sections[targetIndex];
+
+      if (!target || targetIndex === currentIndex) return;
+
+      snapLockRef.current = true;
+      window.scrollTo({ top: target.offsetTop, behavior: "smooth" });
+      releaseLock();
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      if (Math.abs(event.deltaY) < 4 || snapLockRef.current) return;
+
+      wheelAccumRef.current += event.deltaY;
+
+      if (wheelResetRef.current) {
+        clearTimeout(wheelResetRef.current);
+      }
+
+      wheelResetRef.current = setTimeout(() => {
+        wheelAccumRef.current = 0;
+      }, 140);
+
+      if (Math.abs(wheelAccumRef.current) > 22) {
+        snapToSection(wheelAccumRef.current > 0 ? 1 : -1);
+        wheelAccumRef.current = 0;
+      }
+    };
+
+    const onTouchStart = (event: TouchEvent) => {
+      touchStartYRef.current = event.touches[0]?.clientY ?? null;
+      touchStartTimeRef.current = Date.now();
+    };
+
+    const onTouchEnd = (event: TouchEvent) => {
+      if (snapLockRef.current || touchStartYRef.current === null) return;
+
+      const endY = event.changedTouches[0]?.clientY;
+      if (typeof endY !== "number") return;
+
+      const deltaY = touchStartYRef.current - endY;
+      const elapsed = Date.now() - touchStartTimeRef.current;
+
+      touchStartYRef.current = null;
+
+      if (Math.abs(deltaY) < 18 || elapsed > 450) return;
+
+      snapToSection(deltaY > 0 ? 1 : -1);
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+      if (wheelResetRef.current) clearTimeout(wheelResetRef.current);
+    };
   }, []);
 
   return (
@@ -113,7 +210,7 @@ export default function Home() {
 
       <section className="snap-y snap-mandatory">
         {heroSlides.map((slide, index) => (
-          <section key={slide.title} className="snap-section snap-section-screen relative h-screen snap-start snap-always overflow-hidden bg-[#ece2da]">
+          <section key={slide.title} data-snap="true" className="snap-section snap-section-screen relative h-screen snap-start overflow-hidden bg-[#ece2da]">
             <Image src={slide.image} alt={slide.alt} fill priority={index === 0} className={slide.imageClass} sizes="100vw" />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(246,239,233,0.12)_0%,rgba(246,239,233,0.1)_24%,rgba(27,20,15,0.16)_60%,rgba(27,20,15,0.42)_100%)]" />
 
@@ -150,7 +247,7 @@ export default function Home() {
         ))}
       </section>
 
-      <section className="snap-section bg-white px-6 py-12 sm:px-10 sm:py-14 lg:px-16 lg:py-16">
+      <section data-snap="true" className="snap-section bg-white px-6 py-12 sm:px-10 sm:py-14 lg:px-16 lg:py-16">
         <div className="mx-auto max-w-7xl border-y border-[var(--color-line)] py-6 sm:py-7">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {trustPoints.map((point) => (
@@ -163,7 +260,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <section data-snap="true" className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Brand story</p>
@@ -172,20 +269,14 @@ export default function Home() {
             </h2>
           </div>
           <div className="max-w-2xl space-y-4 text-base leading-8 text-[var(--color-muted)] sm:text-lg">
-            <p>
-              Para Dress brings together premium bridal styling and direct guidance.
-            </p>
-            <p>
-              Each gown is handcrafted in Ukraine and offered straight from our atelier.
-            </p>
-            <p>
-              For the bride, that means more clarity, more support, and a more personal experience.
-            </p>
+            <p>Para Dress brings together premium bridal styling and direct guidance.</p>
+            <p>Each gown is handcrafted in Ukraine and offered straight from our atelier.</p>
+            <p>For the bride, that means more clarity, more support, and a more personal experience.</p>
           </div>
         </div>
       </section>
 
-      <section id="collections-grid" className="snap-section px-0 py-20 sm:py-24 lg:py-28">
+      <section id="collections-grid" data-snap="true" className="snap-section px-0 py-20 sm:py-24 lg:py-28">
         <div className="space-y-12">
           <div className="px-6 sm:px-10 lg:px-16">
             <div className="mx-auto max-w-6xl space-y-4">
@@ -211,7 +302,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="collections" className="snap-section snap-section-screen relative min-h-screen overflow-hidden bg-[#ece2da]">
+      <section id="collections" data-snap="true" className="snap-section snap-section-screen relative min-h-screen overflow-hidden bg-[#ece2da]">
         <div className="absolute inset-0">
           <Image
             src="/site-assets/an3003.jpg"
@@ -224,47 +315,29 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <section data-snap="true" className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
           <div className="grid gap-5 sm:grid-cols-2">
             <div className="relative aspect-[0.82/1] overflow-hidden">
-              <Image
-                src="/site-assets/an3001.jpg"
-                alt="Romantic embellished wedding dress with delicate detail."
-                fill
-                className="object-contain object-center"
-                sizes="(max-width: 1024px) 100vw, 30vw"
-              />
+              <Image src="/site-assets/an3001.jpg" alt="Romantic embellished wedding dress with delicate detail." fill className="object-contain object-center" sizes="(max-width: 1024px) 100vw, 30vw" />
             </div>
             <div className="relative aspect-[0.82/1] overflow-hidden sm:translate-y-12">
-              <Image
-                src="/site-assets/an3002.jpg"
-                alt="Minimal strapless bridal gown with a clean silhouette."
-                fill
-                className="object-contain object-center"
-                sizes="(max-width: 1024px) 100vw, 30vw"
-              />
+              <Image src="/site-assets/an3002.jpg" alt="Minimal strapless bridal gown with a clean silhouette." fill className="object-contain object-center" sizes="(max-width: 1024px) 100vw, 30vw" />
             </div>
           </div>
           <div className="max-w-lg space-y-4 lg:pb-8">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Craftsmanship</p>
-            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">
-              Fabric, finish, and detail deserve room to breathe.
-            </h2>
-            <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">
-              Fine fabrics, careful construction, and a couture sensibility sit at the heart of each gown.
-            </p>
+            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">Fabric, finish, and detail deserve room to breathe.</h2>
+            <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">Fine fabrics, careful construction, and a couture sensibility sit at the heart of each gown.</p>
           </div>
         </div>
       </section>
 
-      <section className="snap-section bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <section data-snap="true" className="snap-section bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Why ordering online is safe</p>
-            <h2 className="font-display max-w-lg text-4xl font-medium leading-[1.02] sm:text-5xl">
-              Reassurance should be built into the experience.
-            </h2>
+            <h2 className="font-display max-w-lg text-4xl font-medium leading-[1.02] sm:text-5xl">Reassurance should be built into the experience.</h2>
           </div>
           <div className="space-y-7">
             {[
@@ -281,41 +354,31 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <section data-snap="true" className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div className="max-w-md space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">The people behind Para Dress</p>
-            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">
-              Real people, real craftsmanship, a more human bridal experience.
-            </h2>
-            <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">
-              Para Dress is shaped by an atelier team that values detail, femininity, and a more personal relationship with every bride.
-            </p>
+            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">Real people, real craftsmanship, a more human bridal experience.</h2>
+            <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">Para Dress is shaped by an atelier team that values detail, femininity, and a more personal relationship with every bride.</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="min-h-[220px] border-b border-[var(--color-line)] pb-6">
               <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">Atelier</p>
-              <p className="mt-6 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">
-                Crafted in Ukraine, with care, precision, and close attention to every silhouette.
-              </p>
+              <p className="mt-6 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">Crafted in Ukraine, with care, precision, and close attention to every silhouette.</p>
             </div>
             <div className="min-h-[220px] border-b border-[var(--color-line)] pb-6">
               <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">Production process</p>
-              <p className="mt-6 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">
-                Each gown is made to order, then checked with the bride’s sizing and finishing details in mind.
-              </p>
+              <p className="mt-6 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">Each gown is made to order, then checked with the bride’s sizing and finishing details in mind.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="snap-section bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <section data-snap="true" className="snap-section bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-6xl space-y-10">
           <div className="max-w-2xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Bridal journey</p>
-            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">
-              A clear process, guided from enquiry to production.
-            </h2>
+            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">A clear process, guided from enquiry to production.</h2>
           </div>
           <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
             {[
@@ -333,13 +396,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <section data-snap="true" className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-6xl space-y-10">
           <div className="max-w-xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Social proof</p>
-            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">
-              Trust should feel present, but never loud.
-            </h2>
+            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">Trust should feel present, but never loud.</h2>
           </div>
           <div className="grid gap-10 lg:grid-cols-3">
             {socialProof.map((item) => (
@@ -352,29 +413,19 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="snap-section snap-section-screen relative min-h-[78vh] overflow-hidden bg-[#ece2da]">
-        <Image
-          src="/site-assets/an3000.jpg"
-          alt="Editorial bridal image for emotional brand statement."
-          fill
-          className="object-contain object-center"
-          sizes="100vw"
-        />
+      <section data-snap="true" className="snap-section snap-section-screen relative min-h-[78vh] overflow-hidden bg-[#ece2da]">
+        <Image src="/site-assets/an3000.jpg" alt="Editorial bridal image for emotional brand statement." fill className="object-contain object-center" sizes="100vw" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,15,12,0.14)_0%,rgba(20,15,12,0.2)_48%,rgba(20,15,12,0.38)_100%)]" />
         <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-6xl items-end px-6 py-14 sm:px-10 lg:px-16 lg:py-18">
-          <h2 className="font-display max-w-2xl text-4xl font-medium leading-[1.02] text-white sm:text-5xl lg:text-6xl">
-            Every bride remembers how she felt, not only how she looked.
-          </h2>
+          <h2 className="font-display max-w-2xl text-4xl font-medium leading-[1.02] text-white sm:text-5xl lg:text-6xl">Every bride remembers how she felt, not only how she looked.</h2>
         </div>
       </section>
 
-      <section id="faq" className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <section id="faq" data-snap="true" className="snap-section bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-4xl space-y-10">
           <div className="max-w-2xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">FAQ</p>
-            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">
-              Practical details, kept clear.
-            </h2>
+            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">Practical details, kept clear.</h2>
           </div>
           <div className="border-t border-[var(--color-line)]">
             {faqItems.map((faq, index) => {
@@ -382,19 +433,11 @@ export default function Home() {
 
               return (
                 <article key={faq.question} className="border-b border-[var(--color-line)]">
-                  <button
-                    type="button"
-                    onClick={() => setOpenFaq(isOpen ? -1 : index)}
-                    className="flex w-full items-center justify-between gap-6 py-6 text-left sm:py-7"
-                  >
+                  <button type="button" onClick={() => setOpenFaq(isOpen ? -1 : index)} className="flex w-full items-center justify-between gap-6 py-6 text-left sm:py-7">
                     <span className="text-lg font-medium text-[var(--color-ink-strong)] sm:text-xl">{faq.question}</span>
                     <span className="text-2xl leading-none text-[var(--color-muted)]">{isOpen ? "−" : "+"}</span>
                   </button>
-                  {isOpen ? (
-                    <div className="max-w-xl pb-5 pr-10 text-base leading-8 text-[var(--color-muted)]">
-                      {faq.answer}
-                    </div>
-                  ) : null}
+                  {isOpen ? <div className="max-w-xl pb-5 pr-10 text-base leading-8 text-[var(--color-muted)]">{faq.answer}</div> : null}
                 </article>
               );
             })}
@@ -403,56 +446,28 @@ export default function Home() {
       </section>
 
       <div className="fixed bottom-5 right-5 z-50 sm:bottom-6 sm:right-6">
-        <a
-          href="#contact"
-          aria-label="Open contact section"
-          className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(110,72,18,0.1)] bg-[rgba(247,240,234,0.72)] px-4 text-[0.72rem] font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)] shadow-[0_10px_22px_rgba(35,27,24,0.06)] backdrop-blur-[8px] transition hover:bg-[rgba(247,240,234,0.84)] sm:min-h-13 sm:px-5"
-        >
+        <a href="#contact" aria-label="Open contact section" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(110,72,18,0.1)] bg-[rgba(247,240,234,0.72)] px-4 text-[0.72rem] font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)] shadow-[0_10px_22px_rgba(35,27,24,0.06)] backdrop-blur-[8px] transition hover:bg-[rgba(247,240,234,0.84)] sm:min-h-13 sm:px-5">
           Contact
         </a>
       </div>
 
-      <section id="contact" className="snap-section bg-[var(--color-cream)] px-6 py-18 sm:px-10 lg:px-16 lg:py-22">
+      <section id="contact" data-snap="true" className="snap-section bg-[var(--color-cream)] px-6 py-18 sm:px-10 lg:px-16 lg:py-22">
         <div className="mx-auto max-w-5xl border border-[rgba(255,255,255,0.08)] bg-[var(--color-ink-strong)] text-white">
           <div className="grid gap-8 lg:grid-cols-[1fr_0.78fr]">
             <div className="space-y-5 px-8 py-8 sm:px-12 sm:py-10">
               <p className="text-sm uppercase tracking-[0.28em] text-white/56">Consultation</p>
-              <h2 className="font-display max-w-lg text-4xl font-medium text-white sm:text-5xl">
-                A considered start to your bridal journey.
-              </h2>
-              <p className="max-w-xl text-base leading-8 text-white/74 sm:text-lg">
-                Share the styles you love, and we will guide you personally.
-              </p>
+              <h2 className="font-display max-w-lg text-4xl font-medium text-white sm:text-5xl">A considered start to your bridal journey.</h2>
+              <p className="max-w-xl text-base leading-8 text-white/74 sm:text-lg">Share the styles you love, and we will guide you personally.</p>
               <div className="grid gap-3 sm:grid-cols-2">
-                <input
-                  type="text"
-                  placeholder="Your name"
-                  className="min-h-13 border border-white/18 bg-[rgba(255,255,255,0.04)] px-4 text-sm text-white placeholder:text-white/46 outline-none transition focus:border-white/32"
-                />
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="min-h-13 border border-white/18 bg-[rgba(255,255,255,0.04)] px-4 text-sm text-white placeholder:text-white/46 outline-none transition focus:border-white/32"
-                />
+                <input type="text" placeholder="Your name" className="min-h-13 border border-white/18 bg-[rgba(255,255,255,0.04)] px-4 text-sm text-white placeholder:text-white/46 outline-none transition focus:border-white/32" />
+                <input type="email" placeholder="Email address" className="min-h-13 border border-white/18 bg-[rgba(255,255,255,0.04)] px-4 text-sm text-white placeholder:text-white/46 outline-none transition focus:border-white/32" />
               </div>
-              <textarea
-                placeholder="Tell us which styles you love or where you would like guidance."
-                rows={4}
-                className="min-h-[124px] w-full resize-none border border-white/18 bg-[rgba(255,255,255,0.04)] px-4 py-4 text-sm text-white placeholder:text-white/46 outline-none transition focus:border-white/32"
-              />
+              <textarea placeholder="Tell us which styles you love or where you would like guidance." rows={4} className="min-h-[124px] w-full resize-none border border-white/18 bg-[rgba(255,255,255,0.04)] px-4 py-4 text-sm text-white placeholder:text-white/46 outline-none transition focus:border-white/32" />
               <div className="flex flex-col gap-4 sm:flex-row">
-                <a
-                  href="mailto:hello@paradress.co.uk"
-                  className="inline-flex min-h-13 items-center justify-center bg-white px-7 py-4 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[#6f4d1f] transition hover:opacity-92"
-                >
+                <a href="mailto:hello@paradress.co.uk" className="inline-flex min-h-13 items-center justify-center bg-white px-7 py-4 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[#6f4d1f] transition hover:opacity-92">
                   Book a Consultation
                 </a>
-                <a
-                  href="https://instagram.com/para.dress"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex min-h-13 items-center justify-center border border-white/16 px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-white transition hover:bg-white/8"
-                >
+                <a href="https://instagram.com/para.dress" target="_blank" rel="noreferrer" className="inline-flex min-h-13 items-center justify-center border border-white/16 px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-white transition hover:bg-white/8">
                   Message on Instagram
                 </a>
               </div>
@@ -461,21 +476,15 @@ export default function Home() {
               <div className="space-y-6">
                 <div>
                   <p className="text-xs uppercase tracking-[0.24em] text-white/50">Craftsmanship details</p>
-                  <p className="mt-3 text-base leading-7 text-white/72">
-                    Each gown is made with close attention to structure, fabric, fit, and finishing.
-                  </p>
+                  <p className="mt-3 text-base leading-7 text-white/72">Each gown is made with close attention to structure, fabric, fit, and finishing.</p>
                 </div>
                 <div>
                   <p className="text-xs uppercase tracking-[0.24em] text-white/50">Client proof</p>
-                  <p className="mt-3 text-base leading-7 text-white/72">
-                    Brides are guided personally, with sizing support and direct communication throughout the process.
-                  </p>
+                  <p className="mt-3 text-base leading-7 text-white/72">Brides are guided personally, with sizing support and direct communication throughout the process.</p>
                 </div>
                 <div>
                   <p className="text-xs uppercase tracking-[0.24em] text-white/50">Instagram gallery</p>
-                  <p className="mt-3 text-base leading-7 text-white/72">
-                    Explore the evolving visual world of Para Dress through fittings, details, and bridal looks.
-                  </p>
+                  <p className="mt-3 text-base leading-7 text-white/72">Explore the evolving visual world of Para Dress through fittings, details, and bridal looks.</p>
                 </div>
               </div>
             </div>
@@ -483,19 +492,13 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="snap-section bg-white border-t border-[var(--color-line)] px-6 py-10 sm:px-10 lg:px-16">
+      <footer data-snap="true" className="snap-section bg-white border-t border-[var(--color-line)] px-6 py-10 sm:px-10 lg:px-16">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="font-display text-[1.65rem] font-medium tracking-[0.24em] text-[var(--color-ink)] sm:text-[2rem]">
-              PARA
-            </p>
-            <p className="-mt-1 text-[0.68rem] uppercase tracking-[0.48em] text-[var(--color-muted)]">
-              DRESS
-            </p>
+            <p className="font-display text-[1.65rem] font-medium tracking-[0.24em] text-[var(--color-ink)] sm:text-[2rem]">PARA</p>
+            <p className="-mt-1 text-[0.68rem] uppercase tracking-[0.48em] text-[var(--color-muted)]">DRESS</p>
           </div>
-          <p className="max-w-md text-sm leading-6 text-[var(--color-muted)]">
-            Handcrafted in Ukraine and offered directly to brides across the UK.
-          </p>
+          <p className="max-w-md text-sm leading-6 text-[var(--color-muted)]">Handcrafted in Ukraine and offered directly to brides across the UK.</p>
         </div>
       </footer>
     </main>
