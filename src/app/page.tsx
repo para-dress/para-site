@@ -10,7 +10,7 @@ const heroSlides = [
     body: "Made-to-order gowns for brides across the UK, with personal sizing guidance and no bridal boutique markups.",
     image: "/site-assets/an3000.jpg",
     alt: "Two minimal bridal gowns standing in an arched studio setting.",
-    imageClass: "object-contain object-center object-[center_58%] lg:object-cover lg:object-[center_42%]",
+    imageClass: "object-contain object-center object-[center_58%] lg:object-cover lg:object-[center_18%]",
   },
   {
     eyebrow: "Direct bridal experience",
@@ -18,7 +18,7 @@ const heroSlides = [
     body: "Direct communication, clear guidance, and a closer connection to the people making the dress.",
     image: "/site-assets/an2211.jpg",
     alt: "Modern bridal gown shown with full figure visible.",
-    imageClass: "object-contain object-center lg:object-cover lg:object-[center_28%]",
+    imageClass: "object-contain object-center lg:object-cover lg:object-[center_18%]",
   },
 ];
 
