@@ -10,7 +10,7 @@ const heroSlides = [
     body: "Made-to-order gowns for brides across the UK, with personal sizing guidance and no bridal boutique markups.",
     image: "/site-assets/an3000.jpg",
     alt: "Two minimal bridal gowns standing in an arched studio setting.",
-    imageClass: "object-contain object-center object-[center_58%] lg:object-cover lg:object-[center_18%]",
+    imageClass: "object-contain object-center object-[center_58%] lg:object-contain lg:object-[center_58%]",
   },
   {
     eyebrow: "Direct bridal experience",
@@ -118,14 +118,14 @@ export default function Home() {
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(246,239,233,0.12)_0%,rgba(246,239,233,0.1)_24%,rgba(27,20,15,0.16)_60%,rgba(27,20,15,0.42)_100%)]" />
 
             <div className="relative z-10 mx-auto flex h-screen w-full max-w-[1600px] flex-col justify-end px-6 pb-18 pt-32 sm:px-10 sm:pb-20 lg:justify-center lg:px-12 lg:pb-0 lg:pt-24 xl:px-16 2xl:px-24">
-              <div className="max-w-[46rem] space-y-5 lg:max-w-[40rem] lg:pl-8 xl:max-w-[44rem] xl:pl-14 2xl:pl-20">
+              <div className={`${index === 0 ? "max-w-[46rem] lg:max-w-[29rem] xl:max-w-[31rem]" : "max-w-[46rem] lg:max-w-[40rem] xl:max-w-[44rem]"} space-y-5 lg:pl-8 xl:pl-14 2xl:pl-20`}>
                 {index === 0 ? null : (
                   <p className="text-[0.72rem] uppercase tracking-[0.34em] text-white/82 lg:text-[0.78rem]">{slide.eyebrow}</p>
                 )}
-                <h1 className={`${index === 0 ? "max-w-4xl text-4xl sm:text-5xl lg:text-[4.35rem] xl:text-[5rem]" : "max-w-2xl text-3xl sm:text-4xl lg:text-[4rem] xl:text-[4.5rem]"} font-display font-medium leading-[0.95] text-white`}>
+                <h1 className={`${index === 0 ? "max-w-4xl text-4xl sm:text-5xl lg:max-w-[28rem] lg:text-[3.7rem] xl:max-w-[30rem] xl:text-[4.2rem]" : "max-w-2xl text-3xl sm:text-4xl lg:text-[4rem] xl:text-[4.5rem]"} font-display font-medium leading-[0.95] text-white`}>
                   {slide.title}
                 </h1>
-                <p className="max-w-xl text-sm leading-7 text-white/84 sm:text-base sm:leading-8 lg:max-w-[30rem] lg:text-[1.02rem]">
+                <p className={`max-w-xl text-sm leading-7 text-white/84 sm:text-base sm:leading-8 lg:text-[1.02rem] ${index === 0 ? "lg:max-w-[24rem]" : "lg:max-w-[30rem]"}`}>
                   {slide.body}
                 </p>
                 {index === 0 ? (
