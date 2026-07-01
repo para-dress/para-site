@@ -10,7 +10,7 @@ const heroSlides = [
     body: "Made-to-order gowns for brides across the UK, with personal sizing guidance and no bridal boutique markups.",
     image: "/site-assets/an3000.jpg",
     alt: "Two minimal bridal gowns standing in an arched studio setting.",
-    imageClass: "object-contain object-center object-[center_58%]",
+    imageClass: "object-contain object-center object-[center_58%] lg:object-cover lg:object-[center_42%]",
   },
   {
     eyebrow: "Direct bridal experience",
@@ -18,7 +18,7 @@ const heroSlides = [
     body: "Direct communication, clear guidance, and a closer connection to the people making the dress.",
     image: "/site-assets/an2211.jpg",
     alt: "Modern bridal gown shown with full figure visible.",
-    imageClass: "object-contain object-center",
+    imageClass: "object-contain object-center lg:object-cover lg:object-[center_28%]",
   },
 ];
 
@@ -97,15 +97,15 @@ export default function Home() {
   return (
     <main className="bg-[var(--color-cream)] text-[var(--color-ink)]">
       <header
-        className={`fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-7 transition-[transform,opacity,background-color] duration-500 sm:px-10 lg:px-16 ${
+        className={`fixed inset-x-0 top-0 z-50 flex justify-center px-6 py-7 transition-[transform,opacity,background-color] duration-500 sm:px-10 lg:px-12 lg:py-5 xl:px-16 ${
           isScrolled ? "-translate-y-8 opacity-0 bg-transparent" : "translate-y-0 opacity-100 bg-[var(--color-cream)]/92"
         }`}
       >
         <div className="pointer-events-none text-center">
-          <p className="font-display text-[2.2rem] font-medium tracking-[0.34em] text-[var(--color-ink)] sm:text-[3rem]">
+          <p className="font-display text-[2.2rem] font-medium tracking-[0.34em] text-[var(--color-ink)] sm:text-[3rem] lg:text-[2.55rem] xl:text-[2.8rem]">
             PARA
           </p>
-          <p className="-mt-1 text-[0.72rem] uppercase tracking-[0.55em] text-[var(--color-muted)] sm:text-[0.82rem]">
+          <p className="-mt-1 text-[0.72rem] uppercase tracking-[0.55em] text-[var(--color-muted)] sm:text-[0.82rem] lg:text-[0.74rem] xl:text-[0.8rem]">
             DRESS
           </p>
         </div>
@@ -113,23 +113,23 @@ export default function Home() {
 
       <section>
         {heroSlides.map((slide, index) => (
-          <section key={slide.title} className="relative h-screen overflow-hidden bg-[#ece2da]">
+          <section key={slide.title} className="relative h-screen overflow-hidden bg-[#ece2da] lg:min-h-[54rem]">
             <Image src={slide.image} alt={slide.alt} fill priority={index === 0} className={slide.imageClass} sizes="100vw" />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(246,239,233,0.12)_0%,rgba(246,239,233,0.1)_24%,rgba(27,20,15,0.16)_60%,rgba(27,20,15,0.42)_100%)]" />
 
-            <div className="relative z-10 mx-auto flex h-screen max-w-7xl flex-col justify-end px-6 pb-18 pt-32 sm:px-10 sm:pb-20 lg:px-16 lg:pb-24 lg:pt-36">
-              <div className="max-w-[46rem] space-y-5">
+            <div className="relative z-10 mx-auto flex h-screen w-full max-w-[1600px] flex-col justify-end px-6 pb-18 pt-32 sm:px-10 sm:pb-20 lg:justify-center lg:px-12 lg:pb-0 lg:pt-24 xl:px-16 2xl:px-24">
+              <div className="max-w-[46rem] space-y-5 lg:max-w-[40rem] lg:pl-8 xl:max-w-[44rem] xl:pl-14 2xl:pl-20">
                 {index === 0 ? null : (
-                  <p className="text-[0.72rem] uppercase tracking-[0.34em] text-white/82">{slide.eyebrow}</p>
+                  <p className="text-[0.72rem] uppercase tracking-[0.34em] text-white/82 lg:text-[0.78rem]">{slide.eyebrow}</p>
                 )}
-                <h1 className={`${index === 0 ? "max-w-4xl text-4xl sm:text-5xl lg:text-6xl" : "max-w-2xl text-3xl sm:text-4xl lg:text-5xl"} font-display font-medium leading-[0.95] text-white`}>
+                <h1 className={`${index === 0 ? "max-w-4xl text-4xl sm:text-5xl lg:text-[4.35rem] xl:text-[5rem]" : "max-w-2xl text-3xl sm:text-4xl lg:text-[4rem] xl:text-[4.5rem]"} font-display font-medium leading-[0.95] text-white`}>
                   {slide.title}
                 </h1>
-                <p className="max-w-xl text-sm leading-7 text-white/84 sm:text-base sm:leading-8">
+                <p className="max-w-xl text-sm leading-7 text-white/84 sm:text-base sm:leading-8 lg:max-w-[30rem] lg:text-[1.02rem]">
                   {slide.body}
                 </p>
                 {index === 0 ? (
-                  <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+                  <div className="flex flex-col gap-3 pt-2 sm:flex-row lg:pt-4">
                     <a
                       href="#collections"
                       className="inline-flex min-h-14 items-center justify-center rounded-full bg-white px-7 text-sm font-medium uppercase tracking-[0.14em] text-[var(--color-ink-strong)] transition hover:opacity-92"
