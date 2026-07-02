@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -46,14 +47,16 @@ export function SiteHeader() {
           className={`mx-auto flex max-w-[var(--site-max-width)] items-center justify-between rounded-full border px-5 py-3 transition-all duration-500 sm:px-6 lg:px-8 ${headerClass}`}
         >
           <Link href="/" className="min-w-0">
-            <div>
-              <p className="font-display text-[1.2rem] tracking-[0.28em] sm:text-[1.45rem]">
-                PARA
-              </p>
-              <p className="-mt-1 text-[0.48rem] uppercase tracking-[0.42em] opacity-72 sm:text-[0.56rem]">
-                DRESS
-              </p>
-            </div>
+            <Image
+              src="/brand/para-dress-wordmark-gold.png"
+              alt="Para Dress"
+              width={759}
+              height={444}
+              priority
+              className={`h-auto w-[8.4rem] sm:w-[10.2rem] lg:w-[11.8rem] ${
+                transparent ? "brightness-0 invert" : ""
+              }`}
+            />
           </Link>
 
           <nav className="hidden items-center gap-7 lg:flex">

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { navItems } from "@/components/site/site-data";
 
@@ -6,14 +7,13 @@ export function SiteFooter() {
     <footer className="border-t border-[var(--color-line)] bg-white px-6 py-12 sm:px-10 lg:px-16 lg:py-14">
       <div className="mx-auto grid max-w-[var(--site-max-width)] gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
         <div className="space-y-4">
-          <div>
-            <p className="font-display text-[1.8rem] tracking-[0.28em] text-[var(--color-ink)] sm:text-[2rem]">
-              PARA
-            </p>
-            <p className="-mt-1 text-[0.56rem] uppercase tracking-[0.42em] text-[var(--color-muted)]">
-              DRESS
-            </p>
-          </div>
+          <Image
+            src="/brand/para-dress-wordmark-gold.png"
+            alt="Para Dress"
+            width={759}
+            height={444}
+            className="h-auto w-[12rem] sm:w-[14rem]"
+          />
           <p className="max-w-md text-sm leading-7 text-[var(--color-muted)]">
             Handcrafted in Ukraine and offered directly to brides across the UK with a more personal, atelier-led experience.
           </p>
