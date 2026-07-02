@@ -46,15 +46,29 @@ export function SiteHeader() {
         <div
           className={`mx-auto flex max-w-[var(--site-max-width)] items-center justify-between rounded-full border px-5 py-3 transition-all duration-500 sm:px-6 lg:px-8 ${headerClass}`}
         >
-          <Link href="/" className="min-w-0">
+          <Link href="/" className="relative block h-12 w-[8.6rem] sm:h-14 sm:w-[10.5rem] lg:h-16 lg:w-[12rem]">
             <Image
-              src="/brand/para-dress-wordmark-gold.png"
+              src={transparent ? "/brand/para-dress-wordmark-white.png" : "/brand/para-dress-wordmark-gold.png"}
               alt="Para Dress"
               width={759}
-              height={444}
+              height={400}
               priority
-              className={`h-auto w-[8.4rem] sm:w-[10.2rem] lg:w-[11.8rem] ${
-                transparent ? "brightness-0 invert" : ""
+              className={`absolute left-0 top-1/2 h-auto w-[8.6rem] -translate-y-1/2 transition-all duration-500 sm:w-[10.5rem] lg:w-[12rem] ${
+                transparent
+                  ? "scale-100 opacity-100"
+                  : "pointer-events-none scale-90 opacity-0"
+              }`}
+            />
+            <Image
+              src={transparent ? "/brand/para-dress-monogram-white.png" : "/brand/para-dress-monogram-gold.png"}
+              alt="Para Dress monogram"
+              width={345}
+              height={341}
+              priority
+              className={`absolute left-0 top-1/2 h-auto w-10 -translate-y-1/2 transition-all duration-500 sm:w-11 lg:w-12 ${
+                transparent
+                  ? "pointer-events-none scale-75 opacity-0"
+                  : "scale-100 opacity-100"
               }`}
             />
           </Link>
