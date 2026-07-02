@@ -10,6 +10,11 @@
   --color-ink-strong: #6f4d1f;
   --color-muted: #9e8761;
   --color-line: rgba(157, 122, 63, 0.18);
+  --site-max-width: 1600px;
+  --site-gutter: clamp(1.25rem, 4vw, 4.5rem);
+  --hero-min-height: clamp(44rem, 100svh, 64rem);
+  --hero-title-size: clamp(2.9rem, 7vw, 5.6rem);
+  --hero-body-size: clamp(0.98rem, 1.45vw, 1.1rem);
 }
 
 @theme inline {
@@ -31,6 +36,8 @@ html {
 html,
 body {
   scroll-padding-top: 0;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 body {
