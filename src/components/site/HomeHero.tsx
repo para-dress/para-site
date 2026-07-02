@@ -47,7 +47,7 @@ export function HomeHero({ lead, support }: HomeHeroProps) {
               <p className="hidden text-[0.72rem] uppercase tracking-[0.34em] text-white/78 sm:block sm:text-[0.76rem]">
                 Para Dress
               </p>
-              <div className="max-w-[18rem] rounded-[1.4rem] bg-[rgba(21,16,13,0.16)] p-4 backdrop-blur-[4px] sm:max-w-none sm:rounded-none sm:bg-transparent sm:p-0 sm:backdrop-blur-0">
+              <div className="max-w-[18rem] sm:max-w-none">
                 <h1 className="font-display max-w-[15rem] sm:max-w-[24rem] lg:max-w-none text-[var(--hero-title-size)] font-medium leading-[0.94] text-white text-balance">
                   {lead.title}
                 </h1>
