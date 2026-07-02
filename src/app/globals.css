@@ -13,8 +13,8 @@
   --site-max-width: 1600px;
   --site-gutter: clamp(1.25rem, 4vw, 4.5rem);
   --hero-min-height: clamp(44rem, 100svh, 64rem);
-  --hero-title-size: clamp(2.9rem, 7vw, 5.6rem);
-  --hero-body-size: clamp(0.98rem, 1.45vw, 1.1rem);
+  --hero-title-size: clamp(2.3rem, 7vw, 5.6rem);
+  --hero-body-size: clamp(1rem, 1.45vw, 1.1rem);
 }
 
 @theme inline {
