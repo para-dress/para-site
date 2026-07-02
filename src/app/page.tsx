@@ -101,9 +101,9 @@ export default function Home() {
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
                 href="/collections"
-                className="inline-flex min-h-13 items-center justify-center rounded-full bg-white px-7 text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)] transition hover:bg-[rgba(255,255,255,0.92)]"
+                className="inline-flex min-h-13 items-center justify-center rounded-full border border-white/18 bg-white px-7 text-center text-sm font-semibold uppercase tracking-[0.16em] text-[#6f4d1f] shadow-[0_12px_30px_rgba(20,14,11,0.12)] transition hover:bg-[rgba(255,255,255,0.92)]"
               >
-                Explore Collections
+                <span className="text-[#6f4d1f]">Explore Collections</span>
               </Link>
             </div>
           </div>
