@@ -1,70 +1,67 @@
-"use client";
-
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { HeaderLogo } from "@/components/site/HeaderLogo";
-import { HomeHero } from "@/components/site/HomeHero";
+import Link from "next/link";
 
-const heroLead = {
-  title:
-    "Handcrafted in Ukraine, guided personally, and offered directly from our own atelier.",
-  body: "Made-to-order gowns for brides across the UK, with personal sizing guidance and no bridal boutique markups.",
-  image: "/site-assets/an3000.jpg",
-  alt: "Two minimal bridal gowns standing in an arched studio setting.",
-};
-
-const heroSupport = {
-  eyebrow: "Direct bridal experience",
-  title: "A calmer, more personal way to find the right gown.",
-  body: "Direct communication, clear guidance, and a closer connection to the people making the dress.",
-  image: "/site-assets/an2211.jpg",
-  alt: "Modern bridal gown shown with full figure visible.",
-};
-
-const trustPoints = [
-  "Handcrafted in Ukraine",
-  "Direct from our atelier",
-  "Made to order",
-  "Personal sizing guidance",
-  "No bridal boutique markups",
-  "Delivered across the UK",
-];
-
-const collectionCards = [
+const featuredCollections = [
   {
-    name: "Modern Minimal",
-    description: "Refined silhouettes with a lighter, architectural feel.",
+    title: "Modern Minimal",
+    description: "Architectural silhouettes, cleaner lines, and a quieter bridal mood.",
     image: "/site-assets/an3002.jpg",
-    alt: "Minimal strapless bridal gown with a clean silhouette.",
+    alt: "Minimal bridal silhouette with a clean strapless line.",
   },
   {
-    name: "Romantic Detail",
-    description: "Texture and softness with a couture mood.",
+    title: "Romantic Detail",
+    description: "Soft embellishment, texture, and a more couture sense of occasion.",
     image: "/site-assets/an3001.jpg",
-    alt: "Romantic embellished wedding dress with delicate detail.",
+    alt: "Romantic bridal gown with embellishment and texture.",
   },
 ];
 
-const socialProof = [
+const featuredPieces = [
   {
-    title: "Bride feedback",
-    body: "Kind words from brides who valued both the gowns and the care behind the experience.",
+    title: "New arrivals",
+    body: "Recently added silhouettes with a refined, editorial point of view.",
+    image: "/site-assets/an2211.jpg",
   },
   {
-    title: "Client moments",
-    body: "Real bridal moments, shared with warmth, trust, and a sense of occasion.",
+    title: "Best sellers",
+    body: "The gowns brides return to most often when looking for shape, softness, and confidence.",
+    image: "/site-assets/an3000.jpg",
   },
   {
-    title: "Instagram gallery",
-    body: "A visual diary of silhouettes, details, fittings, and finished bridal looks.",
+    title: "Private consultation",
+    body: "For brides who want calmer guidance before choosing a gown or confirming sizing.",
+    image: "/site-assets/an3003.jpg",
+  },
+];
+
+const whyChoose = [
+  "Handcrafted in Ukraine and offered directly from our atelier.",
+  "Clear personal guidance on style, sizing, and timing.",
+  "A premium bridal experience without boutique markup pressure.",
+];
+
+const reviews = [
+  {
+    quote:
+      "The process felt calm, personal, and far more considered than a typical bridal appointment.",
+    source: "UK bride",
+  },
+  {
+    quote:
+      "I loved having direct contact and honest guidance while choosing the right silhouette.",
+    source: "Para Dress client",
+  },
+  {
+    quote:
+      "The dress felt beautifully made, and the whole experience felt genuinely premium.",
+    source: "Recent order",
   },
 ];
 
 const faqItems = [
   {
     question: "What is the price range?",
-    answer:
-      "Most Para Dress designs are priced between £699 and £950, depending on the style.",
+    answer: "Most Para Dress gowns are priced between £699 and £950 depending on the style.",
   },
   {
     question: "Do you offer custom sizing?",
@@ -72,95 +69,65 @@ const faqItems = [
   },
   {
     question: "How long does production take?",
-    answer:
-      "Up to 50 days for standard sizing and up to 60 days for custom sizing.",
-  },
-  {
-    question: "How do I start?",
-    answer:
-      "Begin with an enquiry or consultation, and we will guide you through style, sizing, and next steps.",
+    answer: "Up to 50 days for standard sizing and up to 60 days for custom sizing.",
   },
 ];
 
 export default function Home() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
-  const [openFaq, setOpenFaq] = useState(0);
-
-  useEffect(() => {
-    const onViewportChange = () => {
-      const currentScroll = window.scrollY;
-      const viewportHeight = window.innerHeight;
-      const desktop = window.innerWidth >= 1024;
-
-      setIsScrolled(currentScroll > 32);
-      setIsHeaderVisible(desktop || currentScroll < viewportHeight * 0.92);
-    };
-
-    onViewportChange();
-    window.addEventListener("scroll", onViewportChange, { passive: true });
-    window.addEventListener("resize", onViewportChange);
-
-    return () => {
-      window.removeEventListener("scroll", onViewportChange);
-      window.removeEventListener("resize", onViewportChange);
-    };
-  }, []);
-
   return (
-    <main className="bg-[var(--color-cream)] text-[var(--color-ink)]">
-      <HeaderLogo isScrolled={isScrolled} isVisible={isHeaderVisible} />
-
-      <HomeHero lead={heroLead} support={heroSupport} />
-
-      <section className="bg-white px-6 py-10 sm:px-10 sm:py-14 lg:px-16 lg:py-16">
-        <div className="mx-auto max-w-7xl border-y border-[var(--color-line)] py-6 sm:py-7">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-            {trustPoints.map((point) => (
-              <div key={point} className="flex items-start gap-3">
-                <span className="mt-[0.45rem] h-[0.32rem] w-[0.32rem] rounded-full bg-[var(--color-ink-strong)]/70" />
-                <p className="text-sm leading-6 text-[var(--color-ink-strong)]">{point}</p>
-              </div>
-            ))}
-          </div>
+    <main>
+      <section className="relative isolate overflow-hidden bg-[#ece2da] text-white">
+        <div className="absolute inset-0">
+          <Image
+            src="/site-assets/an3000.jpg"
+            alt="Editorial Para Dress bridal image."
+            fill
+            priority
+            className="object-cover object-[center_22%]"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.06)_0%,rgba(247,240,234,0.03)_22%,rgba(23,17,14,0.22)_58%,rgba(23,17,14,0.62)_100%)]" />
         </div>
-      </section>
 
-      <section className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-28">
-        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
-          <div className="space-y-4">
-            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Brand story</p>
-            <h2 className="font-display max-w-md text-4xl font-medium leading-[1.02] sm:text-5xl">
-              Direct, personal, and closer to the making of the gown.
-            </h2>
-          </div>
-          <div className="max-w-2xl space-y-4 text-base leading-8 text-[var(--color-muted)] sm:text-lg">
-            <p>Para Dress brings together premium bridal styling and direct guidance.</p>
-            <p>Each gown is handcrafted in Ukraine and offered straight from our atelier.</p>
-            <p>For the bride, that means more clarity, more support, and a more personal experience.</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="collections-grid" className="px-0 py-16 sm:py-24 lg:py-28">
-        <div className="space-y-12">
-          <div className="px-6 sm:px-10 lg:px-16">
-            <div className="mx-auto max-w-6xl space-y-4">
-              <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Collection direction</p>
-              <h2 className="font-display max-w-xl text-4xl font-medium leading-[1.02] sm:text-5xl">
-                Two bridal moods, one refined point of view.
-              </h2>
+        <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[var(--site-max-width)] items-end px-6 pb-10 pt-28 sm:px-10 sm:pb-12 sm:pt-36 lg:px-16 lg:pb-20 lg:pt-40">
+          <div className="max-w-[28rem] space-y-5 sm:max-w-[34rem] lg:max-w-[40rem] lg:space-y-7">
+            <p className="text-[0.72rem] uppercase tracking-[0.32em] text-white/72">Para Dress</p>
+            <h1 className="font-display text-5xl leading-[0.94] text-balance sm:text-6xl lg:text-[5.4rem]">
+              Modern bridalwear with a quieter, more personal sense of luxury.
+            </h1>
+            <p className="max-w-[29rem] text-base leading-8 text-white/84 sm:text-lg">
+              Handcrafted gowns, direct guidance, and a refined bridal experience for brides across the UK.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link
+                href="/collections"
+                className="inline-flex min-h-13 items-center justify-center rounded-full bg-white px-7 text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)] transition hover:bg-[rgba(255,255,255,0.92)]"
+              >
+                Explore Collections
+              </Link>
             </div>
           </div>
-          <div className="grid gap-16 lg:grid-cols-2 lg:gap-8">
-            {collectionCards.map((item, index) => (
-              <article key={item.name} className="space-y-6">
-                <div className={`relative aspect-[0.88/1] overflow-hidden ${index === 1 ? "lg:mt-20" : ""}`}>
-                  <Image src={item.image} alt={item.alt} fill className="object-contain object-center" sizes="(max-width: 1024px) 100vw, 50vw" />
+        </div>
+      </section>
+
+      <section className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
+        <div className="mx-auto max-w-[var(--site-max-width)] space-y-8 sm:space-y-10">
+          <div className="max-w-2xl space-y-4">
+            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">Featured collections</p>
+            <h2 className="font-display text-4xl leading-[1] text-[var(--color-ink-strong)] sm:text-5xl">
+              Two collection moods, one refined brand world.
+            </h2>
+          </div>
+
+          <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
+            {featuredCollections.map((item, index) => (
+              <article key={item.title} className="space-y-5">
+                <div className={`relative aspect-[0.85/1] overflow-hidden bg-[var(--color-blush)] ${index === 1 ? "lg:mt-16" : ""}`}>
+                  <Image src={item.image} alt={item.alt} fill className="object-contain object-center" sizes="(max-width: 1023px) 100vw, 50vw" />
                 </div>
-                <div className="px-6 sm:px-10 lg:px-12">
-                  <h3 className="font-display text-3xl font-medium sm:text-4xl">{item.name}</h3>
-                  <p className="mt-3 max-w-sm text-base leading-7 text-[var(--color-muted)]">{item.description}</p>
+                <div className="max-w-md space-y-3">
+                  <h3 className="font-display text-3xl text-[var(--color-ink-strong)] sm:text-4xl">{item.title}</h3>
+                  <p className="text-base leading-7 text-[var(--color-muted)]">{item.description}</p>
                 </div>
               </article>
             ))}
@@ -168,207 +135,108 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="collections" className="relative min-h-screen overflow-hidden bg-[#ece2da]">
-        <div className="absolute inset-0">
-          <Image
-            src="/site-assets/an3003.jpg"
-            alt="Full bridal look with dramatic silhouette and visible head."
-            fill
-            className="object-contain object-center"
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(246,239,233,0.02)_0%,rgba(246,239,233,0.02)_36%,rgba(22,16,12,0.22)_70%,rgba(22,16,12,0.52)_100%)]" />
-        </div>
-      </section>
-
-      <section className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-28">
-        <div className="mx-auto grid max-w-6xl gap-12 sm:gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div className="relative aspect-[0.82/1] overflow-hidden">
-              <Image src="/site-assets/an3001.jpg" alt="Romantic embellished wedding dress with delicate detail." fill className="object-contain object-center" sizes="(max-width: 1024px) 100vw, 30vw" />
-            </div>
-            <div className="relative aspect-[0.82/1] overflow-hidden sm:translate-y-12">
-              <Image src="/site-assets/an3002.jpg" alt="Minimal strapless bridal gown with a clean silhouette." fill className="object-contain object-center" sizes="(max-width: 1024px) 100vw, 30vw" />
-            </div>
-          </div>
-          <div className="max-w-lg space-y-4 lg:pb-8">
-            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Craftsmanship</p>
-            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">Fabric, finish, and detail deserve room to breathe.</h2>
-            <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">Fine fabrics, careful construction, and a couture sensibility sit at the heart of each gown.</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[var(--color-cream)] px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-28">
-        <div className="mx-auto grid max-w-6xl gap-10 sm:gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-          <div className="space-y-4">
-            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Why ordering online is safe</p>
-            <h2 className="font-display max-w-lg text-4xl font-medium leading-[1.02] sm:text-5xl">Reassurance should be built into the experience.</h2>
-          </div>
-          <div className="space-y-7">
-            {[
-              "We guide every bride through measurements personally.",
-              "Sizing is reviewed with individual support before production begins.",
-              "Each set of measurements is checked carefully.",
-              "Every gown is made individually.",
-            ].map((item) => (
-              <div key={item} className="border-b border-[var(--color-line)] pb-5 last:border-b-0 last:pb-0">
-                <p className="max-w-xl text-base leading-7 text-[var(--color-ink-strong)]">{item}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-28">
-        <div className="mx-auto grid max-w-6xl gap-10 sm:gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
-          <div className="max-w-md space-y-4">
-            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">The people behind Para Dress</p>
-            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">Real people, real craftsmanship, a more human bridal experience.</h2>
-            <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">Para Dress is shaped by an atelier team that values detail, femininity, and a more personal relationship with every bride.</p>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2">
-            <div className="min-h-[220px] border-b border-[var(--color-line)] pb-6">
-              <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">Atelier</p>
-              <p className="mt-6 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">Crafted in Ukraine, with care, precision, and close attention to every silhouette.</p>
-            </div>
-            <div className="min-h-[220px] border-b border-[var(--color-line)] pb-6">
-              <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">Production process</p>
-              <p className="mt-6 font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">Each gown is made to order, then checked with the bride’s sizing and finishing details in mind.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section className="bg-[var(--color-cream)] px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
-        <div className="mx-auto max-w-6xl space-y-8 sm:space-y-10">
+        <div className="mx-auto max-w-[var(--site-max-width)] space-y-8 sm:space-y-10">
           <div className="max-w-2xl space-y-4">
-            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Bridal journey</p>
-            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">A clear process, guided from enquiry to production.</h2>
+            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">Best sellers & newness</p>
+            <h2 className="font-display text-4xl leading-[1] text-[var(--color-ink-strong)] sm:text-5xl">
+              A homepage should invite discovery, not explain everything at once.
+            </h2>
           </div>
-          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
-            {[
-              "Choose a style direction and send your enquiry.",
-              "Receive guidance on fit, measurements, and sizing.",
-              "Confirm your order with a 50% deposit.",
-              "Production takes up to 50 days standard or 60 days custom.",
-            ].map((step, index) => (
-              <div key={step} className="space-y-4">
-                <p className="text-xs uppercase tracking-[0.26em] text-[var(--color-muted)]">Step {index + 1}</p>
-                <p className="max-w-[16rem] text-base leading-7 text-[var(--color-ink-strong)]">{step}</p>
-              </div>
+
+          <div className="grid gap-6 lg:grid-cols-3">
+            {featuredPieces.map((item) => (
+              <article key={item.title} className="space-y-4">
+                <div className="relative aspect-[0.9/1] overflow-hidden bg-[#efe4dc]">
+                  <Image src={item.image} alt={item.title} fill className="object-cover object-center" sizes="(max-width: 1023px) 100vw, 33vw" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-[0.72rem] uppercase tracking-[0.26em] text-[var(--color-muted)]">{item.title}</p>
+                  <p className="max-w-sm font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-[2rem]">{item.body}</p>
+                </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
       <section className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
-        <div className="mx-auto max-w-6xl space-y-8 sm:space-y-10">
-          <div className="max-w-xl space-y-4">
-            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Social proof</p>
-            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">Trust should feel present, but never loud.</h2>
+        <div className="mx-auto grid max-w-[var(--site-max-width)] gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div className="space-y-4">
+            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">Why choose Para Dress</p>
+            <h2 className="font-display text-4xl leading-[1] text-[var(--color-ink-strong)] sm:text-5xl">
+              Bridal should feel calmer, more direct, and more considered.
+            </h2>
           </div>
-          <div className="grid gap-10 lg:grid-cols-3">
-            {socialProof.map((item) => (
-              <article key={item.title} className="space-y-4 border-b border-[var(--color-line)] pb-8">
-                <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">{item.title}</p>
-                <p className="font-display text-2xl leading-tight text-[var(--color-ink-strong)] sm:text-3xl">{item.body}</p>
+          <div className="space-y-6">
+            {whyChoose.map((item) => (
+              <div key={item} className="border-b border-[var(--color-line)] pb-5 last:border-b-0 last:pb-0">
+                <p className="max-w-xl text-base leading-8 text-[var(--color-ink-strong)] sm:text-lg">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[var(--color-cream)] px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
+        <div className="mx-auto max-w-[var(--site-max-width)] space-y-8 sm:space-y-10">
+          <div className="max-w-2xl space-y-4">
+            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">Customer reviews</p>
+            <h2 className="font-display text-4xl leading-[1] text-[var(--color-ink-strong)] sm:text-5xl">
+              Trust should feel present, but never loud.
+            </h2>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-3">
+            {reviews.map((item) => (
+              <article key={item.quote} className="rounded-[1.5rem] border border-[var(--color-line)] bg-white p-6">
+                <p className="font-display text-2xl leading-tight text-[var(--color-ink-strong)]">“{item.quote}”</p>
+                <p className="mt-5 text-[0.72rem] uppercase tracking-[0.24em] text-[var(--color-muted)]">{item.source}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="relative min-h-[72vh] overflow-hidden bg-[#ece2da] sm:min-h-[78vh]">
-        <Image src="/site-assets/an3000.jpg" alt="Editorial bridal image for emotional brand statement." fill className="object-contain object-center" sizes="100vw" />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,15,12,0.14)_0%,rgba(20,15,12,0.2)_48%,rgba(20,15,12,0.38)_100%)]" />
-        <div className="relative z-10 mx-auto flex min-h-[72vh] max-w-6xl items-end px-6 py-12 sm:min-h-[78vh] sm:px-10 sm:py-14 lg:px-16 lg:py-18">
-          <h2 className="font-display max-w-2xl text-4xl font-medium leading-[1.02] text-white sm:text-5xl lg:text-6xl">Every bride remembers how she felt, not only how she looked.</h2>
-        </div>
-      </section>
-
-      <section id="faq" className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
+      <section className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-4xl space-y-8 sm:space-y-10">
           <div className="max-w-2xl space-y-4">
-            <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">FAQ</p>
-            <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">Practical details, kept clear.</h2>
+            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">Frequently asked questions</p>
+            <h2 className="font-display text-4xl leading-[1] text-[var(--color-ink-strong)] sm:text-5xl">
+              Practical details, kept beautifully clear.
+            </h2>
           </div>
           <div className="border-t border-[var(--color-line)]">
-            {faqItems.map((faq, index) => {
-              const isOpen = openFaq === index;
-
-              return (
-                <article key={faq.question} className="border-b border-[var(--color-line)]">
-                  <button type="button" onClick={() => setOpenFaq(isOpen ? -1 : index)} className="flex w-full items-center justify-between gap-6 py-5 text-left sm:py-7">
-                    <span className="pr-4 text-lg font-medium text-[var(--color-ink-strong)] sm:text-xl">{faq.question}</span>
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--color-line)] text-xl leading-none text-[var(--color-muted)] transition">{isOpen ? "−" : "+"}</span>
-                  </button>
-                  {isOpen ? <div className="max-w-xl pb-5 pr-10 text-base leading-7 text-[var(--color-muted)] sm:leading-8">{faq.answer}</div> : null}
-                </article>
-              );
-            })}
+            {faqItems.map((item) => (
+              <div key={item.question} className="border-b border-[var(--color-line)] py-5 sm:py-6">
+                <p className="text-lg font-medium text-[var(--color-ink-strong)] sm:text-xl">{item.question}</p>
+                <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--color-muted)] sm:leading-8">{item.answer}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <div className="fixed bottom-6 right-6 z-50 hidden lg:block">
-        <a href="#contact" aria-label="Open contact section" className="inline-flex min-h-13 items-center justify-center rounded-full border border-[rgba(110,72,18,0.12)] bg-[rgba(247,240,234,0.78)] px-5 text-[0.72rem] font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)] shadow-[0_10px_22px_rgba(35,27,24,0.06)] backdrop-blur-[8px] transition hover:bg-[rgba(247,240,234,0.9)]">
-          Contact
-        </a>
-      </div>
-
-      <section id="contact" className="bg-[var(--color-cream)] px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-22">
-        <div className="mx-auto max-w-5xl overflow-hidden rounded-[1.75rem] border border-[rgba(111,77,31,0.1)] bg-[var(--color-ink-strong)] text-white shadow-[0_24px_80px_rgba(43,29,16,0.12)] sm:rounded-[2rem]">
-          <div className="grid gap-0 lg:grid-cols-[1fr_0.78fr]">
-            <div className="space-y-6 px-6 py-8 sm:px-10 sm:py-10 lg:px-12 lg:py-12">
-              <p className="text-[0.72rem] uppercase tracking-[0.3em] text-white/58">Consultation</p>
-              <div className="space-y-4">
-                <h2 className="font-display max-w-lg text-4xl font-medium leading-[1.02] text-white sm:text-5xl">A considered start to your bridal journey.</h2>
-                <p className="max-w-[32rem] text-base leading-7 text-white/76 sm:text-lg sm:leading-8">Share the styles you love, and we will guide you personally on fit, measurements, and next steps.</p>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <input type="text" placeholder="Your name" className="min-h-13 rounded-full border border-white/22 bg-white/10 px-5 text-sm text-white placeholder:text-white/56 outline-none transition focus:border-white/50 focus:bg-white/14" />
-                <input type="email" placeholder="Email address" className="min-h-13 rounded-full border border-white/22 bg-white/10 px-5 text-sm text-white placeholder:text-white/56 outline-none transition focus:border-white/50 focus:bg-white/14" />
-              </div>
-              <textarea placeholder="Tell us which styles you love, your wedding timing, or where you would like guidance." rows={5} className="min-h-[144px] w-full resize-none rounded-[1.5rem] border border-white/22 bg-white/10 px-5 py-4 text-sm text-white placeholder:text-white/56 outline-none transition focus:border-white/50 focus:bg-white/14" />
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <a href="mailto:hello@paradress.co.uk?subject=Para%20Dress%20Consultation" className="inline-flex min-h-13 w-full items-center justify-center rounded-full bg-[var(--color-cream)] px-7 py-4 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[#6f4d1f] shadow-[0_12px_30px_rgba(18,12,8,0.18)] transition hover:bg-white sm:w-auto">
-                  Request Consultation
-                </a>
-                <a href="https://instagram.com/para.dress" target="_blank" rel="noreferrer" className="inline-flex min-h-13 w-full items-center justify-center rounded-full border border-white/22 bg-white/8 px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-white/92 transition hover:bg-white/12 sm:w-auto">
-                  Message on Instagram
-                </a>
-              </div>
-            </div>
-            <div className="border-t border-white/10 px-6 py-8 sm:px-10 sm:py-10 lg:border-l lg:border-t-0 lg:px-10 lg:py-12">
-              <div className="space-y-5">
-                <div className="rounded-[1.35rem] border border-white/10 bg-white/6 p-5">
-                  <p className="text-[0.68rem] uppercase tracking-[0.28em] text-white/52">What happens next</p>
-                  <p className="mt-3 text-base leading-7 text-white/76">We review your enquiry personally, suggest suitable styles, and guide you through measurements, sizing, and timing.</p>
-                </div>
-                <div className="rounded-[1.35rem] border border-white/10 bg-white/6 p-5">
-                  <p className="text-[0.68rem] uppercase tracking-[0.28em] text-white/52">Made to order</p>
-                  <p className="mt-3 text-base leading-7 text-white/76">Standard sizing takes up to 50 days. Custom sizing is available for +£100 and may take up to 60 days.</p>
-                </div>
-                <div className="rounded-[1.35rem] border border-white/10 bg-white/6 p-5">
-                  <p className="text-[0.68rem] uppercase tracking-[0.28em] text-white/52">Personal support</p>
-                  <p className="mt-3 text-base leading-7 text-white/76">You speak directly with the team, with clearer answers, calmer guidance, and no boutique markup pressure.</p>
-                </div>
-              </div>
+      <section className="bg-[var(--color-ink-strong)] px-6 py-16 text-white sm:px-10 sm:py-20 lg:px-16 lg:py-24">
+        <div className="mx-auto max-w-[var(--site-max-width)] rounded-[2rem] border border-white/10 bg-white/6 px-6 py-8 sm:px-10 sm:py-12 lg:px-14">
+          <div className="max-w-3xl space-y-5">
+            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-white/56">Private appointment</p>
+            <h2 className="font-display text-4xl leading-[1] text-white sm:text-5xl lg:text-6xl">
+              Start with a calmer conversation, then explore the gowns that fit you best.
+            </h2>
+            <p className="max-w-2xl text-base leading-8 text-white/76 sm:text-lg">
+              Para Dress combines personal guidance, direct atelier access, and a more refined way to choose a wedding dress online.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link href="/contact" className="inline-flex min-h-13 items-center justify-center rounded-full bg-white px-7 text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)] transition hover:bg-[rgba(255,255,255,0.92)]">
+                Book Consultation
+              </Link>
+              <Link href="/collections" className="inline-flex min-h-13 items-center justify-center rounded-full border border-white/20 bg-white/6 px-7 text-sm font-medium uppercase tracking-[0.16em] text-white transition hover:bg-white/10">
+                View Collections
+              </Link>
             </div>
           </div>
         </div>
       </section>
-
-      <footer className="border-t border-[var(--color-line)] bg-white px-6 py-10 sm:px-10 lg:px-16">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="font-display text-[1.65rem] font-medium tracking-[0.24em] text-[var(--color-ink)] sm:text-[2rem]">PARA</p>
-            <p className="-mt-1 text-[0.68rem] uppercase tracking-[0.48em] text-[var(--color-muted)]">DRESS</p>
-          </div>
-          <p className="max-w-md text-sm leading-6 text-[var(--color-muted)]">Handcrafted in Ukraine and offered directly to brides across the UK.</p>
-        </div>
-      </footer>
     </main>
   );
 }

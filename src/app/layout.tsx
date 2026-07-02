@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Geist_Mono, Manrope } from "next/font/google";
+import { SiteFooter } from "@/components/site/SiteFooter";
+import { SiteHeader } from "@/components/site/SiteHeader";
 import "./globals.css";
 
 const bodySans = Manrope({
@@ -20,7 +22,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Para Dress | UK Bridal",
-  description: "Elegant bridalwear for modern UK brides.",
+  description: "Para Dress is a premium bridal brand offering handcrafted gowns directly to brides across the UK.",
 };
 
 export default function RootLayout({
@@ -33,7 +35,11 @@ export default function RootLayout({
       lang="en"
       className={`${bodySans.variable} ${displaySerif.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full bg-[var(--background)] flex flex-col">
+        <SiteHeader />
+        <div className="flex-1">{children}</div>
+        <SiteFooter />
+      </body>
     </html>
   );
 }
