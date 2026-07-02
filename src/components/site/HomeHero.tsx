@@ -42,18 +42,18 @@ export function HomeHero({ lead, support }: HomeHeroProps) {
         <div className="absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(247,240,234,0.4)_0%,rgba(247,240,234,0)_100%)] sm:h-40" />
 
         <div className="relative z-10 mx-auto flex min-h-[var(--hero-min-height)] max-w-[var(--site-max-width)] items-end px-[var(--site-gutter)] pb-6 pt-24 sm:pb-10 sm:pt-36 lg:items-center lg:pb-0 lg:pt-32">
-          <div className="grid w-full gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] lg:items-end lg:gap-10 xl:grid-cols-[minmax(0,1fr)_25rem]">
+          <div className="grid w-full gap-5 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] lg:items-end lg:gap-10 xl:grid-cols-[minmax(0,1fr)_25rem]">
             <div className="max-w-[37rem] space-y-4 sm:space-y-6">
-              <p className="text-[0.72rem] uppercase tracking-[0.34em] text-white/78 sm:text-[0.76rem]">
+              <p className="hidden text-[0.72rem] uppercase tracking-[0.34em] text-white/78 sm:block sm:text-[0.76rem]">
                 Para Dress
               </p>
-              <h1 className="font-display max-w-[18rem] sm:max-w-[24rem] lg:max-w-none text-[var(--hero-title-size)] font-medium leading-[0.94] text-white text-balance">
+              <h1 className="font-display max-w-[15.5rem] sm:max-w-[24rem] lg:max-w-none text-[var(--hero-title-size)] font-medium leading-[0.94] text-white text-balance">
                 {lead.title}
               </h1>
-              <p className="max-w-[18rem] sm:max-w-[24rem] lg:max-w-[32rem] text-[var(--hero-body-size)] leading-[1.7] text-white/86 sm:leading-[1.85] text-pretty">
+              <p className="max-w-[16.5rem] sm:max-w-[24rem] lg:max-w-[32rem] text-[var(--hero-body-size)] leading-[1.65] text-white/84 sm:leading-[1.85] text-pretty">
                 {lead.body}
               </p>
-              <div className="flex flex-col gap-2.5 pt-1 sm:flex-row sm:flex-wrap lg:pt-3">
+              <div className="flex flex-col gap-2.5 pt-2 sm:flex-row sm:flex-wrap lg:pt-3">
                 <a
                   href="#collections"
                   className={`${primaryButtonClass} w-full sm:w-auto bg-white text-[var(--color-ink-strong)] shadow-[0_10px_30px_rgba(20,14,11,0.12)] hover:bg-[rgba(255,255,255,0.92)]`}
@@ -69,7 +69,7 @@ export function HomeHero({ lead, support }: HomeHeroProps) {
               </div>
             </div>
 
-            <article className="max-w-[25rem] self-end rounded-[1.5rem] border border-white/16 bg-[rgba(28,21,17,0.22)] p-3.5 shadow-[0_18px_44px_rgba(18,13,10,0.14)] backdrop-blur-[10px] sm:max-w-[27rem] sm:rounded-[1.75rem] sm:bg-[rgba(28,21,17,0.3)] sm:p-5 lg:mb-8 lg:justify-self-end">
+            <article className="hidden max-w-[25rem] self-end rounded-[1.5rem] border border-white/16 bg-[rgba(28,21,17,0.22)] p-3.5 shadow-[0_18px_44px_rgba(18,13,10,0.14)] backdrop-blur-[10px] sm:block sm:max-w-[27rem] sm:rounded-[1.75rem] sm:bg-[rgba(28,21,17,0.3)] sm:p-5 lg:mb-8 lg:justify-self-end">
               <div className="grid gap-3 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-start lg:grid-cols-1 xl:grid-cols-[7rem_minmax(0,1fr)]">
                 <div className="relative hidden aspect-[0.8/1] overflow-hidden rounded-[1.2rem] bg-[#eadfd7] sm:block">
                   <Image

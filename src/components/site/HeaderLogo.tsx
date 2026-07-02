@@ -1,11 +1,16 @@
 type HeaderLogoProps = {
   isScrolled: boolean;
+  isVisible: boolean;
 };
 
-export function HeaderLogo({ isScrolled }: HeaderLogoProps) {
+export function HeaderLogo({ isScrolled, isVisible }: HeaderLogoProps) {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+        isVisible
+          ? "pointer-events-auto translate-y-0 opacity-100"
+          : "pointer-events-none -translate-y-4 opacity-0"
+      } ${
         isScrolled
           ? "px-4 py-2.5 sm:px-6 sm:py-3 lg:px-8"
           : "px-4 py-3 sm:px-8 sm:py-6 lg:px-10 lg:py-7 xl:px-14"

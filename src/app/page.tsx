@@ -84,22 +84,36 @@ const faqItems = [
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [openFaq, setOpenFaq] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 32);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const onViewportChange = () => {
+      const currentScroll = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const desktop = window.innerWidth >= 1024;
+
+      setIsScrolled(currentScroll > 32);
+      setIsHeaderVisible(desktop || currentScroll < viewportHeight * 0.92);
+    };
+
+    onViewportChange();
+    window.addEventListener("scroll", onViewportChange, { passive: true });
+    window.addEventListener("resize", onViewportChange);
+
+    return () => {
+      window.removeEventListener("scroll", onViewportChange);
+      window.removeEventListener("resize", onViewportChange);
+    };
   }, []);
 
   return (
     <main className="bg-[var(--color-cream)] text-[var(--color-ink)]">
-      <HeaderLogo isScrolled={isScrolled} />
+      <HeaderLogo isScrolled={isScrolled} isVisible={isHeaderVisible} />
 
       <HomeHero lead={heroLead} support={heroSupport} />
 
-      <section className="bg-white px-6 py-12 sm:px-10 sm:py-14 lg:px-16 lg:py-16">
+      <section className="bg-white px-6 py-10 sm:px-10 sm:py-14 lg:px-16 lg:py-16">
         <div className="mx-auto max-w-7xl border-y border-[var(--color-line)] py-6 sm:py-7">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {trustPoints.map((point) => (
@@ -112,7 +126,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <section className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-28">
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Brand story</p>
