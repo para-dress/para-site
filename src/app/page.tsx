@@ -240,7 +240,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <section className="bg-[var(--color-cream)] px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-6xl space-y-10">
           <div className="max-w-2xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Bridal journey</p>
@@ -262,8 +262,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
-        <div className="mx-auto max-w-6xl space-y-10">
+      <section className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
+        <div className="mx-auto max-w-6xl space-y-8 sm:space-y-10">
           <div className="max-w-xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Social proof</p>
             <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">Trust should feel present, but never loud.</h2>
@@ -279,16 +279,16 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative min-h-[78vh] overflow-hidden bg-[#ece2da]">
+      <section className="relative min-h-[72vh] overflow-hidden bg-[#ece2da] sm:min-h-[78vh]">
         <Image src="/site-assets/an3000.jpg" alt="Editorial bridal image for emotional brand statement." fill className="object-contain object-center" sizes="100vw" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,15,12,0.14)_0%,rgba(20,15,12,0.2)_48%,rgba(20,15,12,0.38)_100%)]" />
-        <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-6xl items-end px-6 py-14 sm:px-10 lg:px-16 lg:py-18">
+        <div className="relative z-10 mx-auto flex min-h-[72vh] max-w-6xl items-end px-6 py-12 sm:min-h-[78vh] sm:px-10 sm:py-14 lg:px-16 lg:py-18">
           <h2 className="font-display max-w-2xl text-4xl font-medium leading-[1.02] text-white sm:text-5xl lg:text-6xl">Every bride remembers how she felt, not only how she looked.</h2>
         </div>
       </section>
 
-      <section id="faq" className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
-        <div className="mx-auto max-w-4xl space-y-10">
+      <section id="faq" className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
+        <div className="mx-auto max-w-4xl space-y-8 sm:space-y-10">
           <div className="max-w-2xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">FAQ</p>
             <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">Practical details, kept clear.</h2>
@@ -299,11 +299,11 @@ export default function Home() {
 
               return (
                 <article key={faq.question} className="border-b border-[var(--color-line)]">
-                  <button type="button" onClick={() => setOpenFaq(isOpen ? -1 : index)} className="flex w-full items-center justify-between gap-6 py-6 text-left sm:py-7">
-                    <span className="text-lg font-medium text-[var(--color-ink-strong)] sm:text-xl">{faq.question}</span>
-                    <span className="text-2xl leading-none text-[var(--color-muted)]">{isOpen ? "−" : "+"}</span>
+                  <button type="button" onClick={() => setOpenFaq(isOpen ? -1 : index)} className="flex w-full items-center justify-between gap-6 py-5 text-left sm:py-7">
+                    <span className="pr-4 text-lg font-medium text-[var(--color-ink-strong)] sm:text-xl">{faq.question}</span>
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--color-line)] text-xl leading-none text-[var(--color-muted)] transition">{isOpen ? "−" : "+"}</span>
                   </button>
-                  {isOpen ? <div className="max-w-xl pb-5 pr-10 text-base leading-8 text-[var(--color-muted)]">{faq.answer}</div> : null}
+                  {isOpen ? <div className="max-w-xl pb-5 pr-10 text-base leading-7 text-[var(--color-muted)] sm:leading-8">{faq.answer}</div> : null}
                 </article>
               );
             })}
@@ -311,46 +311,48 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="fixed bottom-5 right-5 z-50 sm:bottom-6 sm:right-6">
-        <a href="#contact" aria-label="Open contact section" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(110,72,18,0.1)] bg-[rgba(247,240,234,0.72)] px-4 text-[0.72rem] font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)] shadow-[0_10px_22px_rgba(35,27,24,0.06)] backdrop-blur-[8px] transition hover:bg-[rgba(247,240,234,0.84)] sm:min-h-13 sm:px-5">
+      <div className="fixed bottom-6 right-6 z-50 hidden lg:block">
+        <a href="#contact" aria-label="Open contact section" className="inline-flex min-h-13 items-center justify-center rounded-full border border-[rgba(110,72,18,0.12)] bg-[rgba(247,240,234,0.78)] px-5 text-[0.72rem] font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)] shadow-[0_10px_22px_rgba(35,27,24,0.06)] backdrop-blur-[8px] transition hover:bg-[rgba(247,240,234,0.9)]">
           Contact
         </a>
       </div>
 
-      <section id="contact" className="bg-[var(--color-cream)] px-6 py-18 sm:px-10 lg:px-16 lg:py-22">
-        <div className="mx-auto max-w-5xl border border-[rgba(255,255,255,0.08)] bg-[var(--color-ink-strong)] text-white">
-          <div className="grid gap-8 lg:grid-cols-[1fr_0.78fr]">
-            <div className="space-y-5 px-8 py-8 sm:px-12 sm:py-10">
-              <p className="text-sm uppercase tracking-[0.28em] text-white/56">Consultation</p>
-              <h2 className="font-display max-w-lg text-4xl font-medium text-white sm:text-5xl">A considered start to your bridal journey.</h2>
-              <p className="max-w-xl text-base leading-8 text-white/74 sm:text-lg">Share the styles you love, and we will guide you personally.</p>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <input type="text" placeholder="Your name" className="min-h-13 border border-white/18 bg-[rgba(255,255,255,0.04)] px-4 text-sm text-white placeholder:text-white/46 outline-none transition focus:border-white/32" />
-                <input type="email" placeholder="Email address" className="min-h-13 border border-white/18 bg-[rgba(255,255,255,0.04)] px-4 text-sm text-white placeholder:text-white/46 outline-none transition focus:border-white/32" />
+      <section id="contact" className="bg-[var(--color-cream)] px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-22">
+        <div className="mx-auto max-w-5xl overflow-hidden rounded-[1.75rem] border border-[rgba(111,77,31,0.1)] bg-[var(--color-ink-strong)] text-white shadow-[0_24px_80px_rgba(43,29,16,0.12)] sm:rounded-[2rem]">
+          <div className="grid gap-0 lg:grid-cols-[1fr_0.78fr]">
+            <div className="space-y-6 px-6 py-8 sm:px-10 sm:py-10 lg:px-12 lg:py-12">
+              <p className="text-[0.72rem] uppercase tracking-[0.3em] text-white/58">Consultation</p>
+              <div className="space-y-4">
+                <h2 className="font-display max-w-lg text-4xl font-medium leading-[1.02] text-white sm:text-5xl">A considered start to your bridal journey.</h2>
+                <p className="max-w-[32rem] text-base leading-7 text-white/76 sm:text-lg sm:leading-8">Share the styles you love, and we will guide you personally on fit, measurements, and next steps.</p>
               </div>
-              <textarea placeholder="Tell us which styles you love or where you would like guidance." rows={4} className="min-h-[124px] w-full resize-none border border-white/18 bg-[rgba(255,255,255,0.04)] px-4 py-4 text-sm text-white placeholder:text-white/46 outline-none transition focus:border-white/32" />
-              <div className="flex flex-col gap-4 sm:flex-row">
-                <a href="mailto:hello@paradress.co.uk" className="inline-flex min-h-13 items-center justify-center bg-white px-7 py-4 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[#6f4d1f] transition hover:opacity-92">
-                  Book a Consultation
+              <div className="grid gap-3 sm:grid-cols-2">
+                <input type="text" placeholder="Your name" className="min-h-13 rounded-full border border-white/22 bg-white/10 px-5 text-sm text-white placeholder:text-white/56 outline-none transition focus:border-white/50 focus:bg-white/14" />
+                <input type="email" placeholder="Email address" className="min-h-13 rounded-full border border-white/22 bg-white/10 px-5 text-sm text-white placeholder:text-white/56 outline-none transition focus:border-white/50 focus:bg-white/14" />
+              </div>
+              <textarea placeholder="Tell us which styles you love, your wedding timing, or where you would like guidance." rows={5} className="min-h-[144px] w-full resize-none rounded-[1.5rem] border border-white/22 bg-white/10 px-5 py-4 text-sm text-white placeholder:text-white/56 outline-none transition focus:border-white/50 focus:bg-white/14" />
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <a href="mailto:hello@paradress.co.uk?subject=Para%20Dress%20Consultation" className="inline-flex min-h-13 items-center justify-center rounded-full bg-white px-7 py-4 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[#6f4d1f] transition hover:bg-[rgba(255,255,255,0.92)]">
+                  Request Consultation
                 </a>
-                <a href="https://instagram.com/para.dress" target="_blank" rel="noreferrer" className="inline-flex min-h-13 items-center justify-center border border-white/16 px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-white transition hover:bg-white/8">
+                <a href="https://instagram.com/para.dress" target="_blank" rel="noreferrer" className="inline-flex min-h-13 items-center justify-center rounded-full border border-white/20 bg-white/6 px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-white/92 transition hover:bg-white/10">
                   Message on Instagram
                 </a>
               </div>
             </div>
-            <div className="border-l-0 border-white/8 px-8 py-8 sm:px-12 sm:py-10 lg:border-l">
-              <div className="space-y-6">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.24em] text-white/50">Craftsmanship details</p>
-                  <p className="mt-3 text-base leading-7 text-white/72">Each gown is made with close attention to structure, fabric, fit, and finishing.</p>
+            <div className="border-t border-white/10 px-6 py-8 sm:px-10 sm:py-10 lg:border-l lg:border-t-0 lg:px-10 lg:py-12">
+              <div className="space-y-5">
+                <div className="rounded-[1.35rem] border border-white/10 bg-white/6 p-5">
+                  <p className="text-[0.68rem] uppercase tracking-[0.28em] text-white/52">What happens next</p>
+                  <p className="mt-3 text-base leading-7 text-white/76">We review your enquiry personally, suggest suitable styles, and guide you through measurements, sizing, and timing.</p>
                 </div>
-                <div>
-                  <p className="text-xs uppercase tracking-[0.24em] text-white/50">Client proof</p>
-                  <p className="mt-3 text-base leading-7 text-white/72">Brides are guided personally, with sizing support and direct communication throughout the process.</p>
+                <div className="rounded-[1.35rem] border border-white/10 bg-white/6 p-5">
+                  <p className="text-[0.68rem] uppercase tracking-[0.28em] text-white/52">Made to order</p>
+                  <p className="mt-3 text-base leading-7 text-white/76">Standard sizing takes up to 50 days. Custom sizing is available for +£100 and may take up to 60 days.</p>
                 </div>
-                <div>
-                  <p className="text-xs uppercase tracking-[0.24em] text-white/50">Instagram gallery</p>
-                  <p className="mt-3 text-base leading-7 text-white/72">Explore the evolving visual world of Para Dress through fittings, details, and bridal looks.</p>
+                <div className="rounded-[1.35rem] border border-white/10 bg-white/6 p-5">
+                  <p className="text-[0.68rem] uppercase tracking-[0.28em] text-white/52">Personal support</p>
+                  <p className="mt-3 text-base leading-7 text-white/76">You speak directly with the team, with clearer answers, calmer guidance, and no boutique markup pressure.</p>
                 </div>
               </div>
             </div>
