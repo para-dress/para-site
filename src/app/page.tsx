@@ -142,7 +142,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="collections-grid" className="px-0 py-20 sm:py-24 lg:py-28">
+      <section id="collections-grid" className="px-0 py-16 sm:py-24 lg:py-28">
         <div className="space-y-12">
           <div className="px-6 sm:px-10 lg:px-16">
             <div className="mx-auto max-w-6xl space-y-4">
@@ -181,8 +181,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
-        <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
+      <section className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-28">
+        <div className="mx-auto grid max-w-6xl gap-12 sm:gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
           <div className="grid gap-5 sm:grid-cols-2">
             <div className="relative aspect-[0.82/1] overflow-hidden">
               <Image src="/site-assets/an3001.jpg" alt="Romantic embellished wedding dress with delicate detail." fill className="object-contain object-center" sizes="(max-width: 1024px) 100vw, 30vw" />
@@ -199,8 +199,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-[var(--color-cream)] px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
-        <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+      <section className="bg-[var(--color-cream)] px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-28">
+        <div className="mx-auto grid max-w-6xl gap-10 sm:gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Why ordering online is safe</p>
             <h2 className="font-display max-w-lg text-4xl font-medium leading-[1.02] sm:text-5xl">Reassurance should be built into the experience.</h2>
@@ -220,8 +220,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
-        <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+      <section className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-28">
+        <div className="mx-auto grid max-w-6xl gap-10 sm:gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div className="max-w-md space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">The people behind Para Dress</p>
             <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">Real people, real craftsmanship, a more human bridal experience.</h2>
@@ -241,7 +241,7 @@ export default function Home() {
       </section>
 
       <section className="bg-[var(--color-cream)] px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
-        <div className="mx-auto max-w-6xl space-y-10">
+        <div className="mx-auto max-w-6xl space-y-8 sm:space-y-10">
           <div className="max-w-2xl space-y-4">
             <p className="text-sm uppercase tracking-[0.28em] text-[var(--color-muted)]">Bridal journey</p>
             <h2 className="font-display text-4xl font-medium leading-[1.02] sm:text-5xl">A clear process, guided from enquiry to production.</h2>
@@ -332,10 +332,10 @@ export default function Home() {
               </div>
               <textarea placeholder="Tell us which styles you love, your wedding timing, or where you would like guidance." rows={5} className="min-h-[144px] w-full resize-none rounded-[1.5rem] border border-white/22 bg-white/10 px-5 py-4 text-sm text-white placeholder:text-white/56 outline-none transition focus:border-white/50 focus:bg-white/14" />
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <a href="mailto:hello@paradress.co.uk?subject=Para%20Dress%20Consultation" className="inline-flex min-h-13 items-center justify-center rounded-full bg-white px-7 py-4 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[#6f4d1f] transition hover:bg-[rgba(255,255,255,0.92)]">
+                <a href="mailto:hello@paradress.co.uk?subject=Para%20Dress%20Consultation" className="inline-flex min-h-13 w-full items-center justify-center rounded-full bg-[var(--color-cream)] px-7 py-4 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[#6f4d1f] shadow-[0_12px_30px_rgba(18,12,8,0.18)] transition hover:bg-white sm:w-auto">
                   Request Consultation
                 </a>
-                <a href="https://instagram.com/para.dress" target="_blank" rel="noreferrer" className="inline-flex min-h-13 items-center justify-center rounded-full border border-white/20 bg-white/6 px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-white/92 transition hover:bg-white/10">
+                <a href="https://instagram.com/para.dress" target="_blank" rel="noreferrer" className="inline-flex min-h-13 w-full items-center justify-center rounded-full border border-white/22 bg-white/8 px-7 py-4 text-sm font-medium uppercase tracking-[0.12em] text-white/92 transition hover:bg-white/12 sm:w-auto">
                   Message on Instagram
                 </a>
               </div>

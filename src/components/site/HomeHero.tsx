@@ -47,25 +47,33 @@ export function HomeHero({ lead, support }: HomeHeroProps) {
               <p className="hidden text-[0.72rem] uppercase tracking-[0.34em] text-white/78 sm:block sm:text-[0.76rem]">
                 Para Dress
               </p>
-              <h1 className="font-display max-w-[15.5rem] sm:max-w-[24rem] lg:max-w-none text-[var(--hero-title-size)] font-medium leading-[0.94] text-white text-balance">
-                {lead.title}
-              </h1>
-              <p className="max-w-[16.5rem] sm:max-w-[24rem] lg:max-w-[32rem] text-[var(--hero-body-size)] leading-[1.65] text-white/84 sm:leading-[1.85] text-pretty">
-                {lead.body}
-              </p>
-              <div className="flex flex-col gap-2.5 pt-2 sm:flex-row sm:flex-wrap lg:pt-3">
-                <a
-                  href="#collections"
-                  className={`${primaryButtonClass} w-full sm:w-auto bg-white text-[var(--color-ink-strong)] shadow-[0_10px_30px_rgba(20,14,11,0.12)] hover:bg-[rgba(255,255,255,0.92)]`}
-                >
-                  Explore Collection
-                </a>
-                <a
-                  href="#contact"
-                  className={`${secondaryButtonClass} w-full sm:w-auto border border-white/38 bg-[rgba(255,255,255,0.14)] text-white hover:bg-[rgba(255,255,255,0.2)]`}
-                >
-                  Book Consultation
-                </a>
+              <div className="max-w-[18rem] rounded-[1.4rem] bg-[rgba(21,16,13,0.16)] p-4 backdrop-blur-[4px] sm:max-w-none sm:rounded-none sm:bg-transparent sm:p-0 sm:backdrop-blur-0">
+                <h1 className="font-display max-w-[15rem] sm:max-w-[24rem] lg:max-w-none text-[var(--hero-title-size)] font-medium leading-[0.94] text-white text-balance">
+                  {lead.title}
+                </h1>
+                <p className="mt-3 max-w-[15.5rem] sm:max-w-[24rem] lg:max-w-[32rem] text-[var(--hero-body-size)] leading-[1.6] text-white/84 sm:leading-[1.85] text-pretty">
+                  {lead.body}
+                </p>
+                <div className="mt-5 flex flex-col gap-2.5 sm:mt-0 sm:pt-2 lg:pt-3">
+                  <a
+                    href="#collections"
+                    className={`${primaryButtonClass} w-full sm:w-auto bg-white text-[var(--color-ink-strong)] shadow-[0_10px_30px_rgba(20,14,11,0.12)] hover:bg-[rgba(255,255,255,0.92)]`}
+                  >
+                    Explore Collection
+                  </a>
+                  <a
+                    href="#contact"
+                    className="inline-flex items-center justify-start text-[0.82rem] font-medium uppercase tracking-[0.16em] text-white/84 transition hover:text-white sm:hidden"
+                  >
+                    Book Consultation
+                  </a>
+                  <a
+                    href="#contact"
+                    className={`${secondaryButtonClass} hidden sm:inline-flex sm:w-auto border border-white/38 bg-[rgba(255,255,255,0.14)] text-white hover:bg-[rgba(255,255,255,0.2)]`}
+                  >
+                    Book Consultation
+                  </a>
+                </div>
               </div>
             </div>
 
