@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { PageHero } from "@/components/site/PageHero";
 
 export default function AboutPage() {
@@ -19,6 +20,22 @@ export default function AboutPage() {
             <p>Each gown is handcrafted in Ukraine and offered directly, allowing brides to feel closer to the making process and more confident in the guidance they receive.</p>
             <p>Instead of boutique pressure, Para Dress focuses on communication, fit support, and carefully chosen silhouettes that feel feminine, modern, and lasting.</p>
             <p>The result is a bridal experience that feels quieter, more considered, and more personal from first enquiry to final delivery.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[var(--color-cream)] px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
+        <div className="mx-auto grid max-w-[var(--site-max-width)] gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="relative aspect-[0.82/1] overflow-hidden bg-[#efe4dc]">
+            <Image src="/site-assets/an3001.jpg" alt="Editorial Para Dress campaign image." fill className="object-cover object-center" sizes="(max-width: 1023px) 100vw, 55vw" />
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
+            <div className="relative aspect-[0.86/1] overflow-hidden bg-[#efe4dc]">
+              <Image src="/site-assets/an2217.jpg" alt="Soft moving bridal image for Para Dress brand story." fill className="object-cover object-center" sizes="(max-width: 1023px) 50vw, 32vw" />
+            </div>
+            <div className="relative aspect-[0.86/1] overflow-hidden bg-[#efe4dc]">
+              <Image src="/site-assets/an3002.jpg" alt="Atmospheric Para Dress editorial image." fill className="object-cover object-center" sizes="(max-width: 1023px) 50vw, 32vw" />
+            </div>
           </div>
         </div>
       </section>

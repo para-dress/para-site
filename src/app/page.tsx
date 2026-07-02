@@ -5,14 +5,14 @@ const featuredCollections = [
   {
     title: "Modern Minimal",
     description: "Architectural silhouettes, cleaner lines, and a quieter bridal mood.",
-    image: "/site-assets/an3002.jpg",
-    alt: "Minimal bridal silhouette with a clean strapless line.",
+    image: "/site-assets/an2308.jpg",
+    alt: "Modern minimal bridal gown with a refined silhouette.",
   },
   {
     title: "Romantic Detail",
     description: "Soft embellishment, texture, and a more couture sense of occasion.",
-    image: "/site-assets/an3001.jpg",
-    alt: "Romantic bridal gown with embellishment and texture.",
+    image: "/site-assets/an2207.jpg",
+    alt: "Romantic editorial bridal gown with lace detail.",
   },
 ];
 
@@ -20,17 +20,17 @@ const featuredStyles = [
   {
     title: "Minimal statement",
     body: "Clean silhouettes for brides drawn to precision, structure, and quieter drama.",
-    image: "/site-assets/an2211.jpg",
+    image: "/site-assets/an2202.jpg",
   },
   {
     title: "Soft couture",
     body: "Romantic gowns with texture, embellishment, and a more expressive bridal mood.",
-    image: "/site-assets/an3000.jpg",
+    image: "/site-assets/an2201.jpg",
   },
   {
     title: "Modern volume",
     body: "Shapes with presence, movement, and a stronger fashion-led silhouette.",
-    image: "/site-assets/an3003.jpg",
+    image: "/site-assets/an2219.jpg",
   },
 ];
 
@@ -75,11 +75,11 @@ export default function Home() {
       <section className="relative isolate overflow-hidden bg-[#ece2da] text-white">
         <div className="absolute inset-0">
           <Image
-            src="/site-assets/an3000.jpg"
-            alt="Editorial Para Dress bridal image."
+            src="/site-assets/an2216.jpg"
+            alt="Editorial Para Dress bridal hero image."
             fill
             priority
-            className="object-cover object-[center_22%]"
+            className="object-cover object-[center_18%]"
             sizes="100vw"
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,240,234,0.06)_0%,rgba(247,240,234,0.03)_22%,rgba(23,17,14,0.22)_58%,rgba(23,17,14,0.62)_100%)]" />
