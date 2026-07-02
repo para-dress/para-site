@@ -16,20 +16,20 @@ const featuredCollections = [
   },
 ];
 
-const featuredPieces = [
+const featuredStyles = [
   {
-    title: "New arrivals",
-    body: "Recently added silhouettes with a refined, editorial point of view.",
+    title: "Minimal statement",
+    body: "Clean silhouettes for brides drawn to precision, structure, and quieter drama.",
     image: "/site-assets/an2211.jpg",
   },
   {
-    title: "Best sellers",
-    body: "The gowns brides return to most often when looking for shape, softness, and confidence.",
+    title: "Soft couture",
+    body: "Romantic gowns with texture, embellishment, and a more expressive bridal mood.",
     image: "/site-assets/an3000.jpg",
   },
   {
-    title: "Private consultation",
-    body: "For brides who want calmer guidance before choosing a gown or confirming sizing.",
+    title: "Modern volume",
+    body: "Shapes with presence, movement, and a stronger fashion-led silhouette.",
     image: "/site-assets/an3003.jpg",
   },
 ];
@@ -62,10 +62,6 @@ const faqItems = [
   {
     question: "What is the price range?",
     answer: "Most Para Dress gowns are priced between £699 and £950 depending on the style.",
-  },
-  {
-    question: "Do you offer custom sizing?",
-    answer: "Yes. Custom sizing is available for an additional £100.",
   },
   {
     question: "How long does production take?",
@@ -138,14 +134,14 @@ export default function Home() {
       <section className="bg-[var(--color-cream)] px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-[var(--site-max-width)] space-y-8 sm:space-y-10">
           <div className="max-w-2xl space-y-4">
-            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">Best sellers & newness</p>
+            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">Featured styles</p>
             <h2 className="font-display text-4xl leading-[1] text-[var(--color-ink-strong)] sm:text-5xl">
-              A homepage should invite discovery, not explain everything at once.
+              Where should I begin exploring?
             </h2>
           </div>
 
           <div className="grid gap-6 lg:grid-cols-3">
-            {featuredPieces.map((item) => (
+            {featuredStyles.map((item) => (
               <article key={item.title} className="space-y-4">
                 <div className="relative aspect-[0.9/1] overflow-hidden bg-[#efe4dc]">
                   <Image src={item.image} alt={item.title} fill className="object-cover object-center" sizes="(max-width: 1023px) 100vw, 33vw" />
@@ -202,7 +198,7 @@ export default function Home() {
           <div className="max-w-2xl space-y-4">
             <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">Frequently asked questions</p>
             <h2 className="font-display text-4xl leading-[1] text-[var(--color-ink-strong)] sm:text-5xl">
-              Practical details, kept beautifully clear.
+              What do brides usually need to know first?
             </h2>
           </div>
           <div className="border-t border-[var(--color-line)]">
@@ -213,25 +209,27 @@ export default function Home() {
               </div>
             ))}
           </div>
+          <div>
+            <Link href="/faq" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--color-line)] px-6 text-sm font-medium uppercase tracking-[0.16em] text-[var(--color-ink-strong)] transition hover:bg-[var(--color-cream)]">
+              View Full FAQ
+            </Link>
+          </div>
         </div>
       </section>
 
       <section className="bg-[var(--color-ink-strong)] px-6 py-16 text-white sm:px-10 sm:py-20 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-[var(--site-max-width)] rounded-[2rem] border border-white/10 bg-white/6 px-6 py-8 sm:px-10 sm:py-12 lg:px-14">
           <div className="max-w-3xl space-y-5">
-            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-white/56">Private appointment</p>
+            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-white/56">Next step</p>
             <h2 className="font-display text-4xl leading-[1] text-white sm:text-5xl lg:text-6xl">
-              Start with a calmer conversation, then explore the gowns that fit you best.
+              Want personal guidance before choosing your gown?
             </h2>
             <p className="max-w-2xl text-base leading-8 text-white/76 sm:text-lg">
-              Para Dress combines personal guidance, direct atelier access, and a more refined way to choose a wedding dress online.
+              Book a consultation and we will help you move forward with more clarity.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link href="/contact" className="inline-flex min-h-13 items-center justify-center rounded-full border border-white/18 bg-white px-7 text-center text-sm font-semibold uppercase tracking-[0.16em] text-[#6f4d1f] shadow-[0_12px_30px_rgba(20,14,11,0.12)] transition hover:bg-[rgba(255,255,255,0.92)]">
                 <span className="text-[#6f4d1f]">Book Consultation</span>
-              </Link>
-              <Link href="/collections" className="inline-flex min-h-13 items-center justify-center rounded-full border border-white/20 bg-white/6 px-7 text-sm font-medium uppercase tracking-[0.16em] text-white transition hover:bg-white/10">
-                View Collections
               </Link>
             </div>
           </div>
