@@ -1,3 +1,4 @@
+import { ContactForm } from "@/components/site/ContactForm";
 import { PageHero } from "@/components/site/PageHero";
 
 const contactNotes = [
@@ -21,16 +22,7 @@ export default function ContactPage() {
             <div className="space-y-6 px-6 py-8 sm:px-10 sm:py-10 lg:px-12 lg:py-12">
               <h2 className="font-display text-4xl leading-[1.02] sm:text-5xl">Request a consultation</h2>
               <p className="max-w-2xl text-base leading-8 text-white/76 sm:text-lg">Tell us what kind of gown you are looking for, and we will reply with personal guidance.</p>
-              <form className="space-y-5">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <input name="name" type="text" placeholder="Your name" className="min-h-13 rounded-full border border-white/22 bg-white/10 px-5 text-sm text-white placeholder:text-white/56 outline-none transition focus:border-white/50 focus:bg-white/14" />
-                  <input name="email" type="email" placeholder="Email address" className="min-h-13 rounded-full border border-white/22 bg-white/10 px-5 text-sm text-white placeholder:text-white/56 outline-none transition focus:border-white/50 focus:bg-white/14" />
-                </div>
-                <textarea name="message" placeholder="Tell us which styles you love, your wedding date, or any questions you already have." rows={6} className="min-h-[164px] w-full resize-none rounded-[1.5rem] border border-white/22 bg-white/10 px-5 py-4 text-sm text-white placeholder:text-white/56 outline-none transition focus:border-white/50 focus:bg-white/14" />
-                <button type="submit" className="inline-flex min-h-13 w-full items-center justify-center rounded-full bg-[var(--color-cream)] px-7 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-strong)] shadow-[0_12px_30px_rgba(18,12,8,0.18)] transition hover:bg-white">
-                  Send enquiry
-                </button>
-              </form>
+              <ContactForm />
               <div className="space-y-4 pt-1">
                 <div className="flex items-center gap-4 text-white/46">
                   <span className="h-px flex-1 bg-white/12" />
