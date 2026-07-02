@@ -63,13 +63,7 @@ export function HomeHero({ lead, support }: HomeHeroProps) {
                   </a>
                   <a
                     href="#contact"
-                    className="inline-flex items-center justify-start text-[0.82rem] font-medium uppercase tracking-[0.16em] text-white/84 transition hover:text-white sm:hidden"
-                  >
-                    Book Consultation
-                  </a>
-                  <a
-                    href="#contact"
-                    className={`${secondaryButtonClass} hidden sm:inline-flex sm:w-auto border border-white/38 bg-[rgba(255,255,255,0.14)] text-white hover:bg-[rgba(255,255,255,0.2)]`}
+                    className={`${secondaryButtonClass} w-full sm:w-auto border border-white/38 bg-[rgba(255,255,255,0.14)] text-white hover:bg-[rgba(255,255,255,0.2)]`}
                   >
                     Book Consultation
                   </a>
