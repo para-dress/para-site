@@ -175,9 +175,9 @@ export function SiteHeader() {
           <Link
             href="/contact"
             onClick={() => setMenuOpen(false)}
-            className="inline-flex min-h-13 items-center justify-center rounded-full bg-[var(--color-ink-strong)] px-7 text-sm font-medium uppercase tracking-[0.16em] text-white"
+            className="inline-flex min-h-13 items-center justify-center rounded-full border border-[rgba(111,77,31,0.14)] bg-[rgba(168,127,52,0.12)] px-7 text-center text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-[#7b581e] shadow-[0_10px_26px_rgba(39,27,16,0.06)] transition hover:bg-[rgba(168,127,52,0.18)]"
           >
-            Book Consultation
+            <span className="text-[#7b581e]">Book Consultation</span>
           </Link>
         </div>
       </div>
