@@ -101,13 +101,13 @@ export function SiteHeader() {
           <div className="hidden shrink-0 xl:block">
             <Link
               href="/contact"
-              className={`inline-flex min-h-11 min-w-[11.5rem] shrink-0 items-center justify-center whitespace-nowrap rounded-full px-5 text-[0.72rem] font-medium uppercase tracking-[0.16em] transition ${
+              className={`inline-flex h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-6 text-[0.76rem] font-semibold uppercase leading-none tracking-[0.12em] transition ${
                 transparent
                   ? "border border-white/30 bg-white/10 text-white hover:bg-white/16"
                   : "bg-[var(--color-ink-strong)] text-white hover:bg-[#5f4118]"
               }`}
             >
-              Book Consultation
+              <span className="block text-white">Book Consultation</span>
             </Link>
           </div>
 
