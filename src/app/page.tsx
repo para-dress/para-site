@@ -30,7 +30,7 @@ const featuredStyles = [
   {
     title: "Modern volume",
     body: "For brides who want presence, movement, and a silhouette that feels more fashion-led.",
-    image: "/site-assets/an3003.jpg",
+    image: "/site-assets/an-right-style-1R2NmB.jpg",
   },
 ];
 
