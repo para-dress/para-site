@@ -25,7 +25,7 @@ const featuredStyles = [
   {
     title: "Soft couture",
     body: "For brides who want softness, texture, and a more expressive romantic feel.",
-    image: "/site-assets/an3000.jpg",
+    image: "/site-assets/an-middle-style-17KMti.jpg",
   },
   {
     title: "Modern volume",
