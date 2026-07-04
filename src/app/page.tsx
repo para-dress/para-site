@@ -5,7 +5,7 @@ const featuredCollections = [
   {
     title: "Modern Minimal",
     description: "Clean, modern silhouettes chosen for brides who love refinement, structure, and understated elegance.",
-    image: "/site-assets/an3002.jpg",
+    image: "/site-assets/an2221.jpg",
     alt: "Minimal bridal silhouette with a clean strapless line.",
   },
   {
