@@ -88,7 +88,8 @@ const faqItems = [
   },
   {
     question: "Can I return a custom-sized dress?",
-    answer: "Custom-sized dresses are non-returnable, as they are made to the bride’s measurements.",
+    answer:
+      "Custom-sized dresses are non-returnable, as they are made specifically to the bride’s measurements. We take custom sizing very seriously and guide each bride carefully through the measurement process to help ensure the best possible fit. To date, we have not had return requests for custom-sized orders. In the rare event that minor local alterations are needed, we are happy to contribute towards atelier adjustment costs.",
   },
   {
     question: "How do I choose the right size?",
