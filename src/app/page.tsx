@@ -4,13 +4,13 @@ import Link from "next/link";
 const featuredCollections = [
   {
     title: "Modern Minimal",
-    description: "Architectural silhouettes, cleaner lines, and a quieter bridal mood.",
+    description: "Clean, modern silhouettes chosen for brides who love refinement, structure, and understated elegance.",
     image: "/site-assets/an3002.jpg",
     alt: "Minimal bridal silhouette with a clean strapless line.",
   },
   {
     title: "Romantic Detail",
-    description: "Soft embellishment, texture, and a more couture sense of occasion.",
+    description: "Softer gowns with texture, detail, and a more romantic bridal feeling.",
     image: "/site-assets/an3001.jpg",
     alt: "Romantic bridal gown with embellishment and texture.",
   },
@@ -19,43 +19,54 @@ const featuredCollections = [
 const featuredStyles = [
   {
     title: "Minimal statement",
-    body: "Clean silhouettes for brides drawn to precision, structure, and quieter drama.",
+    body: "For brides drawn to precision, clean lines, and a more understated kind of drama.",
     image: "/site-assets/an2211.jpg",
   },
   {
     title: "Soft couture",
-    body: "Romantic gowns with texture, embellishment, and a more expressive bridal mood.",
+    body: "For brides who want softness, texture, and a more expressive romantic feel.",
     image: "/site-assets/an3000.jpg",
   },
   {
     title: "Modern volume",
-    body: "Shapes with presence, movement, and a stronger fashion-led silhouette.",
+    body: "For brides who want presence, movement, and a silhouette that feels more fashion-led.",
     image: "/site-assets/an3003.jpg",
   },
 ];
 
 const whyChoose = [
-  "Handcrafted in Ukraine and offered directly from our atelier.",
-  "Clear personal guidance on style, sizing, and timing.",
-  "A premium bridal experience without boutique markup pressure.",
+  "Premium-feel bridal with elegant silhouettes and refined details.",
+  "Personal guidance on styles, sizing, measurements, and timing.",
+  "A luxury feel without traditional boutique-level markup.",
+  "Custom sizing available for brides who want a more personal fit.",
+  "Made in Ukraine with care and attention to detail.",
 ];
 
-const reviews = [
+const trustPoints = [
   {
-    quote:
-      "The process felt calm, personal, and far more considered than a typical bridal appointment.",
-    source: "UK bride",
+    title: "Clear sizing guidance",
+    body: "We help brides understand whether standard or custom sizing is the right choice before ordering.",
   },
   {
-    quote:
-      "I loved having direct contact and honest guidance while choosing the right silhouette.",
-    source: "Para Dress client",
+    title: "Personal support",
+    body: "Every enquiry is handled with direct communication and thoughtful guidance from first message to order.",
   },
   {
-    quote:
-      "The dress felt beautifully made, and the whole experience felt genuinely premium.",
-    source: "Recent order",
+    title: "Transparent timelines",
+    body: "We explain production timing, deposits, and delivery expectations clearly so brides know what to expect.",
   },
+  {
+    title: "Custom sizing available",
+    body: "For brides who want a more personal fit, custom sizing is available for +£100.",
+  },
+];
+
+const orderSteps = [
+  "Choose your favourite styles.",
+  "Send us your enquiry.",
+  "We guide you on sizing and measurements.",
+  "Your order begins with a 50% deposit.",
+  "Your dress is prepared and delivered to the UK.",
 ];
 
 const faqItems = [
@@ -64,8 +75,24 @@ const faqItems = [
     answer: "Most Para Dress gowns are priced between £699 and £950 depending on the style.",
   },
   {
+    question: "Do you offer custom sizing?",
+    answer: "Yes. Custom sizing is available for +£100.",
+  },
+  {
     question: "How long does production take?",
     answer: "Up to 50 days for standard sizing and up to 60 days for custom sizing.",
+  },
+  {
+    question: "What deposit is required?",
+    answer: "A 50% deposit is required to begin production.",
+  },
+  {
+    question: "Can I return a custom-sized dress?",
+    answer: "Custom-sized dresses are non-returnable, as they are made to the bride’s measurements.",
+  },
+  {
+    question: "How do I choose the right size?",
+    answer: "We guide each bride through sizing and measurements before production begins.",
   },
 ];
 
@@ -89,17 +116,23 @@ export default function Home() {
           <div className="max-w-[28rem] space-y-5 sm:max-w-[34rem] lg:max-w-[40rem] lg:space-y-7">
             <p className="text-[0.72rem] uppercase tracking-[0.32em] text-white/72">Para Dress</p>
             <h1 className="font-display text-5xl leading-[0.94] text-balance sm:text-6xl lg:text-[5.4rem]">
-              Modern bridalwear with a quieter, more personal sense of luxury.
+              Find the wedding dress that feels like you
             </h1>
             <p className="max-w-[29rem] text-base leading-8 text-white/84 sm:text-lg">
-              Handcrafted gowns, direct guidance, and a refined bridal experience for brides across the UK.
+              Elegant, premium-looking bridal dresses made in Ukraine for brides in the UK — with personal support and custom sizing available.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
                 href="/collections"
                 className="inline-flex min-h-13 items-center justify-center rounded-full border border-white/18 bg-white px-7 text-center text-sm font-semibold uppercase tracking-[0.16em] text-[#6f4d1f] shadow-[0_12px_30px_rgba(20,14,11,0.12)] transition hover:bg-[rgba(255,255,255,0.92)]"
               >
-                <span className="text-[#6f4d1f]">Explore Collections</span>
+                <span className="text-[#6f4d1f]">Explore the Collection</span>
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-flex min-h-13 items-center justify-center rounded-full border border-white/24 bg-white/8 px-7 text-center text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/14"
+              >
+                Enquire Now
               </Link>
             </div>
           </div>
@@ -111,8 +144,11 @@ export default function Home() {
           <div className="max-w-2xl space-y-4">
             <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">Featured collections</p>
             <h2 className="font-display text-4xl leading-[1] text-[var(--color-ink-strong)] sm:text-5xl">
-              Two collection moods, one refined brand world.
+              Discover bridal styles with two distinct moods
             </h2>
+            <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">
+              From clean, modern silhouettes to softer romantic gowns, each Para Dress style is chosen to feel feminine, elevated, and special.
+            </p>
           </div>
 
           <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
@@ -136,8 +172,11 @@ export default function Home() {
           <div className="max-w-2xl space-y-4">
             <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">Featured styles</p>
             <h2 className="font-display text-4xl leading-[1] text-[var(--color-ink-strong)] sm:text-5xl">
-              Where should I begin exploring?
+              Start with the style that feels most like you
             </h2>
+            <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">
+              Whether you love clean minimal lines, softer couture-inspired details, or more dramatic volume, we’ll help you find the right direction.
+            </p>
           </div>
 
           <div className="grid gap-6 lg:grid-cols-3">
@@ -161,8 +200,11 @@ export default function Home() {
           <div className="space-y-4">
             <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">Why choose Para Dress</p>
             <h2 className="font-display text-4xl leading-[1] text-[var(--color-ink-strong)] sm:text-5xl">
-              Bridal should feel calmer, more direct, and more considered.
+              Why brides choose Para Dress
             </h2>
+            <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">
+              Premium-looking bridal dresses, personal support, and a more thoughtful path to finding the right gown.
+            </p>
           </div>
           <div className="space-y-6">
             {whyChoose.map((item) => (
@@ -177,19 +219,47 @@ export default function Home() {
       <section className="bg-[var(--color-cream)] px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-[var(--site-max-width)] space-y-8 sm:space-y-10">
           <div className="max-w-2xl space-y-4">
-            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">Customer reviews</p>
+            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">Ordering with confidence</p>
             <h2 className="font-display text-4xl leading-[1] text-[var(--color-ink-strong)] sm:text-5xl">
-              Trust should feel present, but never loud.
+              Ordering online should still feel reassuring.
             </h2>
+            <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">
+              We know choosing a wedding dress online is a big decision. That’s why we focus on clear communication, measurement guidance, transparent timelines, and personal support at every step.
+            </p>
           </div>
-          <div className="grid gap-6 lg:grid-cols-3">
-            {reviews.map((item) => (
-              <article key={item.quote} className="rounded-[1.5rem] border border-[var(--color-line)] bg-white p-6">
-                <p className="font-display text-2xl leading-tight text-[var(--color-ink-strong)]">“{item.quote}”</p>
-                <p className="mt-5 text-[0.72rem] uppercase tracking-[0.24em] text-[var(--color-muted)]">{item.source}</p>
+          <div className="grid gap-6 lg:grid-cols-2">
+            {trustPoints.map((item) => (
+              <article key={item.title} className="rounded-[1.5rem] border border-[var(--color-line)] bg-white p-6">
+                <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[var(--color-muted)]">{item.title}</p>
+                <p className="mt-4 text-base leading-8 text-[var(--color-ink-strong)] sm:text-lg">{item.body}</p>
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
+        <div className="mx-auto max-w-[var(--site-max-width)] space-y-8 sm:space-y-10">
+          <div className="max-w-2xl space-y-4">
+            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">How to order</p>
+            <h2 className="font-display text-4xl leading-[1] text-[var(--color-ink-strong)] sm:text-5xl">
+              How to order your dress
+            </h2>
+            <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">
+              We keep the process clear, personal, and supportive from first enquiry to final delivery.
+            </p>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-5">
+            {orderSteps.map((step, index) => (
+              <div key={step} className="rounded-[1.5rem] border border-[var(--color-line)] bg-[var(--color-cream)] p-5">
+                <p className="text-[0.72rem] uppercase tracking-[0.24em] text-[var(--color-muted)]">Step {index + 1}</p>
+                <p className="mt-3 text-base leading-7 text-[var(--color-ink-strong)]">{step}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-sm leading-7 text-[var(--color-muted)] sm:text-base">
+            Custom sizing is available for +£100.
+          </p>
         </div>
       </section>
 
@@ -222,15 +292,18 @@ export default function Home() {
           <div className="max-w-3xl space-y-5">
             <p className="text-[0.72rem] uppercase tracking-[0.3em] text-white/56">Next step</p>
             <h2 className="font-display text-4xl leading-[1] text-white sm:text-5xl lg:text-6xl">
-              Want personal guidance before choosing your gown?
+              Ready to find your dress?
             </h2>
             <p className="max-w-2xl text-base leading-8 text-white/76 sm:text-lg">
-              Book a consultation and we will help you move forward with more clarity.
+              If you already have a style in mind — or want help choosing the right one — send us a message and we’ll guide you from there.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link href="/contact" className="inline-flex min-h-13 items-center justify-center rounded-full border border-white/18 bg-white px-7 text-center text-sm font-semibold uppercase tracking-[0.16em] text-[#6f4d1f] shadow-[0_12px_30px_rgba(20,14,11,0.12)] transition hover:bg-[rgba(255,255,255,0.92)]">
-                <span className="text-[#6f4d1f]">Book Consultation</span>
+                <span className="text-[#6f4d1f]">Enquire Now</span>
               </Link>
+              <a href="https://instagram.com/para.dress" target="_blank" rel="noreferrer" className="inline-flex min-h-13 items-center justify-center rounded-full border border-white/18 bg-white/8 px-7 text-center text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/14">
+                Message Us on Instagram
+              </a>
             </div>
           </div>
         </div>
