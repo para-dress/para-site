@@ -98,10 +98,10 @@ export function SiteHeader() {
             })}
           </nav>
 
-          <div className="hidden lg:block">
+          <div className="hidden shrink-0 lg:block">
             <Link
               href="/contact"
-              className={`inline-flex min-h-11 items-center justify-center rounded-full px-5 text-[0.72rem] font-medium uppercase tracking-[0.16em] transition ${
+              className={`inline-flex min-h-11 min-w-[11.5rem] shrink-0 items-center justify-center whitespace-nowrap rounded-full px-5 text-[0.72rem] font-medium uppercase tracking-[0.16em] transition ${
                 transparent
                   ? "border border-white/30 bg-white/10 text-white hover:bg-white/16"
                   : "bg-[var(--color-ink-strong)] text-white hover:bg-[#5f4118]"
