@@ -20,7 +20,7 @@ const featuredStyles = [
   {
     title: "Minimal statement",
     body: "For brides drawn to precision, clean lines, and a more understated kind of drama.",
-    image: "/site-assets/an2211.jpg",
+    image: "/site-assets/an2221.jpg",
   },
   {
     title: "Soft couture",
