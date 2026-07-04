@@ -37,7 +37,7 @@ export function SiteHeader() {
       return "border-transparent bg-transparent text-white";
     }
 
-    return "border-[rgba(111,77,31,0.05)] bg-[rgba(247,240,234,0.36)] text-[var(--color-ink-strong)] shadow-[0_10px_24px_rgba(29,21,16,0.04)] backdrop-blur-xl";
+    return "border-[rgba(111,77,31,0.035)] bg-[rgba(247,240,234,0.07)] text-[var(--color-ink-strong)] shadow-[0_8px_18px_rgba(29,21,16,0.025)] backdrop-blur-xl";
   }, [transparent]);
 
   return (
