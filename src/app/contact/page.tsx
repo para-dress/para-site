@@ -12,16 +12,16 @@ export default function ContactPage() {
     <main>
       <PageHero
         eyebrow="Contact"
-        title="Begin with a private conversation."
-        body="Whether you already have a dress in mind or want calmer guidance first, Para Dress is here to help you move forward with clarity."
+        title="Tell us which dress you love, and we’ll guide you from there."
+        body="Whether you already have a favourite style or need help choosing the right one, Para Dress is here to support you with clear, personal guidance."
       />
 
       <section className="bg-[var(--color-cream)] px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-5xl overflow-hidden rounded-[2rem] border border-[rgba(111,77,31,0.1)] bg-[var(--color-ink-strong)] text-white shadow-[0_24px_80px_rgba(43,29,16,0.12)]">
           <div className="grid gap-0 lg:grid-cols-[1fr_0.8fr]">
             <div className="space-y-6 px-6 py-8 sm:px-10 sm:py-10 lg:px-12 lg:py-12">
-              <h2 className="font-display text-4xl leading-[1.02] sm:text-5xl">Request a consultation</h2>
-              <p className="max-w-2xl text-base leading-8 text-white/76 sm:text-lg">Tell us what kind of gown you are looking for, and we will reply with personal guidance.</p>
+              <h2 className="font-display text-4xl leading-[1.02] sm:text-5xl">Send your enquiry</h2>
+              <p className="max-w-2xl text-base leading-8 text-white/76 sm:text-lg">Tell us what kind of gown you’re looking for, and we’ll reply with personal guidance on styles, sizing, and next steps.</p>
               <ContactForm />
               <div className="space-y-4 pt-1">
                 <div className="flex items-center gap-4 text-white/46">
@@ -30,7 +30,7 @@ export default function ContactPage() {
                   <span className="h-px flex-1 bg-white/12" />
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                  <a href="mailto:hello@paradress.co.uk?subject=Para%20Dress%20Consultation" className="inline-flex min-h-13 items-center justify-center rounded-full border border-white/20 bg-white/6 px-7 text-sm font-medium uppercase tracking-[0.16em] text-white transition hover:bg-white/10">
+                  <a href="mailto:hello@paradress.co.uk?subject=Para%20Dress%20Enquiry" className="inline-flex min-h-13 items-center justify-center rounded-full border border-white/20 bg-white/6 px-7 text-sm font-medium uppercase tracking-[0.16em] text-white transition hover:bg-white/10">
                     Email us
                   </a>
                   <a href="https://instagram.com/para.dress" target="_blank" rel="noreferrer" className="inline-flex min-h-13 items-center justify-center rounded-full border border-white/20 bg-white/6 px-7 text-sm font-medium uppercase tracking-[0.16em] text-white transition hover:bg-white/10">

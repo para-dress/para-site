@@ -21,7 +21,7 @@ export default function DeliveryReturnsPage() {
       <PageHero
         eyebrow="Delivery & Returns"
         title="Clear expectations, handled with care."
-        body="We believe luxury should also feel transparent, especially when it comes to timing, deposits, and ordering terms."
+        body="We believe bridal ordering should feel transparent, especially when it comes to timing, deposits, and returns terms."
       />
 
       <section className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
@@ -32,6 +32,9 @@ export default function DeliveryReturnsPage() {
               <p className="mt-3 max-w-2xl text-base leading-8 text-[var(--color-muted)] sm:text-lg">{item.body}</p>
             </div>
           ))}
+          <p className="max-w-2xl pt-2 text-base leading-8 text-[var(--color-muted)] sm:text-lg">
+            Because wedding timing matters, we always recommend ordering as early as possible before your wedding date.
+          </p>
         </div>
       </section>
     </main>

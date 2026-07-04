@@ -5,17 +5,17 @@ import { PageHero } from "@/components/site/PageHero";
 const collectionItems = [
   {
     title: "Modern Minimal",
-    description: "Clean lines, sculpted silhouettes, and a more architectural bridal mood.",
+    description: "Clean lines and sculpted silhouettes for brides who love understated elegance and a more modern bridal mood.",
     image: "/site-assets/an3002.jpg",
   },
   {
     title: "Romantic Detail",
-    description: "Texture, embellishment, and softer gowns with couture feeling.",
+    description: "Texture, detail, and softer gowns for brides who want a more romantic and expressive feel.",
     image: "/site-assets/an3001.jpg",
   },
   {
     title: "New arrivals",
-    description: "Recently added styles chosen for their balance of femininity and refinement.",
+    description: "Recently added styles chosen for their femininity, refinement, and premium bridal presence.",
     image: "/site-assets/an2211.jpg",
   },
 ];
@@ -25,8 +25,8 @@ export default function CollectionsPage() {
     <main>
       <PageHero
         eyebrow="Collections"
-        title="A curated bridal wardrobe with two distinct moods."
-        body="Explore cleaner modern silhouettes and more romantic statement gowns, all guided by the same refined Para Dress point of view."
+        title="Explore bridal styles that feel elevated, feminine, and special."
+        body="From cleaner modern silhouettes to softer romantic gowns, each Para Dress style is chosen to help brides find the look that feels most like them."
       />
 
       <section className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
@@ -49,10 +49,10 @@ export default function CollectionsPage() {
         <div className="mx-auto max-w-3xl space-y-5 text-center">
           <p className="text-[0.72rem] uppercase tracking-[0.3em] text-[var(--color-muted)]">Need guidance?</p>
           <h2 className="font-display text-4xl leading-[1] text-[var(--color-ink-strong)] sm:text-5xl">Not sure which direction feels most like you?</h2>
-          <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">Start with a consultation and we will guide you toward silhouettes that suit your style, timing, and measurements.</p>
+          <p className="text-base leading-8 text-[var(--color-muted)] sm:text-lg">Tell us which styles you love, and we’ll help you choose the right direction for your style, timing, and sizing needs.</p>
           <div className="pt-2">
             <Link href="/contact" className="inline-flex min-h-13 items-center justify-center rounded-full bg-[var(--color-ink-strong)] px-7 text-sm font-medium uppercase tracking-[0.16em] text-white transition hover:bg-[#5f4118]">
-              Book Consultation
+              Enquire Now
             </Link>
           </div>
         </div>

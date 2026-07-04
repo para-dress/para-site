@@ -14,8 +14,20 @@ const faqItems = [
     answer: "Up to 50 days for standard sizing and up to 60 days for custom sizing.",
   },
   {
+    question: "What deposit is required?",
+    answer: "A 50% deposit is required to begin production once your style, sizing direction, and details are confirmed.",
+  },
+  {
+    question: "Can I return a custom-sized dress?",
+    answer: "Custom-sized dresses are non-returnable because they are made to the bride’s measurements.",
+  },
+  {
+    question: "How do I choose the right size?",
+    answer: "We guide each bride through sizing and measurements personally before production begins.",
+  },
+  {
     question: "How does ordering work?",
-    answer: "We guide you through style choice, sizing, and measurements personally before production begins.",
+    answer: "Choose the styles you love, send us your enquiry, and we will guide you on sizing, measurements, timing, and the next steps before your order begins.",
   },
 ];
 
@@ -24,8 +36,8 @@ export default function FaqPage() {
     <main>
       <PageHero
         eyebrow="FAQ"
-        title="The practical details, kept clear and supportive."
-        body="If you are ordering a wedding dress online, reassurance matters. Here are the answers brides ask for most often."
+        title="The details brides usually want to know first."
+        body="Ordering a wedding dress online should feel clear and reassuring. Here are the answers to the questions we hear most often."
       />
 
       <section className="bg-white px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
