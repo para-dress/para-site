@@ -16,7 +16,7 @@ const collectionItems = [
   {
     title: "New arrivals",
     description: "Recently added styles chosen for their femininity, refinement, and premium bridal presence.",
-    image: "/site-assets/an2211.jpg",
+    image: "/site-assets/an2221.jpg",
   },
 ];
 
