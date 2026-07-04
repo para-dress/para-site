@@ -163,10 +163,10 @@ export default function Home() {
           </div>
 
           <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
-            {featuredCollections.map((item, index) => (
+            {featuredCollections.map((item) => (
               <article key={item.title} className="space-y-5">
-                <div className={`relative aspect-[0.85/1] overflow-hidden bg-[var(--color-blush)] ${index === 1 ? "lg:mt-16" : ""}`}>
-                  <Image src={item.image} alt={item.alt} fill className="object-contain object-center" sizes="(max-width: 1023px) 100vw, 50vw" />
+                <div className="relative aspect-[0.85/1] overflow-hidden">
+                  <Image src={item.image} alt={item.alt} fill className="object-cover object-center" sizes="(max-width: 1023px) 100vw, 50vw" />
                 </div>
                 <div className="max-w-md space-y-3">
                   <h3 className="font-display text-3xl text-[var(--color-ink-strong)] sm:text-4xl">{item.title}</h3>
