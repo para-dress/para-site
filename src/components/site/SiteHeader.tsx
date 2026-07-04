@@ -73,7 +73,7 @@ export function SiteHeader() {
             />
           </Link>
 
-          <nav className="hidden items-center gap-7 lg:flex">
+          <nav className="hidden items-center gap-5 xl:flex">
             {navItems.map((item) => {
               const active = isActive(pathname, item.href);
 
@@ -98,7 +98,7 @@ export function SiteHeader() {
             })}
           </nav>
 
-          <div className="hidden shrink-0 lg:block">
+          <div className="hidden shrink-0 xl:block">
             <Link
               href="/contact"
               className={`inline-flex min-h-11 min-w-[11.5rem] shrink-0 items-center justify-center whitespace-nowrap rounded-full px-5 text-[0.72rem] font-medium uppercase tracking-[0.16em] transition ${
@@ -116,7 +116,7 @@ export function SiteHeader() {
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((value) => !value)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-current/15 lg:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-current/15 xl:hidden"
           >
             <span className="relative h-3.5 w-4">
               <span
@@ -140,7 +140,7 @@ export function SiteHeader() {
       </header>
 
       <div
-        className={`fixed inset-0 z-40 flex lg:hidden ${
+        className={`fixed inset-0 z-40 flex xl:hidden ${
           menuOpen ? "pointer-events-auto" : "pointer-events-none"
         }`}
       >
