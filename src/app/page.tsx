@@ -166,7 +166,7 @@ export default function Home() {
             {featuredCollections.map((item) => (
               <article key={item.title} className="space-y-5">
                 <div className="relative aspect-[0.85/1] overflow-hidden">
-                  <Image src={item.image} alt={item.alt} fill className="object-cover object-center" sizes="(max-width: 1023px) 100vw, 50vw" />
+                  <Image src={item.image} alt={item.alt} fill className="object-contain object-center" sizes="(max-width: 1023px) 100vw, 50vw" />
                 </div>
                 <div className="max-w-md space-y-3">
                   <h3 className="font-display text-3xl text-[var(--color-ink-strong)] sm:text-4xl">{item.title}</h3>
@@ -193,8 +193,8 @@ export default function Home() {
           <div className="grid gap-6 lg:grid-cols-3">
             {featuredStyles.map((item) => (
               <article key={item.title} className="space-y-4">
-                <div className="relative aspect-[0.9/1] overflow-hidden bg-[#efe4dc]">
-                  <Image src={item.image} alt={item.title} fill className="object-cover object-center" sizes="(max-width: 1023px) 100vw, 33vw" />
+                <div className="relative aspect-[0.9/1] overflow-hidden">
+                  <Image src={item.image} alt={item.title} fill className="object-contain object-center" sizes="(max-width: 1023px) 100vw, 33vw" />
                 </div>
                 <div className="space-y-2">
                   <p className="text-[0.72rem] uppercase tracking-[0.26em] text-[var(--color-muted)]">{item.title}</p>

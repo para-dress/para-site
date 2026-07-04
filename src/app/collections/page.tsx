@@ -33,7 +33,7 @@ export default function CollectionsPage() {
         <div className="mx-auto grid max-w-[var(--site-max-width)] gap-10 lg:grid-cols-3">
           {collectionItems.map((item) => (
             <article key={item.title} className="space-y-5">
-              <div className="relative aspect-[0.86/1] overflow-hidden bg-[var(--color-blush)]">
+              <div className="relative aspect-[0.86/1] overflow-hidden">
                 <Image src={item.image} alt={item.title} fill className="object-contain object-center" sizes="(max-width: 1023px) 100vw, 33vw" />
               </div>
               <div className="space-y-3">
