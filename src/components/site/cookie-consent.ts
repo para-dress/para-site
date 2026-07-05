@@ -4,7 +4,7 @@ export type CookieConsent = {
   updatedAt: string;
 };
 
-export const COOKIE_CONSENT_KEY = "para_dress_cookie_consent";
+export const COOKIE_CONSENT_KEY = "para_dress_cookie_consent_v2";
 export const COOKIE_CONSENT_EVENT = "para-dress-cookie-consent";
 export const COOKIE_PREFERENCES_OPEN_EVENT = "para-dress-cookie-preferences-open";
 
