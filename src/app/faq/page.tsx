@@ -11,7 +11,7 @@ const faqItems = [
   },
   {
     question: "How long does production take?",
-    answer: "Up to 50 days for standard sizing and up to 60 days for custom sizing.",
+    answer: "From 21 working days up to 50 working days for standard sizing, and from 21 working days up to 60 working days for custom sizing (depending on current production workload).",
   },
   {
     question: "What deposit is required?",
