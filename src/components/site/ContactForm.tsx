@@ -85,6 +85,9 @@ export function ContactForm() {
       >
         {status.type === "loading" ? "Sending..." : "Send enquiry"}
       </button>
+      <p className="text-sm leading-6 text-white/60">
+        By submitting this form, you agree that we may use your details to reply to your enquiry in line with our <a href="/privacy-policy" className="underline underline-offset-4 transition hover:text-white">Privacy Policy</a>.
+      </p>
       {status.type === "success" ? (
         <p className="text-sm leading-6 text-[#d8f0d2]">{status.message}</p>
       ) : null}

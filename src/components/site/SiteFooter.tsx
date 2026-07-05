@@ -49,6 +49,9 @@ export function SiteFooter() {
               <a href="https://instagram.com/para.dress" target="_blank" rel="noreferrer" className="block transition hover:text-[var(--color-ink-strong)]">
                 Instagram
               </a>
+              <Link href="/privacy-policy" className="block transition hover:text-[var(--color-ink-strong)]">
+                Privacy Policy
+              </Link>
             </div>
           </div>
         </div>
