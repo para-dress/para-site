@@ -152,7 +152,7 @@ export default function PrivacyPolicyPage() {
           </div>
           <Link
             href="/contact"
-            className="inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--color-cream)] px-6 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-strong)] transition hover:bg-white"
+            className="inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--color-cream)] px-6 text-center text-sm font-semibold uppercase tracking-[0.16em] text-[#6b4a16] shadow-[0_8px_24px_rgba(18,12,8,0.12)] transition hover:bg-white hover:text-[#5a3d12]"
           >
             Contact Para Dress
           </Link>
