@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import {
   COOKIE_CONSENT_EVENT,
   COOKIE_PREFERENCES_OPEN_EVENT,
@@ -15,68 +15,77 @@ const makeConsent = (analytics: boolean): CookieConsent => ({
   updatedAt: new Date().toISOString(),
 });
 
-function subscribeToConsent(onStoreChange: () => void) {
-  if (typeof window === "undefined") return () => {};
-
-  const handler = () => onStoreChange();
-  window.addEventListener(COOKIE_CONSENT_EVENT, handler);
-  window.addEventListener("storage", handler);
-
-  return () => {
-    window.removeEventListener(COOKIE_CONSENT_EVENT, handler);
-    window.removeEventListener("storage", handler);
-  };
-}
-
-function getConsentSnapshot() {
-  return readCookieConsent();
-}
-
-function getConsentServerSnapshot() {
-  return null;
-}
-
-function subscribeToClient() {
-  return () => {};
-}
-
 export function CookieBanner() {
-  const consent = useSyncExternalStore(
-    subscribeToConsent,
-    getConsentSnapshot,
-    getConsentServerSnapshot,
-  );
-  const isClient = useSyncExternalStore(
-    subscribeToClient,
-    () => true,
-    () => false,
-  );
+  const [savedConsent, setSavedConsent] = useState<CookieConsent | null>(null);
   const [manageOpen, setManageOpen] = useState(false);
   const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const handleOpenPreferences = () => {
-      const current = readCookieConsent();
-      setAnalyticsEnabled(current?.analytics ?? false);
-      setManageOpen(true);
+    const start = () => {
+      const existing = readCookieConsent();
+      setSavedConsent(existing);
+      setAnalyticsEnabled(existing?.analytics ?? false);
+      setReady(true);
     };
 
+    const timeout = window.setTimeout(start, 0);
+
+    const handleConsentChange = () => {
+      const current = readCookieConsent();
+      setSavedConsent(current);
+      setAnalyticsEnabled(current?.analytics ?? false);
+      setManageOpen(false);
+    };
+
+    const handleOpenPreferences = () => {
+      const current = readCookieConsent();
+      setSavedConsent(current);
+      setAnalyticsEnabled(current?.analytics ?? false);
+      setManageOpen(true);
+      setReady(true);
+    };
+
+    window.addEventListener(COOKIE_CONSENT_EVENT, handleConsentChange);
     window.addEventListener(COOKIE_PREFERENCES_OPEN_EVENT, handleOpenPreferences);
+
     return () => {
+      window.clearTimeout(timeout);
+      window.removeEventListener(COOKIE_CONSENT_EVENT, handleConsentChange);
       window.removeEventListener(COOKIE_PREFERENCES_OPEN_EVENT, handleOpenPreferences);
     };
   }, []);
 
-  if (!isClient) return null;
+  if (!ready) return null;
 
-  const shouldShow = !consent || manageOpen;
+  const shouldShow = !savedConsent || manageOpen;
   if (!shouldShow) return null;
 
-  const acceptAll = () => saveCookieConsent(makeConsent(true));
-  const acceptEssential = () => saveCookieConsent(makeConsent(false));
-  const savePreferences = () => saveCookieConsent(makeConsent(analyticsEnabled));
+  const acceptAll = () => {
+    const consent = makeConsent(true);
+    setSavedConsent(consent);
+    setAnalyticsEnabled(true);
+    setManageOpen(false);
+    saveCookieConsent(consent);
+  };
+
+  const acceptEssential = () => {
+    const consent = makeConsent(false);
+    setSavedConsent(consent);
+    setAnalyticsEnabled(false);
+    setManageOpen(false);
+    saveCookieConsent(consent);
+  };
+
+  const savePreferences = () => {
+    const consent = makeConsent(analyticsEnabled);
+    setSavedConsent(consent);
+    setManageOpen(false);
+    saveCookieConsent(consent);
+  };
+
   const openManage = () => {
-    setAnalyticsEnabled(consent?.analytics ?? false);
+    setAnalyticsEnabled(savedConsent?.analytics ?? false);
     setManageOpen(true);
   };
 

@@ -48,13 +48,16 @@ export function saveCookieConsent(consent: CookieConsent) {
   try {
     window.localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(consent));
   } catch {
-    // Some in-app or privacy-restricted browsers may block localStorage writes.
-    // Keep consent in memory for the current session instead of crashing.
+    // Some in-app browsers block storage. Keep in memory for this session.
   }
 
-  window.dispatchEvent(
-    new CustomEvent<CookieConsent>(COOKIE_CONSENT_EVENT, { detail: consent }),
-  );
+  try {
+    window.dispatchEvent(
+      new CustomEvent<CookieConsent>(COOKIE_CONSENT_EVENT, { detail: consent }),
+    );
+  } catch {
+    window.dispatchEvent(new Event(COOKIE_CONSENT_EVENT));
+  }
 }
 
 export function openCookiePreferences() {
