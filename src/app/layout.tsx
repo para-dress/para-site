@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Geist_Mono, Manrope } from "next/font/google";
+import { CookieBanner } from "@/components/site/CookieBanner";
+import { GoogleAnalytics } from "@/components/site/GoogleAnalytics";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import "./globals.css";
@@ -36,9 +38,11 @@ export default function RootLayout({
       className={`${bodySans.variable} ${displaySerif.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-[var(--background)] flex flex-col">
+        <GoogleAnalytics />
         <SiteHeader />
         <div className="flex-1">{children}</div>
         <SiteFooter />
+        <CookieBanner />
       </body>
     </html>
   );

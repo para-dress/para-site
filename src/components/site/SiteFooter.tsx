@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CookieSettingsButton } from "@/components/site/CookieSettingsButton";
 import { navItems } from "@/components/site/site-data";
 
 export function SiteFooter() {
@@ -52,6 +53,10 @@ export function SiteFooter() {
               <Link href="/privacy-policy" className="block transition hover:text-[var(--color-ink-strong)]">
                 Privacy Policy
               </Link>
+              <Link href="/terms-conditions" className="block transition hover:text-[var(--color-ink-strong)]">
+                Terms & Conditions
+              </Link>
+              <CookieSettingsButton />
             </div>
           </div>
         </div>
