@@ -19,10 +19,35 @@ export function SiteHeader() {
   const transparent = pathname === "/" && !isScrolled && !menuOpen;
 
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 24);
-    onScroll();
+    let frame = 0;
+
+    const updateScrollState = () => {
+      const y = window.scrollY;
+
+      setIsScrolled((current) => {
+        if (current) {
+          return y > 32;
+        }
+
+        return y > 88;
+      });
+    };
+
+    const onScroll = () => {
+      if (frame) return;
+
+      frame = window.requestAnimationFrame(() => {
+        updateScrollState();
+        frame = 0;
+      });
+    };
+
+    updateScrollState();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -44,7 +69,7 @@ export function SiteHeader() {
     <>
       <header className="fixed inset-x-0 top-0 z-50 px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
         <div
-          className={`mx-auto flex max-w-[var(--site-max-width)] items-center justify-between rounded-full border px-5 py-3 transition-all duration-500 sm:px-6 lg:px-8 ${headerClass}`}
+          className={`mx-auto flex max-w-[var(--site-max-width)] items-center justify-between rounded-full border px-5 py-3 transition-[background-color,border-color,color,box-shadow,backdrop-filter] duration-700 ease-out sm:px-6 lg:px-8 ${headerClass}`}
         >
           <Link href="/" className="relative block h-12 w-[8.6rem] sm:h-14 sm:w-[10.5rem] lg:h-16 lg:w-[12rem]">
             <Image
@@ -53,7 +78,7 @@ export function SiteHeader() {
               width={759}
               height={400}
               priority
-              className={`absolute left-0 top-1/2 h-auto w-[8.6rem] -translate-y-1/2 transition-all duration-500 sm:w-[10.5rem] lg:w-[12rem] ${
+              className={`absolute left-0 top-1/2 h-auto w-[8.6rem] -translate-y-1/2 transition-all duration-700 ease-out sm:w-[10.5rem] lg:w-[12rem] ${
                 transparent
                   ? "scale-100 opacity-100"
                   : "pointer-events-none scale-90 opacity-0"
@@ -65,7 +90,7 @@ export function SiteHeader() {
               width={345}
               height={341}
               priority
-              className={`absolute left-0 top-1/2 h-auto w-10 -translate-y-1/2 transition-all duration-500 sm:w-11 lg:w-12 ${
+              className={`absolute left-0 top-1/2 h-auto w-10 -translate-y-1/2 transition-all duration-700 ease-out sm:w-11 lg:w-12 ${
                 transparent
                   ? "pointer-events-none scale-75 opacity-0"
                   : "scale-100 opacity-100"
