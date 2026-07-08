@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Geist_Mono, Manrope } from "next/font/google";
 import { CookieBanner } from "@/components/site/CookieBanner";
 import { GoogleAnalytics } from "@/components/site/GoogleAnalytics";
-import { SiteFooter } from "@/components/site/SiteFooter";
-import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteChrome } from "@/components/site/SiteChrome";
 import "./globals.css";
 
 const bodySans = Manrope({
@@ -69,10 +68,7 @@ export default function RootLayout({
     >
       <body className="min-h-full bg-[var(--background)] flex flex-col">
         <GoogleAnalytics />
-        <SiteHeader />
-        <div className="flex-1">{children}</div>
-        <SiteFooter />
-        <CookieBanner />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );
