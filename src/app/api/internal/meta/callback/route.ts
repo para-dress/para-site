@@ -1,6 +1,13 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { META_CONNECT_STATE_COOKIE } from "@/lib/meta-connect";
+import {
+  META_CONNECT_STATE_COOKIE,
+  exchangeMetaCodeForToken,
+  fetchInstagramAccountForPage,
+  fetchMetaPages,
+  fetchMetaUserProfile,
+} from "@/lib/meta-connect";
+import { writeStoredMetaConnection } from "@/lib/meta-connect-storage";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -21,7 +28,62 @@ export async function GET(request: Request) {
     return NextResponse.redirect(redirectUrl, { status: 303 });
   }
 
-  redirectUrl.searchParams.set("connect", "code-received");
+  try {
+    const now = new Date().toISOString();
+    const token = await exchangeMetaCodeForToken(code);
+    const user = await fetchMetaUserProfile(token.access_token);
+    const pages = await fetchMetaPages(token.access_token);
+    const selectedPage = pages[0];
+    const instagramAccount = selectedPage
+      ? await fetchInstagramAccountForPage(selectedPage).catch(() => null)
+      : null;
+
+    await writeStoredMetaConnection({
+      status: "connected",
+      connectedAt: now,
+      updatedAt: now,
+      user,
+      token: {
+        accessToken: token.access_token,
+        tokenType: token.token_type,
+        expiresIn: token.expires_in,
+      },
+      page: selectedPage
+        ? {
+            id: selectedPage.id,
+            name: selectedPage.name,
+            accessToken: selectedPage.access_token,
+            tasks: selectedPage.tasks,
+          }
+        : undefined,
+      instagramAccount: instagramAccount
+        ? {
+            id: instagramAccount.id,
+            username: instagramAccount.username,
+            name: instagramAccount.name,
+            profilePictureUrl: instagramAccount.profile_picture_url,
+          }
+        : undefined,
+      pageOptions: pages.map((page) => ({
+        id: page.id,
+        name: page.name,
+      })),
+    });
+
+    redirectUrl.searchParams.set("connect", "connected");
+  } catch (callbackError) {
+    await writeStoredMetaConnection({
+      status: "error",
+      updatedAt: new Date().toISOString(),
+      lastError:
+        callbackError instanceof Error
+          ? callbackError.message
+          : "Unexpected Meta callback error.",
+    });
+
+    redirectUrl.searchParams.set("connect", "exchange-failed");
+  }
+
   const response = NextResponse.redirect(redirectUrl, { status: 303 });
   response.cookies.set({
     name: META_CONNECT_STATE_COOKIE,

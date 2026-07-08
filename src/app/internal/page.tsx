@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { dashboardAccount, dashboardConversations } from "@/lib/internal-dashboard";
+import { getMetaConnectionSnapshot } from "@/lib/meta-connect-storage";
 
-export default function InternalDashboardPage() {
+export default async function InternalDashboardPage() {
+  const connection = await getMetaConnectionSnapshot();
+
   return (
     <div className="space-y-6">
       <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
@@ -22,10 +25,18 @@ export default function InternalDashboardPage() {
             {[
               {
                 label: "Connected account",
-                value: dashboardAccount.username,
+                value: connection?.instagramAccount?.username
+                  ? `@${connection.instagramAccount.username}`
+                  : dashboardAccount.username,
               },
               { label: "Conversations", value: String(dashboardConversations.length) },
-              { label: "Connection", value: dashboardAccount.connectionStatus },
+              {
+                label: "Connection",
+                value:
+                  connection?.status === "connected"
+                    ? "Live token stored"
+                    : dashboardAccount.connectionStatus,
+              },
             ].map((item) => (
               <div
                 key={item.label}
@@ -47,11 +58,11 @@ export default function InternalDashboardPage() {
             Meta review flow
           </p>
           <ol className="mt-4 space-y-4 text-sm leading-7 text-[var(--color-ink-strong)]">
-            <li>1. Sign in to the internal dashboard</li>
-            <li>2. Open the connected Instagram business account</li>
-            <li>3. Verify account profile details</li>
-            <li>4. Open inbox and view a conversation</li>
-            <li>5. Draft or send a reply from the dashboard</li>
+            <li>1. Sign in to the internal dashboard.</li>
+            <li>2. Open Instagram Account and confirm the connected profile details.</li>
+            <li>3. Verify that the Meta token was stored server-side.</li>
+            <li>4. Open Inbox and review a conversation thread.</li>
+            <li>5. Draft or send a reply from the dashboard composer.</li>
           </ol>
         </div>
       </section>
@@ -69,7 +80,7 @@ export default function InternalDashboardPage() {
           </h3>
           <p className="mt-3 text-sm leading-7 text-[var(--color-muted)]">
             Show the connected Instagram username, business status, profile image,
-            account ID, and connection state.
+            account ID, selected Facebook Page, and connection state.
           </p>
         </Link>
 

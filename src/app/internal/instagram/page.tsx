@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { dashboardAccount } from "@/lib/internal-dashboard";
 import { getMetaConnectStatus } from "@/lib/meta-connect";
+import { getMetaConnectionSnapshot } from "@/lib/meta-connect-storage";
 
 export default async function InternalInstagramPage({
   searchParams,
@@ -10,6 +11,36 @@ export default async function InternalInstagramPage({
 }) {
   const params = await searchParams;
   const connectStatus = getMetaConnectStatus();
+  const connection = await getMetaConnectionSnapshot();
+  const connectedProfile = connection?.instagramAccount;
+  const profileUsername = connectedProfile?.username
+    ? `@${connectedProfile.username.replace(/^@/, "")}`
+    : dashboardAccount.username;
+  const profileName = connectedProfile?.name || dashboardAccount.businessName;
+  const connectionLabel =
+    connection?.status === "connected"
+      ? "Connected and token stored"
+      : dashboardAccount.connectionStatus;
+  const connectedAt = connection?.connectedAt
+    ? `${new Date(connection.connectedAt).toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "UTC",
+      })} UTC`
+    : dashboardAccount.connectedAt;
+  const connectMessage =
+    params.connect === "connected"
+      ? "Instagram authorization completed and the Meta token was stored on the server."
+      : params.connect === "exchange-failed"
+        ? `Instagram authorization returned, but the server-side token exchange failed${connection?.lastError ? `: ${connection.lastError}` : "."}`
+        : params.connect === "error"
+          ? "Meta returned an OAuth error before the token exchange finished."
+          : params.connect === "invalid-state"
+            ? "The callback reached the dashboard without a valid login state cookie."
+            : null;
 
   return (
     <div className="space-y-6">
@@ -33,7 +64,7 @@ export default async function InternalInstagramPage({
             href="/api/internal/meta/connect"
             className="rounded-full bg-[var(--color-ink-strong)] px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white"
           >
-            Connect Instagram
+            {connection?.status === "connected" ? "Reconnect Instagram" : "Connect Instagram"}
           </Link>
         </div>
 
@@ -52,11 +83,60 @@ export default async function InternalInstagramPage({
           </div>
         ) : null}
 
-        {params.connect ? (
+        {connectMessage ? (
           <div className="mt-4 rounded-[1.5rem] bg-[rgba(157,122,63,0.08)] p-4 text-sm text-[var(--color-ink-strong)]">
-            OAuth callback status: {params.connect}
+            {connectMessage}
           </div>
         ) : null}
+      </section>
+
+      <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="rounded-[2rem] border border-[rgba(157,122,63,0.14)] bg-white p-6 shadow-[0_20px_60px_rgba(39,27,16,0.05)]">
+          <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">
+            Meta review guide
+          </p>
+          <h3 className="mt-3 text-2xl font-semibold text-[var(--color-ink-strong)]">
+            Suggested reviewer walkthrough
+          </h3>
+          <ol className="mt-4 space-y-4 text-sm leading-7 text-[var(--color-ink-strong)]">
+            {[
+              "Open Instagram account overview and confirm the connected business profile.",
+              "Open Messages to review the inbox list and conversation detail screen.",
+              "Use the in-dashboard reply composer to demonstrate the response workflow.",
+            ].map((step, index) => (
+              <li key={step} className="flex gap-3">
+                <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[rgba(157,122,63,0.12)] text-xs font-semibold">
+                  {index + 1}
+                </span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <div className="rounded-[2rem] border border-[rgba(157,122,63,0.14)] bg-white p-6 shadow-[0_20px_60px_rgba(39,27,16,0.05)]">
+          <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">
+            Server-side connect status
+          </p>
+          <div className="mt-4 space-y-3 rounded-[1.5rem] bg-[rgba(247,240,234,0.56)] p-4 text-sm leading-7 text-[var(--color-ink-strong)]">
+            <p>
+              <span className="font-semibold">Token stored:</span>{" "}
+              {connection?.hasToken ? "Yes" : "No"}
+            </p>
+            <p>
+              <span className="font-semibold">Selected Facebook Page:</span>{" "}
+              {connection?.page?.name || "Not captured yet"}
+            </p>
+            <p>
+              <span className="font-semibold">Connected by:</span>{" "}
+              {connection?.user?.name || "Not captured yet"}
+            </p>
+            <p>
+              <span className="font-semibold">Available pages in token:</span>{" "}
+              {connection?.pageOptions?.length ?? 0}
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
@@ -75,7 +155,7 @@ export default async function InternalInstagramPage({
                 Connected profile
               </p>
               <h3 className="mt-2 text-2xl font-semibold text-[var(--color-ink-strong)]">
-                {dashboardAccount.username}
+                {profileUsername}
               </h3>
               <p className="mt-1 text-sm text-[var(--color-muted)]">
                 {dashboardAccount.accountType}
@@ -86,15 +166,15 @@ export default async function InternalInstagramPage({
           <div className="mt-6 rounded-[1.5rem] bg-[rgba(244,236,231,0.78)] p-4 text-sm leading-7 text-[var(--color-ink-strong)]">
             <p>
               <span className="font-semibold">Business name:</span>{" "}
-              {dashboardAccount.businessName}
+              {profileName}
             </p>
             <p>
               <span className="font-semibold">Connection status:</span>{" "}
-              {dashboardAccount.connectionStatus}
+              {connectionLabel}
             </p>
             <p>
               <span className="font-semibold">Connected at:</span>{" "}
-              {dashboardAccount.connectedAt}
+              {connectedAt}
             </p>
           </div>
         </div>
@@ -105,10 +185,11 @@ export default async function InternalInstagramPage({
           </p>
           <div className="mt-4 divide-y divide-[rgba(157,122,63,0.12)] rounded-[1.5rem] border border-[rgba(157,122,63,0.12)] bg-[rgba(247,240,234,0.56)]">
             {[
-              ["Instagram username", dashboardAccount.username],
-              ["Instagram account ID", dashboardAccount.accountId],
+              ["Instagram username", profileUsername],
+              ["Instagram account ID", connectedProfile?.id || dashboardAccount.accountId],
               ["Account type", dashboardAccount.accountType],
-              ["Business label", dashboardAccount.businessName],
+              ["Business label", profileName],
+              ["Selected Facebook Page", connection?.page?.name || "Not captured yet"],
             ].map(([label, value]) => (
               <div key={label} className="flex flex-col gap-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-sm font-medium text-[var(--color-muted)]">{label}</p>
