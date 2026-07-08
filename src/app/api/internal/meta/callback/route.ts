@@ -7,7 +7,10 @@ import {
   fetchMetaPages,
   fetchMetaUserProfile,
 } from "@/lib/meta-connect";
-import { writeStoredMetaConnection } from "@/lib/meta-connect-storage";
+import {
+  clearStoredMetaConnection,
+  writeStoredMetaConnection,
+} from "@/lib/meta-connect-storage";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -28,6 +31,8 @@ export async function GET(request: Request) {
     return NextResponse.redirect(redirectUrl, { status: 303 });
   }
 
+  const response = NextResponse.redirect(redirectUrl, { status: 303 });
+
   try {
     const now = new Date().toISOString();
     const token = await exchangeMetaCodeForToken(code);
@@ -38,7 +43,7 @@ export async function GET(request: Request) {
       ? await fetchInstagramAccountForPage(selectedPage).catch(() => null)
       : null;
 
-    await writeStoredMetaConnection({
+    writeStoredMetaConnection(response.cookies, {
       status: "connected",
       connectedAt: now,
       updatedAt: now,
@@ -72,7 +77,8 @@ export async function GET(request: Request) {
 
     redirectUrl.searchParams.set("connect", "connected");
   } catch (callbackError) {
-    await writeStoredMetaConnection({
+    clearStoredMetaConnection(response.cookies);
+    writeStoredMetaConnection(response.cookies, {
       status: "error",
       updatedAt: new Date().toISOString(),
       lastError:
@@ -80,11 +86,10 @@ export async function GET(request: Request) {
           ? callbackError.message
           : "Unexpected Meta callback error.",
     });
-
     redirectUrl.searchParams.set("connect", "exchange-failed");
   }
 
-  const response = NextResponse.redirect(redirectUrl, { status: 303 });
+  response.headers.set("Location", redirectUrl.toString());
   response.cookies.set({
     name: META_CONNECT_STATE_COOKIE,
     value: "",

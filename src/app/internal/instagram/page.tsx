@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { dashboardAccount } from "@/lib/internal-dashboard";
 import { getMetaConnectStatus } from "@/lib/meta-connect";
 import { getMetaConnectionSnapshot } from "@/lib/meta-connect-storage";
@@ -11,7 +12,8 @@ export default async function InternalInstagramPage({
 }) {
   const params = await searchParams;
   const connectStatus = getMetaConnectStatus();
-  const connection = await getMetaConnectionSnapshot();
+  const cookieStore = await cookies();
+  const connection = getMetaConnectionSnapshot(cookieStore);
   const connectedProfile = connection?.instagramAccount;
   const profileUsername = connectedProfile?.username
     ? `@${connectedProfile.username.replace(/^@/, "")}`
@@ -119,22 +121,10 @@ export default async function InternalInstagramPage({
             Server-side connect status
           </p>
           <div className="mt-4 space-y-3 rounded-[1.5rem] bg-[rgba(247,240,234,0.56)] p-4 text-sm leading-7 text-[var(--color-ink-strong)]">
-            <p>
-              <span className="font-semibold">Token stored:</span>{" "}
-              {connection?.hasToken ? "Yes" : "No"}
-            </p>
-            <p>
-              <span className="font-semibold">Selected Facebook Page:</span>{" "}
-              {connection?.page?.name || "Not captured yet"}
-            </p>
-            <p>
-              <span className="font-semibold">Connected by:</span>{" "}
-              {connection?.user?.name || "Not captured yet"}
-            </p>
-            <p>
-              <span className="font-semibold">Available pages in token:</span>{" "}
-              {connection?.pageOptions?.length ?? 0}
-            </p>
+            <p><span className="font-semibold">Token stored:</span> {connection?.hasToken ? "Yes" : "No"}</p>
+            <p><span className="font-semibold">Selected Facebook Page:</span> {connection?.page?.name || "Not captured yet"}</p>
+            <p><span className="font-semibold">Connected by:</span> {connection?.user?.name || "Not captured yet"}</p>
+            <p><span className="font-semibold">Available pages in token:</span> {connection?.pageOptions?.length ?? 0}</p>
           </div>
         </div>
       </section>
@@ -143,46 +133,24 @@ export default async function InternalInstagramPage({
         <div className="rounded-[2rem] border border-[rgba(157,122,63,0.14)] bg-white p-6 shadow-[0_20px_60px_rgba(39,27,16,0.05)]">
           <div className="flex items-center gap-4">
             <div className="relative h-20 w-20 overflow-hidden rounded-full border border-[rgba(157,122,63,0.16)] bg-[rgba(247,240,234,0.7)]">
-              <Image
-                src={dashboardAccount.profileImage}
-                alt="Para Dress Instagram profile"
-                fill
-                className="object-cover"
-              />
+              <Image src={dashboardAccount.profileImage} alt="Para Dress Instagram profile" fill className="object-cover" />
             </div>
             <div>
-              <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">
-                Connected profile
-              </p>
-              <h3 className="mt-2 text-2xl font-semibold text-[var(--color-ink-strong)]">
-                {profileUsername}
-              </h3>
-              <p className="mt-1 text-sm text-[var(--color-muted)]">
-                {dashboardAccount.accountType}
-              </p>
+              <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">Connected profile</p>
+              <h3 className="mt-2 text-2xl font-semibold text-[var(--color-ink-strong)]">{profileUsername}</h3>
+              <p className="mt-1 text-sm text-[var(--color-muted)]">{dashboardAccount.accountType}</p>
             </div>
           </div>
 
           <div className="mt-6 rounded-[1.5rem] bg-[rgba(244,236,231,0.78)] p-4 text-sm leading-7 text-[var(--color-ink-strong)]">
-            <p>
-              <span className="font-semibold">Business name:</span>{" "}
-              {profileName}
-            </p>
-            <p>
-              <span className="font-semibold">Connection status:</span>{" "}
-              {connectionLabel}
-            </p>
-            <p>
-              <span className="font-semibold">Connected at:</span>{" "}
-              {connectedAt}
-            </p>
+            <p><span className="font-semibold">Business name:</span> {profileName}</p>
+            <p><span className="font-semibold">Connection status:</span> {connectionLabel}</p>
+            <p><span className="font-semibold">Connected at:</span> {connectedAt}</p>
           </div>
         </div>
 
         <div className="rounded-[2rem] border border-[rgba(157,122,63,0.14)] bg-white p-6 shadow-[0_20px_60px_rgba(39,27,16,0.05)]">
-          <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">
-            Basic profile data used by the app
-          </p>
+          <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">Basic profile data used by the app</p>
           <div className="mt-4 divide-y divide-[rgba(157,122,63,0.12)] rounded-[1.5rem] border border-[rgba(157,122,63,0.12)] bg-[rgba(247,240,234,0.56)]">
             {[
               ["Instagram username", profileUsername],

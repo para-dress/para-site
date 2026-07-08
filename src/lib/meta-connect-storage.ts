@@ -1,5 +1,5 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
+import type { ResponseCookies } from "next/dist/compiled/@edge-runtime/cookies";
+import type { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 
 export type StoredMetaConnection = {
   status: "connected" | "error";
@@ -38,28 +38,71 @@ export type MetaConnectionSnapshot = Omit<StoredMetaConnection, "token" | "page"
   page?: Omit<NonNullable<StoredMetaConnection["page"]>, "accessToken">;
 };
 
-const metaConnectionPath = path.join(process.cwd(), "data", "meta-connection.json");
+export const META_CONNECTION_COOKIE = "para_meta_connection";
+export const META_TOKEN_COOKIE = "para_meta_token";
 
-export async function readStoredMetaConnection(): Promise<StoredMetaConnection | null> {
+export function readStoredMetaConnection(
+  cookieStore: Pick<ReadonlyRequestCookies, "get">,
+): StoredMetaConnection | null {
   try {
-    const raw = await readFile(metaConnectionPath, "utf8");
-    return JSON.parse(raw) as StoredMetaConnection;
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+    const raw = cookieStore.get(META_CONNECTION_COOKIE)?.value;
+
+    if (!raw) {
       return null;
     }
 
-    throw error;
+    const decoded = Buffer.from(raw, "base64url").toString("utf8");
+    return JSON.parse(decoded) as StoredMetaConnection;
+  } catch {
+    return null;
   }
 }
 
-export async function writeStoredMetaConnection(connection: StoredMetaConnection) {
-  await mkdir(path.dirname(metaConnectionPath), { recursive: true });
-  await writeFile(metaConnectionPath, JSON.stringify(connection, null, 2));
+export function writeStoredMetaConnection(
+  cookieStore: ResponseCookies,
+  connection: StoredMetaConnection,
+) {
+  cookieStore.set({
+    name: META_CONNECTION_COOKIE,
+    value: Buffer.from(JSON.stringify(connection), "utf8").toString("base64url"),
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  });
+
+  if (connection.token?.accessToken) {
+    cookieStore.set({
+      name: META_TOKEN_COOKIE,
+      value: connection.token.accessToken,
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+  }
 }
 
-export async function getMetaConnectionSnapshot(): Promise<MetaConnectionSnapshot | null> {
-  const stored = await readStoredMetaConnection();
+export function clearStoredMetaConnection(cookieStore: ResponseCookies) {
+  for (const name of [META_CONNECTION_COOKIE, META_TOKEN_COOKIE]) {
+    cookieStore.set({
+      name,
+      value: "",
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 0,
+    });
+  }
+}
+
+export function getMetaConnectionSnapshot(
+  cookieStore: Pick<ReadonlyRequestCookies, "get">,
+): MetaConnectionSnapshot | null {
+  const stored = readStoredMetaConnection(cookieStore);
 
   if (!stored) {
     return null;
