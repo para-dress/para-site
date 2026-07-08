@@ -3,12 +3,6 @@ import { NextResponse } from "next/server";
 import { DASHBOARD_COOKIE } from "@/lib/internal-dashboard-constants";
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  if (!pathname.startsWith("/internal") || pathname === "/internal/login") {
-    return NextResponse.next();
-  }
-
   const isAuthenticated = request.cookies.get(DASHBOARD_COOKIE)?.value === "active";
 
   if (isAuthenticated) {
@@ -20,5 +14,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/internal/:path*"],
+  matcher: ["/internal", "/internal/instagram/:path*", "/internal/messages/:path*"],
 };
