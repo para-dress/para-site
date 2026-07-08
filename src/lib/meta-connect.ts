@@ -3,10 +3,7 @@ import crypto from "node:crypto";
 export const META_CONNECT_STATE_COOKIE = "para_meta_connect_state";
 
 export const metaPermissions = [
-  "instagram_basic",
-  "instagram_manage_messages",
   "pages_show_list",
-  "pages_manage_metadata",
   "business_management",
 ] as const;
 
