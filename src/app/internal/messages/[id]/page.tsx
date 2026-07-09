@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { ConversationComposer } from "@/components/internal/ConversationComposer";
 import { findConversation } from "@/lib/internal-dashboard";
+import { fetchLiveConversation } from "@/lib/meta-inbox";
 
 export default async function InternalConversationPage({
   params,
@@ -9,7 +11,12 @@ export default async function InternalConversationPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const conversation = findConversation(id);
+  const cookieStore = await cookies();
+  const liveConversation = await fetchLiveConversation(cookieStore, id);
+  const conversation =
+    liveConversation?.source === "live" && liveConversation.conversation
+      ? liveConversation.conversation
+      : findConversation(id);
 
   if (!conversation) {
     notFound();
@@ -32,9 +39,16 @@ export default async function InternalConversationPage({
             <p className="mt-2 text-sm text-[var(--color-muted)]">{conversation.handle}</p>
           </div>
           <span className="rounded-full bg-[rgba(157,122,63,0.1)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-ink-strong)]">
-            Instagram DM conversation
+            {liveConversation?.source === "live" && liveConversation.conversation
+              ? "Instagram DM conversation · Live"
+              : "Instagram DM conversation · Demo"}
           </span>
         </div>
+        {liveConversation?.warning ? (
+          <div className="mt-4 rounded-[1.25rem] bg-[rgba(157,122,63,0.08)] p-4 text-sm text-[var(--color-ink-strong)]">
+            {liveConversation.warning}
+          </div>
+        ) : null}
       </section>
 
       <section className="rounded-[2rem] border border-[rgba(157,122,63,0.14)] bg-white p-6 shadow-[0_20px_60px_rgba(39,27,16,0.04)]">
@@ -57,7 +71,10 @@ export default async function InternalConversationPage({
         </div>
       </section>
 
-      <ConversationComposer initialDraft={conversation.aiDraft} />
+      <ConversationComposer
+        initialDraft={conversation.aiDraft}
+        source={liveConversation?.source === "live" && liveConversation.conversation ? "live" : "demo"}
+      />
     </div>
   );
 }

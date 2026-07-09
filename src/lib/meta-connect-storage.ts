@@ -40,6 +40,7 @@ export type MetaConnectionSnapshot = Omit<StoredMetaConnection, "token" | "page"
 
 export const META_CONNECTION_COOKIE = "para_meta_connection";
 export const META_TOKEN_COOKIE = "para_meta_token";
+export const META_PAGE_TOKEN_COOKIE = "para_meta_page_token";
 
 export function readStoredMetaConnection(
   cookieStore: Pick<ReadonlyRequestCookies, "get">,
@@ -102,10 +103,22 @@ export function writeStoredMetaConnection(
       maxAge: 60 * 60 * 24 * 7,
     });
   }
+
+  if (connection.page?.accessToken) {
+    cookieStore.set({
+      name: META_PAGE_TOKEN_COOKIE,
+      value: connection.page.accessToken,
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+  }
 }
 
 export function clearStoredMetaConnection(cookieStore: ResponseCookies) {
-  for (const name of [META_CONNECTION_COOKIE, META_TOKEN_COOKIE]) {
+  for (const name of [META_CONNECTION_COOKIE, META_TOKEN_COOKIE, META_PAGE_TOKEN_COOKIE]) {
     cookieStore.set({
       name,
       value: "",

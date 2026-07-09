@@ -4,10 +4,12 @@ import { useState } from "react";
 
 type ConversationComposerProps = {
   initialDraft: string;
+  source?: "live" | "demo";
 };
 
 export function ConversationComposer({
   initialDraft,
+  source = "demo",
 }: ConversationComposerProps) {
   const [draft, setDraft] = useState(initialDraft);
   const [status, setStatus] = useState<"idle" | "drafted" | "sent">("idle");
@@ -46,9 +48,15 @@ export function ConversationComposer({
 
       <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-[var(--color-muted)]">
-          {status === "idle" && "Edit the response, then send it back to Instagram."}
+          {status === "idle" &&
+            (source === "live"
+              ? "Edit the response. The live send action is the next backend step, so this composer is review-only for now."
+              : "Edit the response, then send it back to Instagram.")}
           {status === "drafted" && "AI draft loaded. Review and send when ready."}
-          {status === "sent" && "Reply marked as sent in the dashboard flow."}
+          {status === "sent" &&
+            (source === "live"
+              ? "Reply marked for the next live-send backend pass."
+              : "Reply marked as sent in the dashboard flow.")}
         </p>
         <button
           type="button"

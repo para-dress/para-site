@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { DASHBOARD_COOKIE } from "@/lib/internal-dashboard-constants";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const isAuthenticated = request.cookies.get(DASHBOARD_COOKIE)?.value === "active";
 
   if (isAuthenticated) {
