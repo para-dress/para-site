@@ -12,7 +12,6 @@ export const metaPermissions = [
   "pages_show_list",
   "pages_read_engagement",
   "business_management",
-  "instagram_basic",
 ] as const;
 
 export const META_GRAPH_VERSION = "v23.0";
