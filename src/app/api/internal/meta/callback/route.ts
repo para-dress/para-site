@@ -40,7 +40,7 @@ export async function GET(request: Request) {
     const pages = await fetchMetaPages(token.access_token);
     const selectedPage = pages[0];
     const instagramAccount = selectedPage
-      ? await fetchInstagramAccountForPage(selectedPage).catch(() => null)
+      ? await fetchInstagramAccountForPage(selectedPage, token.access_token).catch(() => null)
       : null;
 
     await writeStoredMetaConnection(response.cookies, {

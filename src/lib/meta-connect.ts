@@ -10,7 +10,9 @@ export const META_CONNECT_STATE_COOKIE = "para_meta_connect_state";
 
 export const metaPermissions = [
   "pages_show_list",
+  "pages_read_engagement",
   "business_management",
+  "instagram_basic",
 ] as const;
 
 export const META_GRAPH_VERSION = "v23.0";
@@ -117,21 +119,47 @@ export async function fetchMetaPages(accessToken: string) {
   return data.data ?? [];
 }
 
-export async function fetchInstagramAccountForPage(page: MetaPage) {
-  if (!page.access_token) {
+export async function fetchInstagramAccountForPage(
+  page: MetaPage,
+  userAccessToken?: string,
+) {
+  const candidateTokens = Array.from(
+    new Set([page.access_token, userAccessToken].filter(Boolean) as string[]),
+  );
+
+  if (candidateTokens.length === 0) {
     return null;
   }
 
-  const params = new URLSearchParams({
-    access_token: page.access_token,
-    fields:
-      "instagram_business_account{id,username,name,profile_picture_url},connected_instagram_account{id,username,name,profile_picture_url}",
-  });
+  let lastError: unknown = null;
 
-  const data = await fetchMetaJson<{
-    instagram_business_account?: MetaInstagramAccount;
-    connected_instagram_account?: MetaInstagramAccount;
-  }>(`/${page.id}`, params);
+  for (const token of candidateTokens) {
+    try {
+      const params = new URLSearchParams({
+        access_token: token,
+        fields:
+          "instagram_business_account{id,username,name,profile_picture_url},connected_instagram_account{id,username,name,profile_picture_url}",
+      });
 
-  return data.instagram_business_account ?? data.connected_instagram_account ?? null;
+      const data = await fetchMetaJson<{
+        instagram_business_account?: MetaInstagramAccount;
+        connected_instagram_account?: MetaInstagramAccount;
+      }>(`/${page.id}`, params);
+
+      const instagramAccount =
+        data.instagram_business_account ?? data.connected_instagram_account ?? null;
+
+      if (instagramAccount) {
+        return instagramAccount;
+      }
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  if (lastError) {
+    throw lastError;
+  }
+
+  return null;
 }
