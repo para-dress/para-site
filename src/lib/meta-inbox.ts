@@ -1,10 +1,10 @@
 import type { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 import {
   META_PAGE_TOKEN_COOKIE,
-  META_TOKEN_COOKIE,
-  getMetaConnectionSnapshot,
+  readStoredMetaConnection,
 } from "@/lib/meta-connect-storage";
 import { META_GRAPH_VERSION } from "@/lib/meta-connect";
+import { hasSharedMetaStorageConfig } from "@/lib/meta-shared-storage";
 import type { Conversation } from "@/lib/internal-dashboard";
 
 type MetaParticipant = {
@@ -114,18 +114,37 @@ async function fetchConversationMessages(token: string, conversationId: string) 
 export async function fetchLiveInbox(
   cookieStore: Pick<ReadonlyRequestCookies, "get">,
 ): Promise<InboxResult | null> {
-  const connection = getMetaConnectionSnapshot(cookieStore);
+  const { connection, source } = await readStoredMetaConnection(cookieStore);
   const instagramAccountId = connection?.instagramAccount?.id;
-  const pageToken = cookieStore.get(META_PAGE_TOKEN_COOKIE)?.value;
+  const pageAccessToken =
+    source === "shared"
+      ? connection?.page?.accessToken
+      : cookieStore.get(META_PAGE_TOKEN_COOKIE)?.value;
   const brandId = connection?.instagramAccount?.id;
 
-  if (!instagramAccountId || !pageToken) {
-    return null;
+  if (!connection?.token?.accessToken) {
+    return {
+      source: "demo",
+      warning:
+        !hasSharedMetaStorageConfig()
+          ? "Live inbox is using demo data because Vercel KV is not configured yet. Add KV env vars, reconnect Instagram, and the shared token will become visible to all reviewer sessions."
+          : "Live inbox is using demo data because no shared Meta token is stored yet. Reconnect Instagram to capture a fresh token.",
+      conversations: [],
+    };
+  }
+
+  if (!instagramAccountId || !pageAccessToken) {
+    return {
+      source: "demo",
+      warning:
+        "Live inbox is using demo data because the stored Meta connection is missing the Instagram account ID or page access token. Reconnect Instagram after Vercel KV is configured.",
+      conversations: [],
+    };
   }
 
   try {
     const params = new URLSearchParams({
-      access_token: pageToken,
+      access_token: pageAccessToken,
       fields: "id,updated_time,participants{id,name,username}",
       limit: "20",
     });
@@ -136,7 +155,7 @@ export async function fetchLiveInbox(
 
     const conversations = await Promise.all(
       (data.data ?? []).map(async (conversation) => {
-        const messages = await fetchConversationMessages(pageToken, conversation.id);
+        const messages = await fetchConversationMessages(pageAccessToken, conversation.id);
         return buildConversationCard(conversation, messages, brandId);
       }),
     );
@@ -165,12 +184,31 @@ export async function fetchLiveConversation(
   cookieStore: Pick<ReadonlyRequestCookies, "get">,
   conversationId: string,
 ): Promise<ConversationResult | null> {
-  const connection = getMetaConnectionSnapshot(cookieStore);
-  const pageToken = cookieStore.get(META_PAGE_TOKEN_COOKIE)?.value;
+  const { connection, source } = await readStoredMetaConnection(cookieStore);
+  const pageToken =
+    source === "shared"
+      ? connection?.page?.accessToken
+      : cookieStore.get(META_PAGE_TOKEN_COOKIE)?.value;
   const brandId = connection?.instagramAccount?.id;
 
+  if (!connection?.token?.accessToken) {
+    return {
+      source: "demo",
+      warning:
+        !hasSharedMetaStorageConfig()
+          ? "Live conversation is using demo data because Vercel KV is not configured yet. Add KV env vars, reconnect Instagram, and the shared token will become visible to all reviewer sessions."
+          : "Live conversation is using demo data because no shared Meta token is stored yet. Reconnect Instagram to capture a fresh token.",
+      conversation: null,
+    };
+  }
+
   if (!pageToken) {
-    return null;
+    return {
+      source: "demo",
+      warning:
+        "Live conversation is using demo data because the stored Meta connection is missing the page access token. Reconnect Instagram after Vercel KV is configured.",
+      conversation: null,
+    };
   }
 
   try {

@@ -8,7 +8,12 @@ import type {
 
 export const META_CONNECT_STATE_COOKIE = "para_meta_connect_state";
 
-export const metaPermissions = ["pages_show_list", "business_management"] as const;
+export const metaPermissions = [
+  "pages_show_list",
+  "business_management",
+  "instagram_manage_messages",
+  "pages_manage_metadata",
+] as const;
 
 export const META_GRAPH_VERSION = "v23.0";
 

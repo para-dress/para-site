@@ -43,7 +43,7 @@ export async function GET(request: Request) {
       ? await fetchInstagramAccountForPage(selectedPage).catch(() => null)
       : null;
 
-    writeStoredMetaConnection(response.cookies, {
+    await writeStoredMetaConnection(response.cookies, {
       status: "connected",
       connectedAt: now,
       updatedAt: now,
@@ -77,8 +77,8 @@ export async function GET(request: Request) {
 
     redirectUrl.searchParams.set("connect", "connected");
   } catch (callbackError) {
-    clearStoredMetaConnection(response.cookies);
-    writeStoredMetaConnection(response.cookies, {
+    await clearStoredMetaConnection(response.cookies);
+    await writeStoredMetaConnection(response.cookies, {
       status: "error",
       updatedAt: new Date().toISOString(),
       lastError:

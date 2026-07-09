@@ -13,7 +13,7 @@ export default async function InternalInstagramPage({
   const params = await searchParams;
   const connectStatus = getMetaConnectStatus();
   const cookieStore = await cookies();
-  const connection = getMetaConnectionSnapshot(cookieStore);
+  const connection = await getMetaConnectionSnapshot(cookieStore);
   const connectedProfile = connection?.instagramAccount;
   const profileUsername = connectedProfile?.username
     ? `@${connectedProfile.username.replace(/^@/, "")}`
@@ -21,7 +21,9 @@ export default async function InternalInstagramPage({
   const profileName = connectedProfile?.name || dashboardAccount.businessName;
   const connectionLabel =
     connection?.status === "connected"
-      ? "Connected and token stored"
+      ? connection.storage.mode === "vercel-kv"
+        ? "Connected and shared token stored"
+        : "Connected in this browser session only"
       : dashboardAccount.connectionStatus;
   const connectedAt = connection?.connectedAt
     ? `${new Date(connection.connectedAt).toLocaleString("en-GB", {
@@ -90,6 +92,15 @@ export default async function InternalInstagramPage({
             {connectMessage}
           </div>
         ) : null}
+
+        {connection?.storage.mode !== "vercel-kv" ? (
+          <div className="mt-4 rounded-[1.5rem] border border-[rgba(140,62,45,0.18)] bg-[rgba(140,62,45,0.06)] p-4 text-sm leading-7 text-[var(--color-ink-strong)]">
+            <p className="font-semibold">Shared Meta storage is not active yet.</p>
+            <p className="mt-2">
+              Right now the connection only survives in the current browser session. Add Vercel KV environment variables and reconnect Instagram so reviewers can see the same stored token state.
+            </p>
+          </div>
+        ) : null}
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
@@ -125,6 +136,7 @@ export default async function InternalInstagramPage({
             <p><span className="font-semibold">Selected Facebook Page:</span> {connection?.page?.name || "Not captured yet"}</p>
             <p><span className="font-semibold">Connected by:</span> {connection?.user?.name || "Not captured yet"}</p>
             <p><span className="font-semibold">Available pages in token:</span> {connection?.pageOptions?.length ?? 0}</p>
+            <p><span className="font-semibold">Storage mode:</span> {connection?.storage.mode === "vercel-kv" ? "Vercel KV" : connection?.storage.mode === "cookie-fallback" ? "Cookie fallback" : "Not configured"}</p>
           </div>
         </div>
       </section>

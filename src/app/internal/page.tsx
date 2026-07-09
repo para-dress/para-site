@@ -5,7 +5,7 @@ import { getMetaConnectionSnapshot } from "@/lib/meta-connect-storage";
 
 export default async function InternalDashboardPage() {
   const cookieStore = await cookies();
-  const connection = getMetaConnectionSnapshot(cookieStore);
+  const connection = await getMetaConnectionSnapshot(cookieStore);
 
   return (
     <div className="space-y-6">
@@ -29,7 +29,12 @@ export default async function InternalDashboardPage() {
               { label: "Conversations", value: String(dashboardConversations.length) },
               {
                 label: "Connection",
-                value: connection?.status === "connected" ? "Live token stored" : dashboardAccount.connectionStatus,
+                value:
+                  connection?.status === "connected"
+                    ? connection.storage.mode === "vercel-kv"
+                      ? "Shared token stored"
+                      : "Session token only"
+                    : dashboardAccount.connectionStatus,
               },
             ].map((item) => (
               <div key={item.label} className="rounded-[1.5rem] border border-[rgba(157,122,63,0.12)] bg-[rgba(247,240,234,0.72)] p-4">
