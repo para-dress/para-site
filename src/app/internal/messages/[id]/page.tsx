@@ -13,10 +13,10 @@ export default async function InternalConversationPage({
   const { id } = await params;
   const cookieStore = await cookies();
   const liveConversation = await fetchLiveConversation(cookieStore, id);
+  const isLiveConversation =
+    liveConversation?.source === "live" && !!liveConversation.conversation;
   const conversation =
-    liveConversation?.source === "live" && liveConversation.conversation
-      ? liveConversation.conversation
-      : findConversation(id);
+    isLiveConversation ? liveConversation.conversation : findConversation(id);
 
   if (!conversation) {
     notFound();
@@ -39,11 +39,21 @@ export default async function InternalConversationPage({
             <p className="mt-2 text-sm text-[var(--color-muted)]">{conversation.handle}</p>
           </div>
           <span className="rounded-full bg-[rgba(157,122,63,0.1)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-ink-strong)]">
-            {liveConversation?.source === "live" && liveConversation.conversation
+            {isLiveConversation
               ? "Instagram DM conversation · Live"
               : "Instagram DM conversation · Demo"}
           </span>
         </div>
+        {!isLiveConversation ? (
+          <div className="mt-4 rounded-[1.5rem] border border-[rgba(157,122,63,0.18)] bg-[rgba(247,240,234,0.72)] p-4 text-sm leading-7 text-[var(--color-ink-strong)]">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-muted)]">
+              Demo conversation for review only
+            </p>
+            <p className="mt-2">
+              This thread is sample content for Meta review and is not a real customer conversation from the live inbox.
+            </p>
+          </div>
+        ) : null}
         {liveConversation?.warning ? (
           <div className="mt-4 rounded-[1.25rem] bg-[rgba(157,122,63,0.08)] p-4 text-sm text-[var(--color-ink-strong)]">
             {liveConversation.warning}
@@ -73,7 +83,7 @@ export default async function InternalConversationPage({
 
       <ConversationComposer
         initialDraft={conversation.aiDraft}
-        source={liveConversation?.source === "live" && liveConversation.conversation ? "live" : "demo"}
+        source={isLiveConversation ? "live" : "demo"}
       />
     </div>
   );

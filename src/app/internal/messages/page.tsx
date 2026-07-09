@@ -6,10 +6,9 @@ import { fetchLiveInbox } from "@/lib/meta-inbox";
 export default async function InternalMessagesPage() {
   const cookieStore = await cookies();
   const liveInbox = await fetchLiveInbox(cookieStore);
+  const isLiveInbox = liveInbox?.source === "live" && liveInbox.conversations.length > 0;
   const conversations =
-    liveInbox?.source === "live" && liveInbox.conversations.length > 0
-      ? liveInbox.conversations
-      : dashboardConversations;
+    isLiveInbox ? liveInbox.conversations : dashboardConversations;
 
   return (
     <div className="space-y-6">
@@ -26,9 +25,19 @@ export default async function InternalMessagesPage() {
         </p>
         <div className="mt-5 flex flex-wrap gap-3 text-xs uppercase tracking-[0.18em] text-[var(--color-muted)]">
           <span className="rounded-full bg-[rgba(157,122,63,0.08)] px-3 py-1.5">
-            Source: {liveInbox?.source === "live" && liveInbox.conversations.length > 0 ? "Live Meta inbox" : "Demo fallback"}
+            Source: {isLiveInbox ? "Live Meta inbox" : "Demo fallback"}
           </span>
         </div>
+        {!isLiveInbox ? (
+          <div className="mt-4 rounded-[1.5rem] border border-[rgba(157,122,63,0.18)] bg-[rgba(247,240,234,0.72)] p-4 text-sm leading-7 text-[var(--color-ink-strong)]">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-muted)]">
+              Demo conversations for review only
+            </p>
+            <p className="mt-2">
+              These inbox threads are sample placeholders for Meta review. They are not real customer messages from the live inbox.
+            </p>
+          </div>
+        ) : null}
         {liveInbox?.warning ? (
           <div className="mt-4 rounded-[1.25rem] bg-[rgba(157,122,63,0.08)] p-4 text-sm text-[var(--color-ink-strong)]">
             {liveInbox.warning}
@@ -52,6 +61,11 @@ export default async function InternalMessagesPage() {
                   <span className="text-sm text-[var(--color-muted)]">
                     {conversation.handle}
                   </span>
+                  {!isLiveInbox ? (
+                    <span className="rounded-full bg-[rgba(157,122,63,0.08)] px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[var(--color-ink-strong)]">
+                      Demo
+                    </span>
+                  ) : null}
                 </div>
                 <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--color-muted)]">
                   {conversation.lastMessage}
