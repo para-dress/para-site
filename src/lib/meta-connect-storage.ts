@@ -62,9 +62,28 @@ export function writeStoredMetaConnection(
   cookieStore: ResponseCookies,
   connection: StoredMetaConnection,
 ) {
+  const snapshotPayload: Omit<StoredMetaConnection, "token" | "page"> & {
+    page?: Omit<NonNullable<StoredMetaConnection["page"]>, "accessToken">;
+  } = {
+    status: connection.status,
+    connectedAt: connection.connectedAt,
+    updatedAt: connection.updatedAt,
+    user: connection.user,
+    instagramAccount: connection.instagramAccount,
+    pageOptions: connection.pageOptions,
+    lastError: connection.lastError,
+    page: connection.page
+      ? {
+          id: connection.page.id,
+          name: connection.page.name,
+          tasks: connection.page.tasks,
+        }
+      : undefined,
+  };
+
   cookieStore.set({
     name: META_CONNECTION_COOKIE,
-    value: Buffer.from(JSON.stringify(connection), "utf8").toString("base64url"),
+    value: Buffer.from(JSON.stringify(snapshotPayload), "utf8").toString("base64url"),
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
@@ -103,14 +122,21 @@ export function getMetaConnectionSnapshot(
   cookieStore: Pick<ReadonlyRequestCookies, "get">,
 ): MetaConnectionSnapshot | null {
   const stored = readStoredMetaConnection(cookieStore);
+  const hasToken = Boolean(cookieStore.get(META_TOKEN_COOKIE)?.value);
 
   if (!stored) {
-    return null;
+    return hasToken
+      ? {
+          status: "connected",
+          updatedAt: new Date(0).toISOString(),
+          hasToken,
+        }
+      : null;
   }
 
   return {
     ...stored,
-    hasToken: Boolean(stored.token?.accessToken),
+    hasToken,
     page: stored.page
       ? {
           id: stored.page.id,
