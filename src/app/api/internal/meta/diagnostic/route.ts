@@ -7,10 +7,13 @@ import {
   fetchMetaJsonWithResponse,
 } from "@/lib/meta-connect";
 import {
+  clearSharedStorageTestRecord,
   getSharedStorageEnvPresence,
   getSharedStorageRuntimeInfo,
   readSharedMetaWebhookLog,
+  readSharedStorageTestRecord,
   runSharedStorageHealthcheck,
+  writeSharedStorageTestRecord,
 } from "@/lib/meta-shared-storage";
 import { readStoredMetaConnection } from "@/lib/meta-connect-storage";
 
@@ -33,7 +36,9 @@ export async function GET(request: Request) {
   const userToken = connection?.token?.accessToken;
   const pageToken = connection?.page?.accessToken;
   const instagramAccountId = connection?.instagramAccount?.id;
-  const includeLiveTest = new URL(request.url).searchParams.get("live") === "1";
+  const url = new URL(request.url);
+  const includeLiveTest = url.searchParams.get("live") === "1";
+  const stickyStorageAction = url.searchParams.get("stickyStorage");
   const webhookLog = await readSharedMetaWebhookLog().catch(() => null);
   const storageRuntime = getSharedStorageRuntimeInfo();
   const storageHealth = await runSharedStorageHealthcheck().catch(() => ({
@@ -47,6 +52,15 @@ export async function GET(request: Request) {
     userToken ? debugMetaToken(userToken).catch(() => null) : Promise.resolve(null),
     pageToken ? debugMetaToken(pageToken).catch(() => null) : Promise.resolve(null),
   ]);
+
+  if (stickyStorageAction === "clear") {
+    await clearSharedStorageTestRecord().catch(() => false);
+  }
+
+  const stickyRecord =
+    stickyStorageAction === "write"
+      ? await writeSharedStorageTestRecord().catch(() => null)
+      : await readSharedStorageTestRecord().catch(() => null);
 
   const response: Record<string, unknown> = {
     connectionExists: Boolean(connection),
@@ -106,6 +120,7 @@ export async function GET(request: Request) {
       writeTest: storageHealth.write ? "pass" : "fail",
       readTest: storageHealth.read ? "pass" : "fail",
       deleteTest: storageHealth.delete ? "pass" : "fail",
+      stickyRecord,
     },
   };
 

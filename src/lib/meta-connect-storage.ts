@@ -329,20 +329,19 @@ export async function getMetaConnectionSnapshot(
   const hasToken = source === "shared"
     ? Boolean(stored?.token?.accessToken)
     : Boolean(cookieStore.get(META_TOKEN_COOKIE)?.value);
+  const storageConfigured = hasSharedMetaStorageConfig();
 
   if (!stored) {
-    return hasToken
-      ? {
-          status: "connected",
-          updatedAt: new Date(0).toISOString(),
-          hasToken,
-          storage: {
-            configured: hasSharedMetaStorageConfig(),
-            mode: hasSharedMetaStorageConfig() ? "vercel-kv" : "none",
-            source,
-          },
-        }
-      : null;
+    return {
+      status: hasToken ? "connected" : "error",
+      updatedAt: new Date(0).toISOString(),
+      hasToken,
+      storage: {
+        configured: storageConfigured,
+        mode: storageConfigured ? "vercel-kv" : "none",
+        source,
+      },
+    };
   }
 
   return {
@@ -356,7 +355,7 @@ export async function getMetaConnectionSnapshot(
         }
       : undefined,
     storage: {
-      configured: hasSharedMetaStorageConfig(),
+      configured: storageConfigured,
       mode: source === "shared" ? "vercel-kv" : "cookie-fallback",
       source,
     },

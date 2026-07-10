@@ -6,6 +6,7 @@ import {
 
 const META_CONNECTION_KV_KEY = "para:meta:connection";
 const META_WEBHOOK_LOG_KV_KEY = "para:meta:webhook:last";
+const META_STORAGE_TEST_KV_KEY = "para:meta:storage:test";
 const META_CONNECTION_KV_TTL_SECONDS = 60 * 60 * 24 * 7;
 const META_WEBHOOK_LOG_TTL_SECONDS = 60 * 60 * 24 * 7;
 
@@ -216,4 +217,44 @@ export async function runSharedStorageHealthcheck() {
       delete: false,
     };
   }
+}
+
+export async function readSharedStorageTestRecord() {
+  const redis = getRedisClient();
+
+  if (!redis) {
+    return null;
+  }
+
+  return (await redis.get<{ nonce: string; createdAt: string } | null>(META_STORAGE_TEST_KV_KEY)) ?? null;
+}
+
+export async function writeSharedStorageTestRecord() {
+  const redis = getRedisClient();
+
+  if (!redis) {
+    return null;
+  }
+
+  const record = {
+    nonce: Math.random().toString(16).slice(2),
+    createdAt: new Date().toISOString(),
+  };
+
+  await redis.set(META_STORAGE_TEST_KV_KEY, record, {
+    ex: 60 * 60,
+  });
+
+  return record;
+}
+
+export async function clearSharedStorageTestRecord() {
+  const redis = getRedisClient();
+
+  if (!redis) {
+    return false;
+  }
+
+  await redis.del(META_STORAGE_TEST_KV_KEY);
+  return true;
 }

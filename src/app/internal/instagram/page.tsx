@@ -25,7 +25,9 @@ export default async function InternalInstagramPage({
       ? connection.storage.mode === "vercel-kv"
         ? "Connected and shared token stored"
         : "Connected in this browser session only"
-      : dashboardAccount.connectionStatus;
+      : connection?.hasToken
+        ? "Connected"
+        : "Not connected yet";
   const connectedAt = connection?.connectedAt
     ? `${new Date(connection.connectedAt).toLocaleString("en-GB", {
         day: "2-digit",
