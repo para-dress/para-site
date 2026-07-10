@@ -23,6 +23,46 @@ function getSharedStorageEnv() {
   };
 }
 
+export function getSharedStorageEnvPresence() {
+  return [
+    {
+      variable: "KV_REST_API_URL",
+      present: Boolean(process.env.KV_REST_API_URL),
+    },
+    {
+      variable: "KV_REST_API_TOKEN",
+      present: Boolean(process.env.KV_REST_API_TOKEN),
+    },
+    {
+      variable: "UPSTASH_REDIS_REST_URL",
+      present: Boolean(process.env.UPSTASH_REDIS_REST_URL),
+    },
+    {
+      variable: "UPSTASH_REDIS_REST_TOKEN",
+      present: Boolean(process.env.UPSTASH_REDIS_REST_TOKEN),
+    },
+  ] as const;
+}
+
+export function getSharedStorageRuntimeInfo() {
+  return {
+    library: "@upstash/redis",
+    adapter: "Redis REST API",
+    environment:
+      process.env.VERCEL_ENV === "production"
+        ? "Production"
+        : process.env.VERCEL_ENV === "preview"
+          ? "Preview"
+          : process.env.VERCEL_ENV === "development"
+            ? "Development"
+            : process.env.NODE_ENV === "production"
+              ? "Production"
+              : process.env.NODE_ENV === "development"
+                ? "Development"
+                : "Unknown",
+  };
+}
+
 function getRedisClient() {
   const env = getSharedStorageEnv();
 
@@ -126,4 +166,54 @@ export async function writeSharedMetaWebhookLog(log: StoredMetaWebhookLog) {
   });
 
   return true;
+}
+
+export async function runSharedStorageHealthcheck() {
+  const redis = getRedisClient();
+
+  if (!redis) {
+    return {
+      configured: false,
+      write: false,
+      read: false,
+      delete: false,
+    };
+  }
+
+  const key = `para:meta:healthcheck:${Date.now()}:${Math.random().toString(16).slice(2)}`;
+  const payload = {
+    ok: true,
+    ts: new Date().toISOString(),
+  };
+
+  try {
+    await redis.set(key, payload, { ex: 60 });
+    const stored = await redis.get<typeof payload | string | null>(key);
+    const readOk = Boolean(
+      stored &&
+        (typeof stored === "string"
+          ? stored.includes(payload.ts)
+          : stored.ts === payload.ts),
+    );
+    await redis.del(key);
+    const afterDelete = await redis.get(key);
+
+    return {
+      configured: true,
+      write: true,
+      read: readOk,
+      delete: afterDelete === null,
+    };
+  } catch {
+    try {
+      await redis.del(key);
+    } catch {}
+
+    return {
+      configured: true,
+      write: false,
+      read: false,
+      delete: false,
+    };
+  }
 }

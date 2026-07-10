@@ -6,7 +6,12 @@ import {
   debugMetaToken,
   fetchMetaJsonWithResponse,
 } from "@/lib/meta-connect";
-import { readSharedMetaWebhookLog } from "@/lib/meta-shared-storage";
+import {
+  getSharedStorageEnvPresence,
+  getSharedStorageRuntimeInfo,
+  readSharedMetaWebhookLog,
+  runSharedStorageHealthcheck,
+} from "@/lib/meta-shared-storage";
 import { readStoredMetaConnection } from "@/lib/meta-connect-storage";
 
 function unauthorized() {
@@ -30,6 +35,13 @@ export async function GET(request: Request) {
   const instagramAccountId = connection?.instagramAccount?.id;
   const includeLiveTest = new URL(request.url).searchParams.get("live") === "1";
   const webhookLog = await readSharedMetaWebhookLog().catch(() => null);
+  const storageRuntime = getSharedStorageRuntimeInfo();
+  const storageHealth = await runSharedStorageHealthcheck().catch(() => ({
+    configured: false,
+    write: false,
+    read: false,
+    delete: false,
+  }));
 
   const [userTokenDebug, pageTokenDebug] = await Promise.all([
     userToken ? debugMetaToken(userToken).catch(() => null) : Promise.resolve(null),
@@ -82,6 +94,18 @@ export async function GET(request: Request) {
     webhook: {
       endpoint: `${new URL(request.url).origin}/api/meta/webhook`,
       lastEvent: webhookLog,
+    },
+    storage: {
+      ...storageRuntime,
+      configured: storageHealth.configured,
+      env: getSharedStorageEnvPresence().map((entry) => ({
+        variable: entry.variable,
+        present: entry.present ? "yes" : "no",
+        environment: storageRuntime.environment,
+      })),
+      writeTest: storageHealth.write ? "pass" : "fail",
+      readTest: storageHealth.read ? "pass" : "fail",
+      deleteTest: storageHealth.delete ? "pass" : "fail",
     },
   };
 
