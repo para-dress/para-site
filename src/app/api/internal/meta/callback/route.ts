@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import {
   META_CONNECT_STATE_COOKIE,
   exchangeMetaCodeForToken,
+  findPreferredMetaPage,
   fetchInstagramAccountForPage,
   fetchMetaPages,
   fetchMetaUserProfile,
@@ -38,10 +39,13 @@ export async function GET(request: Request) {
     const token = await exchangeMetaCodeForToken(code);
     const user = await fetchMetaUserProfile(token.access_token);
     const pages = await fetchMetaPages(token.access_token);
-    const selectedPage = pages[0];
+    const selectedPage = findPreferredMetaPage(pages, "Para Dress");
     const instagramAccount = selectedPage
       ? await fetchInstagramAccountForPage(selectedPage, token.access_token).catch(() => null)
       : null;
+    const userTokenExpiresAt = token.expires_in
+      ? new Date(Date.now() + token.expires_in * 1000).toISOString()
+      : undefined;
 
     await writeStoredMetaConnection(response.cookies, {
       status: "connected",
@@ -52,6 +56,7 @@ export async function GET(request: Request) {
         accessToken: token.access_token,
         tokenType: token.token_type,
         expiresIn: token.expires_in,
+        expiresAt: userTokenExpiresAt,
       },
       page: selectedPage
         ? {

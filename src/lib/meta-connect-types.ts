@@ -22,3 +22,20 @@ export type MetaTokenResponse = {
   token_type?: string;
   expires_in?: number;
 };
+
+export type MetaDebugTokenScope = {
+  scope: string;
+  target_ids?: string[];
+  expires_at?: number;
+};
+
+export type MetaDebugTokenData = {
+  app_id?: string;
+  user_id?: string;
+  scopes?: string[];
+  granular_scopes?: MetaDebugTokenScope[];
+  expires_at?: number;
+  data_access_expires_at?: number;
+  is_valid?: boolean;
+  type?: string;
+};

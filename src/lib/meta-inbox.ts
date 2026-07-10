@@ -114,12 +114,10 @@ async function fetchConversationMessages(token: string, conversationId: string) 
 export async function fetchLiveInbox(
   cookieStore: Pick<ReadonlyRequestCookies, "get">,
 ): Promise<InboxResult | null> {
-  const { connection, source } = await readStoredMetaConnection(cookieStore);
+  const { connection } = await readStoredMetaConnection(cookieStore);
   const instagramAccountId = connection?.instagramAccount?.id;
-  const pageAccessToken =
-    source === "shared"
-      ? connection?.page?.accessToken
-      : cookieStore.get(META_PAGE_TOKEN_COOKIE)?.value;
+  const cookiePageAccessToken = cookieStore.get(META_PAGE_TOKEN_COOKIE)?.value;
+  const pageAccessToken = connection?.page?.accessToken ?? cookiePageAccessToken;
   const brandId = connection?.instagramAccount?.id;
 
   if (!connection?.token?.accessToken) {
@@ -184,11 +182,9 @@ export async function fetchLiveConversation(
   cookieStore: Pick<ReadonlyRequestCookies, "get">,
   conversationId: string,
 ): Promise<ConversationResult | null> {
-  const { connection, source } = await readStoredMetaConnection(cookieStore);
-  const pageToken =
-    source === "shared"
-      ? connection?.page?.accessToken
-      : cookieStore.get(META_PAGE_TOKEN_COOKIE)?.value;
+  const { connection } = await readStoredMetaConnection(cookieStore);
+  const cookiePageToken = cookieStore.get(META_PAGE_TOKEN_COOKIE)?.value;
+  const pageToken = connection?.page?.accessToken ?? cookiePageToken;
   const brandId = connection?.instagramAccount?.id;
 
   if (!connection?.token?.accessToken) {

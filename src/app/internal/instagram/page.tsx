@@ -8,13 +8,14 @@ import { getMetaConnectionSnapshot } from "@/lib/meta-connect-storage";
 export default async function InternalInstagramPage({
   searchParams,
 }: {
-  searchParams: Promise<{ setup?: string; connect?: string }>;
+  searchParams: Promise<{ setup?: string; connect?: string; reset?: string }>;
 }) {
   const params = await searchParams;
   const connectStatus = getMetaConnectStatus();
   const cookieStore = await cookies();
   const connection = await getMetaConnectionSnapshot(cookieStore);
   const connectedProfile = connection?.instagramAccount;
+  const isLiveProfileData = Boolean(connectedProfile?.id);
   const profileUsername = connectedProfile?.username
     ? `@${connectedProfile.username.replace(/^@/, "")}`
     : dashboardAccount.username;
@@ -45,6 +46,10 @@ export default async function InternalInstagramPage({
           : params.connect === "invalid-state"
             ? "The callback reached the dashboard without a valid login state cookie."
             : null;
+  const resetMessage =
+    params.reset === "cleared"
+      ? "Stored Meta connection was cleared. You can reconnect Instagram now to mint a fresh token with the latest permissions."
+      : null;
 
   return (
     <div className="space-y-6">
@@ -64,12 +69,30 @@ export default async function InternalInstagramPage({
             </p>
           </div>
 
-          <Link
-            href="/api/internal/meta/connect"
-            className="rounded-full bg-[var(--color-ink-strong)] px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white"
-          >
-            {connection?.status === "connected" ? "Reconnect Instagram" : "Connect Instagram"}
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/api/internal/meta/connect"
+              className="rounded-full bg-[var(--color-ink-strong)] px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white"
+            >
+              {connection?.status === "connected" ? "Reconnect Instagram" : "Connect Instagram"}
+            </Link>
+
+            <form action="/api/internal/meta/disconnect" method="post">
+              <button
+                type="submit"
+                className="rounded-full border border-[rgba(157,122,63,0.18)] px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-strong)]"
+              >
+                Clear stored connection
+              </button>
+            </form>
+
+            <Link
+              href="/api/internal/meta/diagnostic"
+              className="rounded-full border border-[rgba(157,122,63,0.18)] px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-strong)]"
+            >
+              Open diagnostic JSON
+            </Link>
+          </div>
         </div>
 
         {!connectStatus.ready ? (
@@ -90,6 +113,12 @@ export default async function InternalInstagramPage({
         {connectMessage ? (
           <div className="mt-4 rounded-[1.5rem] bg-[rgba(157,122,63,0.08)] p-4 text-sm text-[var(--color-ink-strong)]">
             {connectMessage}
+          </div>
+        ) : null}
+
+        {resetMessage ? (
+          <div className="mt-4 rounded-[1.5rem] bg-[rgba(157,122,63,0.08)] p-4 text-sm text-[var(--color-ink-strong)]">
+            {resetMessage}
           </div>
         ) : null}
 
@@ -137,9 +166,21 @@ export default async function InternalInstagramPage({
             <p><span className="font-semibold">Connected by:</span> {connection?.user?.name || "Not captured yet"}</p>
             <p><span className="font-semibold">Available pages in token:</span> {connection?.pageOptions?.length ?? 0}</p>
             <p><span className="font-semibold">Storage mode:</span> {connection?.storage.mode === "vercel-kv" ? "Vercel KV" : connection?.storage.mode === "cookie-fallback" ? "Cookie fallback" : "Not configured"}</p>
+            <p><span className="font-semibold">Instagram account link:</span> {isLiveProfileData ? "Live account ID captured" : "Missing from Meta response"}</p>
           </div>
         </div>
       </section>
+
+      {!isLiveProfileData ? (
+        <section className="rounded-[2rem] border border-[rgba(140,62,45,0.18)] bg-[rgba(140,62,45,0.06)] p-6 text-sm leading-7 text-[var(--color-ink-strong)] shadow-[0_20px_60px_rgba(39,27,16,0.04)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-muted)]">
+            Meta inbox blocker
+          </p>
+          <p className="mt-3">
+            The shared token is stored, but Meta did not return a usable Instagram account ID for the selected Facebook Page. Until that link is returned, the Messages screen has to stay on demo fallback.
+          </p>
+        </section>
+      ) : null}
 
       <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="rounded-[2rem] border border-[rgba(157,122,63,0.14)] bg-white p-6 shadow-[0_20px_60px_rgba(39,27,16,0.05)]">
@@ -166,10 +207,11 @@ export default async function InternalInstagramPage({
           <div className="mt-4 divide-y divide-[rgba(157,122,63,0.12)] rounded-[1.5rem] border border-[rgba(157,122,63,0.12)] bg-[rgba(247,240,234,0.56)]">
             {[
               ["Instagram username", profileUsername],
-              ["Instagram account ID", connectedProfile?.id || dashboardAccount.accountId],
+              ["Instagram account ID", connectedProfile?.id || "Not returned by Meta yet"],
               ["Account type", dashboardAccount.accountType],
               ["Business label", profileName],
               ["Selected Facebook Page", connection?.page?.name || "Not captured yet"],
+              ["Profile data source", isLiveProfileData ? "Meta live data" : "Dashboard fallback only"],
             ].map(([label, value]) => (
               <div key={label} className="flex flex-col gap-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-sm font-medium text-[var(--color-muted)]">{label}</p>

@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import type {
+  MetaDebugTokenData,
   MetaInstagramAccount,
   MetaPage,
   MetaTokenResponse,
@@ -9,8 +10,11 @@ import type {
 export const META_CONNECT_STATE_COOKIE = "para_meta_connect_state";
 
 export const metaPermissions = [
+  "instagram_basic",
+  "instagram_manage_messages",
   "pages_show_list",
   "pages_read_engagement",
+  "pages_manage_metadata",
   "business_management",
 ] as const;
 
@@ -60,6 +64,11 @@ export function buildMetaOAuthUrl(state: string) {
   return `https://www.facebook.com/${META_GRAPH_VERSION}/dialog/oauth?${params.toString()}`;
 }
 
+export function buildMetaAppAccessToken() {
+  const env = getMetaEnv();
+  return `${env.appId}|${env.appSecret}`;
+}
+
 function buildMetaGraphUrl(pathname: string, params: URLSearchParams) {
   return `https://graph.facebook.com/${META_GRAPH_VERSION}${pathname}?${params.toString()}`;
 }
@@ -81,6 +90,27 @@ async function fetchMetaJson<T>(pathname: string, params: URLSearchParams) {
   }
 
   return data;
+}
+
+export async function fetchMetaJsonWithResponse<T>(pathname: string, params: URLSearchParams) {
+  const response = await fetch(buildMetaGraphUrl(pathname, params), {
+    cache: "no-store",
+  });
+  const data = (await response.json()) as T & {
+    error?: {
+      message?: string;
+      type?: string;
+      code?: number;
+      error_subcode?: number;
+      fbtrace_id?: string;
+    };
+  };
+
+  return {
+    ok: response.ok && !data.error,
+    status: response.status,
+    data,
+  };
 }
 
 export async function exchangeMetaCodeForToken(code: string) {
@@ -116,6 +146,14 @@ export async function fetchMetaPages(accessToken: string) {
 
   const data = await fetchMetaJson<{ data?: MetaPage[] }>("/me/accounts", params);
   return data.data ?? [];
+}
+
+export function findPreferredMetaPage(pages: MetaPage[], preferredPageName = "Para Dress") {
+  return (
+    pages.find((page) => page.name.trim().toLowerCase() === preferredPageName.trim().toLowerCase()) ??
+    pages[0] ??
+    null
+  );
 }
 
 export async function fetchInstagramAccountForPage(
@@ -161,4 +199,14 @@ export async function fetchInstagramAccountForPage(
   }
 
   return null;
+}
+
+export async function debugMetaToken(inputToken: string) {
+  const params = new URLSearchParams({
+    input_token: inputToken,
+    access_token: buildMetaAppAccessToken(),
+  });
+
+  const response = await fetchMetaJson<{ data?: MetaDebugTokenData }>("/debug_token", params);
+  return response.data ?? null;
 }
