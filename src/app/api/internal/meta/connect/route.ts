@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import {
   META_CONNECT_STATE_COOKIE,
+  type MetaScopeSet,
   buildMetaOAuthUrl,
   createMetaState,
   getMetaConnectStatus,
@@ -8,6 +9,9 @@ import {
 
 export async function GET(request: Request) {
   const status = getMetaConnectStatus();
+  const url = new URL(request.url);
+  const scopeSet: MetaScopeSet =
+    url.searchParams.get("scopeSet") === "minimal" ? "minimal" : "full";
 
   if (!status.ready) {
     const redirectUrl = new URL("/internal/instagram", request.url);
@@ -16,7 +20,7 @@ export async function GET(request: Request) {
   }
 
   const state = createMetaState();
-  const response = NextResponse.redirect(buildMetaOAuthUrl(state), {
+  const response = NextResponse.redirect(buildMetaOAuthUrl(state, scopeSet), {
     status: 303,
   });
 

@@ -79,6 +79,13 @@ export default async function InternalInstagramPage({
               {connection?.status === "connected" ? "Reconnect Instagram" : "Connect Instagram"}
             </Link>
 
+            <Link
+              href="/api/internal/meta/connect?scopeSet=minimal"
+              className="rounded-full border border-[rgba(79,119,78,0.28)] bg-[rgba(79,119,78,0.08)] px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-strong)]"
+            >
+              Debug minimal scopes
+            </Link>
+
             <form action="/api/internal/meta/disconnect" method="post">
               <button
                 type="submit"
@@ -139,6 +146,15 @@ export default async function InternalInstagramPage({
             </p>
           </div>
         )}
+
+        <div className="mt-4 rounded-[1.5rem] border border-[rgba(157,122,63,0.14)] bg-[rgba(247,240,234,0.56)] p-4 text-sm leading-7 text-[var(--color-ink-strong)]">
+          <p className="font-semibold">OAuth scope debug</p>
+          <p className="mt-2">
+            <span className="font-medium">Connect Instagram</span> uses the full permission set for messaging.
+            <br />
+            <span className="font-medium">Debug minimal scopes</span> uses a reduced set to isolate whether the OAuth screen is failing because of one of the added messaging permissions.
+          </p>
+        </div>
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">

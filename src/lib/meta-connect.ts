@@ -18,6 +18,19 @@ export const metaPermissions = [
   "business_management",
 ] as const;
 
+export const metaMinimalPermissions = [
+  "instagram_basic",
+  "pages_show_list",
+  "pages_read_engagement",
+  "business_management",
+] as const;
+
+export type MetaScopeSet = "minimal" | "full";
+
+export function getMetaPermissions(scopeSet: MetaScopeSet = "full") {
+  return scopeSet === "minimal" ? metaMinimalPermissions : metaPermissions;
+}
+
 export const META_GRAPH_VERSION = "v23.0";
 
 export function getMetaEnv() {
@@ -50,14 +63,14 @@ export function createMetaState() {
   return crypto.randomBytes(24).toString("hex");
 }
 
-export function buildMetaOAuthUrl(state: string) {
+export function buildMetaOAuthUrl(state: string, scopeSet: MetaScopeSet = "full") {
   const env = getMetaEnv();
   const redirectUri = buildMetaRedirectUri();
   const params = new URLSearchParams({
     client_id: env.appId,
     redirect_uri: redirectUri,
     response_type: "code",
-    scope: metaPermissions.join(","),
+    scope: getMetaPermissions(scopeSet).join(","),
     state,
   });
 
