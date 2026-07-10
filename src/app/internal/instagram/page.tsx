@@ -86,6 +86,13 @@ export default async function InternalInstagramPage({
               Debug minimal scopes
             </Link>
 
+            <Link
+              href="/api/internal/meta/connect?scopeSet=ultra-basic"
+              className="rounded-full border border-[rgba(54,94,156,0.24)] bg-[rgba(54,94,156,0.08)] px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-strong)]"
+            >
+              Debug ultra-basic login
+            </Link>
+
             <form action="/api/internal/meta/disconnect" method="post">
               <button
                 type="submit"
@@ -150,6 +157,8 @@ export default async function InternalInstagramPage({
         <div className="mt-4 rounded-[1.5rem] border border-[rgba(157,122,63,0.14)] bg-[rgba(247,240,234,0.56)] p-4 text-sm leading-7 text-[var(--color-ink-strong)]">
           <p className="font-semibold">OAuth scope debug</p>
           <p className="mt-2">
+            <span className="font-medium">Debug ultra-basic login</span> uses only <code>public_profile</code> to test whether the Facebook grant screen itself is broken for this app.
+            <br />
             <span className="font-medium">Connect Instagram</span> uses the full permission set for messaging.
             <br />
             <span className="font-medium">Debug minimal scopes</span> uses a reduced set to isolate whether the OAuth screen is failing because of one of the added messaging permissions.

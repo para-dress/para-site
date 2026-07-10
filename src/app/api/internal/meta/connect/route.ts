@@ -11,7 +11,11 @@ export async function GET(request: Request) {
   const status = getMetaConnectStatus();
   const url = new URL(request.url);
   const scopeSet: MetaScopeSet =
-    url.searchParams.get("scopeSet") === "minimal" ? "minimal" : "full";
+    url.searchParams.get("scopeSet") === "ultra-basic"
+      ? "ultra-basic"
+      : url.searchParams.get("scopeSet") === "minimal"
+        ? "minimal"
+        : "full";
 
   if (!status.ready) {
     const redirectUrl = new URL("/internal/instagram", request.url);

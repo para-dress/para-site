@@ -25,9 +25,15 @@ export const metaMinimalPermissions = [
   "business_management",
 ] as const;
 
-export type MetaScopeSet = "minimal" | "full";
+export const metaUltraBasicPermissions = ["public_profile"] as const;
+
+export type MetaScopeSet = "ultra-basic" | "minimal" | "full";
 
 export function getMetaPermissions(scopeSet: MetaScopeSet = "full") {
+  if (scopeSet === "ultra-basic") {
+    return metaUltraBasicPermissions;
+  }
+
   return scopeSet === "minimal" ? metaMinimalPermissions : metaPermissions;
 }
 
