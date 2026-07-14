@@ -134,14 +134,22 @@ export async function GET(request: Request) {
         access_token: userToken,
       })}`, { cache: "no-store" });
       const data = (await metaResponse.json().catch(() => ({}))) as {
-        data?: Array<{ id?: string; subscribed_fields?: string[] }>;
+        data?: Array<{ id?: string; name?: string; subscribed_fields?: string[] }>;
         error?: { code?: number; error_subcode?: number; message?: string; fbtrace_id?: string };
       };
-      const app = data.data?.find((item) => item.id === process.env.META_APP_ID);
+      const instagramAppId = process.env.META_INSTAGRAM_APP_ID || "2520572738421450";
+      const rawData = (data.data ?? []).map((item) => ({
+        id: item.id ?? null,
+        name: item.name ?? null,
+        subscribed_fields: item.subscribed_fields ?? [],
+      }));
+      const app = rawData.find((item) => item.id === instagramAppId);
 
       response.subscriptionDiagnostic = {
         status: metaResponse.status,
         ok: metaResponse.ok && !data.error,
+        instagramAppId,
+        rawData,
         appSubscribed: Boolean(app),
         subscribed_fields: app?.subscribed_fields ?? [],
         error: data.error
