@@ -9,6 +9,7 @@ import {
   readSharedMetaWebhookLog,
   readSharedMetaSendDiagnostic,
   readSharedMetaSubscriptionDiagnostic,
+  writeSharedMetaSendDiagnostic,
   readSharedStorageTestRecord,
   runSharedStorageHealthcheck,
   writeSharedMetaConnection,
@@ -223,15 +224,80 @@ export async function GET(request: Request) {
   return NextResponse.json(response, { status: 200 });
 }
 
-export async function POST() {
+type InstagramSendResponse = {
+  message_id?: string;
+  id?: string;
+  error?: {
+    code?: number;
+    error_subcode?: number;
+    type?: string;
+    message?: string;
+    fbtrace_id?: string;
+  };
+};
+
+function maskInstagramId(value: string) {
+  return `…${value.slice(-6)}`;
+}
+
+export async function POST(request: Request) {
   const cookieStore = await cookies();
   if (cookieStore.get(DASHBOARD_COOKIE)?.value !== "active") {
     return unauthorized();
   }
 
+  const body = await request.json().catch(() => null);
   const { connection } = await readStoredMetaConnection(cookieStore);
   const userToken = connection?.token?.accessToken;
   const timestamp = new Date().toISOString();
+
+  if (body?.action === "meReplyTest") {
+    const latestWebhook = await readSharedMetaWebhookLog().catch(() => null);
+    const recipientId = (latestWebhook?.sample as {
+      messaging?: Array<{ sender?: { id?: string } }>;
+    } | undefined)?.messaging?.[0]?.sender?.id;
+
+    if (!userToken || !recipientId || !/^\d+$/.test(recipientId)) {
+      return NextResponse.json({ error: "Missing stored Instagram token or routeable webhook sender." }, { status: 503 });
+    }
+
+    const endpoint = `https://graph.instagram.com/${META_GRAPH_VERSION}/me/messages`;
+    const metaResponse = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        recipient: { id: recipientId },
+        message: { text: "Para Dress reply test" },
+      }),
+      cache: "no-store",
+    });
+    const data = (await metaResponse.json().catch(() => ({}))) as InstagramSendResponse;
+    const ok = metaResponse.ok && !data.error;
+    const diagnostic = {
+      timestamp: new Date().toISOString(),
+      status: metaResponse.status,
+      ok,
+      endpoint,
+      graphApiVersion: META_GRAPH_VERSION,
+      senderId: "me",
+      recipientId: maskInstagramId(recipientId),
+      error: data.error
+        ? {
+            code: data.error.code,
+            error_subcode: data.error.error_subcode,
+            type: data.error.type,
+            message: data.error.message,
+            fbtrace_id: data.error.fbtrace_id,
+          }
+        : null,
+      message_id: ok ? data.message_id || data.id : undefined,
+    };
+    await writeSharedMetaSendDiagnostic(diagnostic).catch(() => false);
+    return NextResponse.json({ sendDiagnostic: diagnostic }, { status: 200 });
+  }
 
   if (!userToken) {
     const diagnostic = {
