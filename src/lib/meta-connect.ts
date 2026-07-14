@@ -10,31 +10,16 @@ import type {
 export const META_CONNECT_STATE_COOKIE = "para_meta_connect_state";
 
 export const metaPermissions = [
-  "instagram_basic",
-  "instagram_manage_messages",
-  "pages_show_list",
-  "pages_read_engagement",
-  "pages_manage_metadata",
-  "business_management",
+  "instagram_business_basic",
+  "instagram_business_manage_messages",
+  "instagram_business_manage_comments",
 ] as const;
 
-export const metaMinimalPermissions = [
-  "instagram_basic",
-  "pages_show_list",
-  "pages_read_engagement",
-  "business_management",
-] as const;
-
-export const metaUltraBasicPermissions = ["public_profile"] as const;
-
-export type MetaScopeSet = "ultra-basic" | "minimal" | "full";
+export type MetaScopeSet = "full";
 
 export function getMetaPermissions(scopeSet: MetaScopeSet = "full") {
-  if (scopeSet === "ultra-basic") {
-    return metaUltraBasicPermissions;
-  }
-
-  return scopeSet === "minimal" ? metaMinimalPermissions : metaPermissions;
+  void scopeSet;
+  return metaPermissions;
 }
 
 export const META_GRAPH_VERSION = "v23.0";
@@ -80,7 +65,7 @@ export function buildMetaOAuthUrl(state: string, scopeSet: MetaScopeSet = "full"
     state,
   });
 
-  return `https://www.facebook.com/${META_GRAPH_VERSION}/dialog/oauth?${params.toString()}`;
+  return `https://www.instagram.com/oauth/authorize?${params.toString()}`;
 }
 
 export function buildMetaAppAccessToken() {
@@ -134,25 +119,50 @@ export async function fetchMetaJsonWithResponse<T>(pathname: string, params: URL
 
 export async function exchangeMetaCodeForToken(code: string) {
   const env = getMetaEnv();
-  const params = new URLSearchParams({
+  const body = new URLSearchParams({
     client_id: env.appId,
     client_secret: env.appSecret,
+    grant_type: "authorization_code",
     redirect_uri: buildMetaRedirectUri(),
     code,
   });
 
-  return fetchMetaJson<MetaTokenResponse>("/oauth/access_token", params);
+  const response = await fetch("https://api.instagram.com/oauth/access_token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+    cache: "no-store",
+  });
+  const data = (await response.json()) as MetaTokenResponse & {
+    error_message?: string;
+    error_type?: string;
+  };
+
+  if (!response.ok || !data.access_token) {
+    throw new Error(data.error_message || data.error_type || "Instagram token exchange failed");
+  }
+
+  return data;
 }
 
 export async function fetchMetaUserProfile(accessToken: string) {
-  const env = getMetaEnv();
   const params = new URLSearchParams({
     access_token: accessToken,
-    fields: "id,name",
-    appsecret_proof: buildAppSecretProof(accessToken, env.appSecret),
+    fields: "id,username,name,profile_picture_url",
   });
 
-  return fetchMetaJson<MetaUserProfile>("/me", params);
+  const response = await fetch(`https://graph.instagram.com/${META_GRAPH_VERSION}/me?${params}`, {
+    cache: "no-store",
+  });
+  const data = (await response.json()) as MetaUserProfile & {
+    error?: { message?: string };
+  };
+
+  if (!response.ok || data.error) {
+    throw new Error(data.error?.message || "Instagram profile lookup failed");
+  }
+
+  return data;
 }
 
 export async function fetchMetaPages(accessToken: string) {

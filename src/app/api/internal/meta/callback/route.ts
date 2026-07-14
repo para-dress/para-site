@@ -3,9 +3,6 @@ import { NextResponse } from "next/server";
 import {
   META_CONNECT_STATE_COOKIE,
   exchangeMetaCodeForToken,
-  findPreferredMetaPage,
-  fetchInstagramAccountForPage,
-  fetchMetaPages,
   fetchMetaUserProfile,
 } from "@/lib/meta-connect";
 import {
@@ -37,12 +34,7 @@ export async function GET(request: Request) {
   try {
     const now = new Date().toISOString();
     const token = await exchangeMetaCodeForToken(code);
-    const user = await fetchMetaUserProfile(token.access_token);
-    const pages = await fetchMetaPages(token.access_token);
-    const selectedPage = findPreferredMetaPage(pages, "Para Dress");
-    const instagramAccount = selectedPage
-      ? await fetchInstagramAccountForPage(selectedPage, token.access_token).catch(() => null)
-      : null;
+    const instagramAccount = await fetchMetaUserProfile(token.access_token);
     const userTokenExpiresAt = token.expires_in
       ? new Date(Date.now() + token.expires_in * 1000).toISOString()
       : undefined;
@@ -51,33 +43,22 @@ export async function GET(request: Request) {
       status: "connected",
       connectedAt: now,
       updatedAt: now,
-      user,
+      user: {
+        id: instagramAccount.id,
+        name: instagramAccount.name || instagramAccount.username,
+      },
       token: {
         accessToken: token.access_token,
         tokenType: token.token_type,
         expiresIn: token.expires_in,
         expiresAt: userTokenExpiresAt,
       },
-      page: selectedPage
-        ? {
-            id: selectedPage.id,
-            name: selectedPage.name,
-            accessToken: selectedPage.access_token,
-            tasks: selectedPage.tasks,
-          }
-        : undefined,
-      instagramAccount: instagramAccount
-        ? {
-            id: instagramAccount.id,
-            username: instagramAccount.username,
-            name: instagramAccount.name,
-            profilePictureUrl: instagramAccount.profile_picture_url,
-          }
-        : undefined,
-      pageOptions: pages.map((page) => ({
-        id: page.id,
-        name: page.name,
-      })),
+      instagramAccount: {
+        id: instagramAccount.id,
+        username: instagramAccount.username,
+        name: instagramAccount.name,
+        profilePictureUrl: instagramAccount.profile_picture_url,
+      },
     });
 
     redirectUrl.searchParams.set("connect", "connected");
