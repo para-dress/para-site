@@ -59,9 +59,6 @@ export function buildMetaOAuthUrl(state: string, scopeSet: MetaScopeSet = "full"
   const env = getMetaEnv();
   const redirectUri = buildMetaRedirectUri();
   const params = new URLSearchParams({
-    // Current Instagram Business Login parameter names from Meta's OAuth docs.
-    enable_fb_login: "false",
-    force_reauth: "true",
     client_id: env.appId,
     redirect_uri: redirectUri,
     response_type: "code",
