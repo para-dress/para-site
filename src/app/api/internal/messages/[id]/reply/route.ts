@@ -73,25 +73,27 @@ export async function POST(request: Request, { params }: RouteContext) {
     return jsonError("This Instagram conversation is no longer available in the live inbox.", 404);
   }
 
-  // Instagram Login sends from the current Instagram User ID, not the webhook
-  // recipient/business ID retained from the older connection context.
-  const messagingAccountId = connection?.token?.instagramUserId;
-  if (!messagingAccountId) {
+  const instagramUserId = connection?.token?.instagramUserId;
+  if (!instagramUserId) {
     return jsonError("The connected Instagram Login user ID is unavailable. Reconnect Instagram and try again.", 503);
   }
 
-  const endpoint = `https://graph.instagram.com/${META_GRAPH_VERSION}/${messagingAccountId}/messages`;
+  // Official Instagram Login Messaging API route: the current token identifies
+  // the sending professional account, while the webhook sender is the IGSID recipient.
+  const endpoint = `https://graph.instagram.com/${META_GRAPH_VERSION}/me/messages`;
   let metaResponse: Response;
   let metaData: SendMessageResponse;
   let timestamp = new Date().toISOString();
   try {
     metaResponse = await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        recipient_id: recipientId,
-        message: text,
-        access_token: accessToken,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        recipient: { id: recipientId },
+        message: { text },
       }),
       cache: "no-store",
     });
@@ -103,7 +105,7 @@ export async function POST(request: Request, { params }: RouteContext) {
       ok: false,
       endpoint,
       graphApiVersion: META_GRAPH_VERSION,
-      senderId: maskInstagramId(messagingAccountId),
+      senderId: maskInstagramId(instagramUserId),
       recipientId: maskInstagramId(recipientId),
       error: { type: "NetworkError", message: "Instagram could not be reached." },
     }).catch(() => false);
@@ -119,7 +121,7 @@ export async function POST(request: Request, { params }: RouteContext) {
     ok,
     endpoint,
     graphApiVersion: META_GRAPH_VERSION,
-    senderId: maskInstagramId(messagingAccountId),
+    senderId: maskInstagramId(instagramUserId),
     recipientId: maskInstagramId(recipientId),
     error: metaData.error
       ? {
@@ -141,9 +143,9 @@ export async function POST(request: Request, { params }: RouteContext) {
   await appendSharedMetaWebhookMessage({
     id: messageId || `outgoing:${timestamp}:${recipientId}`,
     conversationId: recipientId,
-    senderId: messagingAccountId,
+    senderId: instagramUserId,
     recipientId,
-    businessAccountId: messagingAccountId,
+    businessAccountId: instagramUserId,
     direction: "brand",
     text,
     timestamp,
