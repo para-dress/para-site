@@ -8,6 +8,9 @@ import type {
 } from "@/lib/meta-connect-types";
 
 export const META_CONNECT_STATE_COOKIE = "para_meta_connect_state";
+// Public identifier of the Facebook Login for Business configuration created
+// for the Para Dress Instagram connection. It is not a secret.
+const META_BUSINESS_LOGIN_CONFIG_ID = "1679165013381640";
 
 export const metaPermissions = [
   "instagram_basic",
@@ -55,9 +58,9 @@ export function buildMetaOAuthUrl(state: string) {
   const redirectUri = buildMetaRedirectUri();
   const params = new URLSearchParams({
     client_id: env.appId,
+    config_id: META_BUSINESS_LOGIN_CONFIG_ID,
     redirect_uri: redirectUri,
     response_type: "code",
-    scope: metaPermissions.join(","),
     state,
   });
 
