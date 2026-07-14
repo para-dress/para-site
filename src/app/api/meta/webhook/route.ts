@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import { writeSharedMetaWebhookLog } from "@/lib/meta-shared-storage";
+import {
+  appendSharedMetaWebhookMessage,
+  writeSharedMetaWebhookLog,
+} from "@/lib/meta-shared-storage";
 
 function getWebhookVerifyToken() {
   return process.env.META_WEBHOOK_VERIFY_TOKEN ?? "";
@@ -50,6 +53,38 @@ export async function POST(request: Request) {
         ? (payload as { entry?: unknown[] }).entry?.[0] ?? null
         : payload,
   }).catch(() => false);
+
+  const entries =
+    payload && typeof payload === "object" && "entry" in payload && Array.isArray((payload as { entry?: unknown[] }).entry)
+      ? (payload as { entry: Array<{ messaging?: unknown[] }> }).entry
+      : [];
+
+  await Promise.all(
+    entries.flatMap((entry) =>
+      (entry.messaging ?? []).flatMap((candidate) => {
+        if (!candidate || typeof candidate !== "object") return [];
+        const event = candidate as {
+          sender?: { id?: string; username?: string };
+          recipient?: { id?: string };
+          timestamp?: number;
+          message?: { mid?: string; text?: string };
+        };
+        const senderId = event.sender?.id;
+        const messageId = event.message?.mid;
+        const text = event.message?.text;
+        if (!senderId || !messageId || !text) return [];
+
+        return appendSharedMetaWebhookMessage({
+          id: messageId,
+          conversationId: senderId,
+          senderId,
+          senderUsername: event.sender?.username,
+          text,
+          timestamp: new Date(event.timestamp ?? Date.now()).toISOString(),
+        }).catch(() => false);
+      }),
+    ),
+  );
 
   return NextResponse.json({ received: true }, { status: 200 });
 }

@@ -6,6 +6,7 @@ import {
 
 const META_CONNECTION_KV_KEY = "para:meta:connection";
 const META_WEBHOOK_LOG_KV_KEY = "para:meta:webhook:last";
+const META_WEBHOOK_INBOX_KV_KEY = "para:meta:webhook:inbox";
 const META_STORAGE_TEST_KV_KEY = "para:meta:storage:test";
 const META_CONNECTION_KV_TTL_SECONDS = 60 * 60 * 24 * 7;
 const META_WEBHOOK_LOG_TTL_SECONDS = 60 * 60 * 24 * 7;
@@ -15,6 +16,25 @@ export type StoredMetaWebhookLog = {
   object?: string;
   entryCount: number;
   sample?: unknown;
+};
+
+export type StoredMetaWebhookMessage = {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderUsername?: string;
+  text: string;
+  timestamp: string;
+};
+
+export type StoredMetaWebhookConversation = {
+  id: string;
+  senderId: string;
+  senderUsername?: string;
+  lastMessage: string;
+  updatedAt: string;
+  unread: number;
+  messages: StoredMetaWebhookMessage[];
 };
 
 function getSharedStorageEnv() {
@@ -166,6 +186,50 @@ export async function writeSharedMetaWebhookLog(log: StoredMetaWebhookLog) {
     ex: META_WEBHOOK_LOG_TTL_SECONDS,
   });
 
+  return true;
+}
+
+export async function readSharedMetaWebhookInbox() {
+  const redis = getRedisClient();
+  if (!redis) return [];
+
+  const stored = await redis.get<StoredMetaWebhookConversation[] | string | null>(META_WEBHOOK_INBOX_KV_KEY);
+  if (!stored) return [];
+
+  if (typeof stored === "string") {
+    try {
+      const parsed = JSON.parse(stored);
+      return Array.isArray(parsed) ? parsed as StoredMetaWebhookConversation[] : [];
+    } catch {
+      return [];
+    }
+  }
+
+  return Array.isArray(stored) ? stored : [];
+}
+
+export async function appendSharedMetaWebhookMessage(message: StoredMetaWebhookMessage) {
+  const redis = getRedisClient();
+  if (!redis) return false;
+
+  const existing = await readSharedMetaWebhookInbox();
+  const conversationIndex = existing.findIndex((item) => item.id === message.conversationId);
+  const previous = conversationIndex >= 0 ? existing[conversationIndex] : undefined;
+  const messages = [...(previous?.messages ?? []), message]
+    .filter((item, index, list) => list.findIndex((candidate) => candidate.id === item.id) === index)
+    .slice(-50);
+  const conversation: StoredMetaWebhookConversation = {
+    id: message.conversationId,
+    senderId: message.senderId,
+    senderUsername: message.senderUsername ?? previous?.senderUsername,
+    lastMessage: message.text,
+    updatedAt: message.timestamp,
+    unread: (previous?.unread ?? 0) + 1,
+    messages,
+  };
+  const next = [conversation, ...existing.filter((item) => item.id !== message.conversationId)].slice(0, 50);
+
+  await redis.set(META_WEBHOOK_INBOX_KV_KEY, next, { ex: META_WEBHOOK_LOG_TTL_SECONDS });
   return true;
 }
 

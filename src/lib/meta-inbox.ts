@@ -1,7 +1,11 @@
 import type { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 import { readStoredMetaConnection } from "@/lib/meta-connect-storage";
 import { META_GRAPH_VERSION } from "@/lib/meta-connect";
-import { hasSharedMetaStorageConfig } from "@/lib/meta-shared-storage";
+import {
+  hasSharedMetaStorageConfig,
+  readSharedMetaWebhookInbox,
+  type StoredMetaWebhookConversation,
+} from "@/lib/meta-shared-storage";
 import type { Conversation } from "@/lib/internal-dashboard";
 
 type MetaParticipant = {
@@ -97,6 +101,25 @@ function buildConversationCard(
   };
 }
 
+function buildWebhookConversationCard(conversation: StoredMetaWebhookConversation): Conversation {
+  return {
+    id: `webhook:${conversation.id}`,
+    handle: conversation.senderUsername ? `@${conversation.senderUsername}` : "@instagram-user",
+    name: conversation.senderUsername || "Instagram contact",
+    lastMessage: conversation.lastMessage,
+    lastAt: formatClock(conversation.updatedAt),
+    unread: conversation.unread,
+    aiDraft:
+      "Thanks for your message — I’m checking the details for you now and will send the clearest next step in just a moment.",
+    messages: conversation.messages.map((message) => ({
+      id: message.id,
+      sender: "customer",
+      text: message.text,
+      at: formatClock(message.timestamp),
+    })),
+  };
+}
+
 async function fetchConversationMessages(token: string, conversationId: string) {
   const params = new URLSearchParams({
     access_token: token,
@@ -154,11 +177,16 @@ export async function fetchLiveInbox(
       }),
     );
 
+    const webhookConversations = await readSharedMetaWebhookInbox();
+    const resolvedConversations = conversations.length > 0
+      ? conversations
+      : webhookConversations.map(buildWebhookConversationCard);
+
     return {
       source: "live",
-      conversations,
+      conversations: resolvedConversations,
       warning:
-        conversations.length === 0
+        resolvedConversations.length === 0
           ? "Meta connect is live, but no Instagram conversations were returned yet."
           : undefined,
     };
@@ -181,6 +209,15 @@ export async function fetchLiveConversation(
   const { connection } = await readStoredMetaConnection(cookieStore);
   const instagramToken = connection?.token?.accessToken;
   const brandId = connection?.instagramAccount?.id;
+
+  if (conversationId.startsWith("webhook:")) {
+    const webhookConversations = await readSharedMetaWebhookInbox();
+    const stored = webhookConversations.find((item) => `webhook:${item.id}` === conversationId);
+    return {
+      source: "live",
+      conversation: stored ? buildWebhookConversationCard(stored) : null,
+    };
+  }
 
   if (!connection?.token?.accessToken) {
     return {
