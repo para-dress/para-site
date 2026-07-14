@@ -34,6 +34,7 @@ export async function GET(request: Request) {
   const instagramAccountId = connection?.instagramAccount?.id;
   const url = new URL(request.url);
   const includeLiveTest = url.searchParams.get("live") === "1";
+  const includeSubscriptionDiagnostic = url.searchParams.get("subscribedApps") === "1";
   const stickyStorageAction = url.searchParams.get("stickyStorage");
   const webhookLog = await readSharedMetaWebhookLog().catch(() => null);
   const lastSendDiagnostic = await readSharedMetaSendDiagnostic().catch(() => null);
@@ -98,6 +99,48 @@ export async function GET(request: Request) {
       stickyRecord,
     },
   };
+
+  if (includeSubscriptionDiagnostic) {
+    if (!userToken) {
+      response.subscriptionDiagnostic = {
+        status: null,
+        ok: false,
+        appSubscribed: false,
+        subscribed_fields: [],
+        error: {
+          code: undefined,
+          error_subcode: undefined,
+          message: "Missing stored Instagram access token",
+          fbtrace_id: undefined,
+        },
+      };
+    } else {
+      const endpoint = `https://graph.instagram.com/${META_GRAPH_VERSION}/me/subscribed_apps`;
+      const metaResponse = await fetch(`${endpoint}?${new URLSearchParams({
+        access_token: userToken,
+      })}`, { cache: "no-store" });
+      const data = (await metaResponse.json().catch(() => ({}))) as {
+        data?: Array<{ id?: string; subscribed_fields?: string[] }>;
+        error?: { code?: number; error_subcode?: number; message?: string; fbtrace_id?: string };
+      };
+      const app = data.data?.find((item) => item.id === process.env.META_APP_ID);
+
+      response.subscriptionDiagnostic = {
+        status: metaResponse.status,
+        ok: metaResponse.ok && !data.error,
+        appSubscribed: Boolean(app),
+        subscribed_fields: app?.subscribed_fields ?? [],
+        error: data.error
+          ? {
+              code: data.error.code,
+              error_subcode: data.error.error_subcode,
+              message: data.error.message,
+              fbtrace_id: data.error.fbtrace_id,
+            }
+          : null,
+      };
+    }
+  }
 
   if (includeLiveTest) {
     if (!instagramAccountId || !userToken) {
