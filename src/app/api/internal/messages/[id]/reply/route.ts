@@ -62,7 +62,6 @@ export async function POST(request: Request, { params }: RouteContext) {
   }
 
   const { connection } = await readStoredMetaConnection(cookieStore);
-  const instagramAccountId = connection?.instagramAccount?.id;
   const accessToken = connection?.token?.accessToken;
   if (!accessToken) {
     return jsonError("Instagram is not connected. Reconnect the business account and try again.", 503);
@@ -74,9 +73,11 @@ export async function POST(request: Request, { params }: RouteContext) {
     return jsonError("This Instagram conversation is no longer available in the live inbox.", 404);
   }
 
-  const messagingAccountId = conversation.businessAccountId || instagramAccountId;
+  // Instagram Login sends from the current Instagram User ID, not the webhook
+  // recipient/business ID retained from the older connection context.
+  const messagingAccountId = connection?.token?.instagramUserId;
   if (!messagingAccountId) {
-    return jsonError("The connected Instagram business account ID is unavailable. Send a new customer DM and try again.", 503);
+    return jsonError("The connected Instagram Login user ID is unavailable. Reconnect Instagram and try again.", 503);
   }
 
   const endpoint = `https://graph.instagram.com/${META_GRAPH_VERSION}/${messagingAccountId}/messages`;
