@@ -9,6 +9,7 @@ const META_WEBHOOK_LOG_KV_KEY = "para:meta:webhook:last";
 const META_WEBHOOK_INBOX_KV_KEY = "para:meta:webhook:inbox";
 const META_STORAGE_TEST_KV_KEY = "para:meta:storage:test";
 const META_SEND_DIAGNOSTIC_KV_KEY = "para:meta:send-diagnostic:last";
+const META_SUBSCRIPTION_DIAGNOSTIC_KV_KEY = "para:meta:subscription-diagnostic:last";
 const META_CONNECTION_KV_TTL_SECONDS = 60 * 60 * 24 * 7;
 const META_WEBHOOK_LOG_TTL_SECONDS = 60 * 60 * 24 * 7;
 
@@ -48,6 +49,20 @@ export type StoredMetaSendDiagnostic = {
     fbtrace_id?: string;
   } | null;
   message_id?: string;
+};
+
+export type StoredMetaSubscriptionDiagnostic = {
+  timestamp: string;
+  status: number | null;
+  ok: boolean;
+  success: boolean;
+  error: {
+    code?: number;
+    error_subcode?: number;
+    type?: string;
+    message?: string;
+    fbtrace_id?: string;
+  } | null;
 };
 
 export type StoredMetaWebhookConversation = {
@@ -295,6 +310,35 @@ export async function writeSharedMetaSendDiagnostic(diagnostic: StoredMetaSendDi
   if (!redis) return false;
 
   await redis.set(META_SEND_DIAGNOSTIC_KV_KEY, diagnostic, {
+    ex: META_WEBHOOK_LOG_TTL_SECONDS,
+  });
+
+  return true;
+}
+
+export async function readSharedMetaSubscriptionDiagnostic() {
+  const redis = getRedisClient();
+  if (!redis) return null;
+
+  const stored = await redis.get<StoredMetaSubscriptionDiagnostic | string | null>(META_SUBSCRIPTION_DIAGNOSTIC_KV_KEY);
+  if (!stored) return null;
+
+  if (typeof stored === "string") {
+    try {
+      return JSON.parse(stored) as StoredMetaSubscriptionDiagnostic;
+    } catch {
+      return null;
+    }
+  }
+
+  return stored;
+}
+
+export async function writeSharedMetaSubscriptionDiagnostic(diagnostic: StoredMetaSubscriptionDiagnostic) {
+  const redis = getRedisClient();
+  if (!redis) return false;
+
+  await redis.set(META_SUBSCRIPTION_DIAGNOSTIC_KV_KEY, diagnostic, {
     ex: META_WEBHOOK_LOG_TTL_SECONDS,
   });
 

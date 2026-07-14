@@ -8,8 +8,10 @@ import {
   getSharedStorageRuntimeInfo,
   readSharedMetaWebhookLog,
   readSharedMetaSendDiagnostic,
+  readSharedMetaSubscriptionDiagnostic,
   readSharedStorageTestRecord,
   runSharedStorageHealthcheck,
+  writeSharedMetaSubscriptionDiagnostic,
   writeSharedStorageTestRecord,
 } from "@/lib/meta-shared-storage";
 import { readStoredMetaConnection } from "@/lib/meta-connect-storage";
@@ -38,6 +40,7 @@ export async function GET(request: Request) {
   const stickyStorageAction = url.searchParams.get("stickyStorage");
   const webhookLog = await readSharedMetaWebhookLog().catch(() => null);
   const lastSendDiagnostic = await readSharedMetaSendDiagnostic().catch(() => null);
+  const lastSubscriptionDiagnostic = await readSharedMetaSubscriptionDiagnostic().catch(() => null);
   const storageRuntime = getSharedStorageRuntimeInfo();
   const storageHealth = await runSharedStorageHealthcheck().catch(() => ({
     configured: false,
@@ -95,6 +98,7 @@ export async function GET(request: Request) {
       lastEvent: webhookLog,
     },
     lastSendDiagnostic,
+    lastSubscriptionDiagnostic,
     storage: {
       ...storageRuntime,
       configured: storageHealth.configured,
@@ -192,4 +196,65 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.json(response, { status: 200 });
+}
+
+export async function POST() {
+  const cookieStore = await cookies();
+  if (cookieStore.get(DASHBOARD_COOKIE)?.value !== "active") {
+    return unauthorized();
+  }
+
+  const { connection } = await readStoredMetaConnection(cookieStore);
+  const userToken = connection?.token?.accessToken;
+  const timestamp = new Date().toISOString();
+
+  if (!userToken) {
+    const diagnostic = {
+      timestamp,
+      status: null,
+      ok: false,
+      success: false,
+      error: { message: "Missing stored Instagram access token" },
+    };
+    await writeSharedMetaSubscriptionDiagnostic(diagnostic).catch(() => false);
+    return NextResponse.json({ subscriptionAction: diagnostic }, { status: 503 });
+  }
+
+  const endpoint = `https://graph.instagram.com/${META_GRAPH_VERSION}/me/subscribed_apps`;
+  const metaResponse = await fetch(`${endpoint}?${new URLSearchParams({
+    subscribed_fields: "messages",
+    access_token: userToken,
+  })}`, {
+    method: "POST",
+    cache: "no-store",
+  });
+  const data = (await metaResponse.json().catch(() => ({}))) as {
+    success?: boolean;
+    error?: {
+      code?: number;
+      error_subcode?: number;
+      type?: string;
+      message?: string;
+      fbtrace_id?: string;
+    };
+  };
+  const success = data.success === true;
+  const diagnostic = {
+    timestamp,
+    status: metaResponse.status,
+    ok: metaResponse.ok && !data.error && success,
+    success,
+    error: data.error
+      ? {
+          code: data.error.code,
+          error_subcode: data.error.error_subcode,
+          type: data.error.type,
+          message: data.error.message,
+          fbtrace_id: data.error.fbtrace_id,
+        }
+      : null,
+  };
+  await writeSharedMetaSubscriptionDiagnostic(diagnostic).catch(() => false);
+
+  return NextResponse.json({ subscriptionAction: diagnostic }, { status: 200 });
 }
