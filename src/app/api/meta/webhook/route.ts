@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   appendSharedMetaWebhookMessage,
   claimSharedMetaAutoReply,
+  claimSharedMetaAutoReplyText,
   readSharedMetaConnection,
   writeSharedMetaSendDiagnostic,
   writeSharedMetaWebhookLog,
@@ -131,7 +132,11 @@ export async function POST(request: Request) {
           }
 
           const decision = decideInstagramAutoReply(text);
-          if (decision.kind === "escalate" || !(await claimSharedMetaAutoReply(messageId))) {
+          if (
+            decision.kind === "escalate" ||
+            !(await claimSharedMetaAutoReply(messageId)) ||
+            !(await claimSharedMetaAutoReplyText(senderId, text))
+          ) {
             return true;
           }
 

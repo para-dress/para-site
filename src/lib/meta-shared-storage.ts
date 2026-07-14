@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import { Redis } from "@upstash/redis";
 import {
   normalizeStoredMetaConnection,
@@ -11,6 +12,7 @@ const META_STORAGE_TEST_KV_KEY = "para:meta:storage:test";
 const META_SEND_DIAGNOSTIC_KV_KEY = "para:meta:send-diagnostic:last";
 const META_SUBSCRIPTION_DIAGNOSTIC_KV_KEY = "para:meta:subscription-diagnostic:last";
 const META_AUTO_REPLY_KV_PREFIX = "para:meta:auto-reply:";
+const META_AUTO_REPLY_TEXT_KV_PREFIX = "para:meta:auto-reply-text:";
 const META_CONNECTION_KV_TTL_SECONDS = 60 * 60 * 24 * 7;
 const META_WEBHOOK_LOG_TTL_SECONDS = 60 * 60 * 24 * 7;
 
@@ -323,6 +325,22 @@ export async function claimSharedMetaAutoReply(messageId: string) {
 
   const result = await redis.set(`${META_AUTO_REPLY_KV_PREFIX}${messageId}`, "claimed", {
     ex: META_WEBHOOK_LOG_TTL_SECONDS,
+    nx: true,
+  });
+
+  return result === "OK";
+}
+
+export async function claimSharedMetaAutoReplyText(senderId: string, text: string) {
+  const redis = getRedisClient();
+  if (!redis) return false;
+
+  const fingerprint = crypto
+    .createHash("sha256")
+    .update(`${senderId}:${text.trim().toLowerCase()}`)
+    .digest("hex");
+  const result = await redis.set(`${META_AUTO_REPLY_TEXT_KV_PREFIX}${fingerprint}`, "claimed", {
+    ex: 60 * 10,
     nx: true,
   });
 
