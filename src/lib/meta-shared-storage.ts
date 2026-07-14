@@ -229,8 +229,16 @@ export async function appendSharedMetaWebhookMessage(message: StoredMetaWebhookM
     senderId:
       previous?.senderId ??
       (message.direction === "customer" ? message.senderId : message.recipientId ?? message.senderId),
-    senderUsername: message.senderUsername ?? previous?.senderUsername,
-    senderName: message.senderName ?? previous?.senderName,
+    // Only customer-originated events can establish the customer identity. Outbound
+    // webhook events identify the business sender and must not overwrite it.
+    senderUsername:
+      message.direction === "customer"
+        ? message.senderUsername ?? previous?.senderUsername
+        : previous?.senderUsername,
+    senderName:
+      message.direction === "customer"
+        ? message.senderName ?? previous?.senderName
+        : previous?.senderName,
     lastMessage: message.text,
     updatedAt: message.timestamp,
     unread: (previous?.unread ?? 0) + (message.direction === "customer" ? 1 : 0),
