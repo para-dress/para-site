@@ -58,6 +58,11 @@ export function buildMetaOAuthUrl(state: string, scopeSet: MetaScopeSet = "full"
   const env = getMetaEnv();
   const redirectUri = buildMetaRedirectUri();
   const params = new URLSearchParams({
+    // Instagram Login apps must bypass the legacy Facebook-login surface.
+    // Without this, Instagram defaults to enable_fb_login=1 and rejects the
+    // Instagram-specific App ID with an invalid-request response.
+    enable_fb_login: "0",
+    force_authentication: "1",
     client_id: env.appId,
     redirect_uri: redirectUri,
     response_type: "code",
