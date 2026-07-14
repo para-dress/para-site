@@ -55,6 +55,8 @@ export async function GET(request: Request) {
   const response: Record<string, unknown> = {
     connectionExists: Boolean(connection),
     storageSource: source,
+    connectionStatus: connection?.status ?? null,
+    lastConnectionError: connection?.lastError ?? null,
     page: connection?.page
       ? {
           id: connection.page.id,
