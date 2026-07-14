@@ -1,13 +1,20 @@
 import { NextResponse } from "next/server";
 import {
   appendSharedMetaWebhookMessage,
+  claimSharedMetaAutoReply,
   readSharedMetaConnection,
+  writeSharedMetaSendDiagnostic,
   writeSharedMetaWebhookLog,
 } from "@/lib/meta-shared-storage";
 import { META_GRAPH_VERSION } from "@/lib/meta-connect";
+import { decideInstagramAutoReply } from "@/lib/meta-auto-reply";
 
 function getWebhookVerifyToken() {
   return process.env.META_WEBHOOK_VERIFY_TOKEN ?? "";
+}
+
+function maskInstagramId(value: string) {
+  return `…${value.slice(-6)}`;
 }
 
 export async function GET(request: Request) {
@@ -69,7 +76,7 @@ export async function POST(request: Request) {
           sender?: { id?: string; username?: string };
           recipient?: { id?: string };
           timestamp?: number;
-          message?: { mid?: string; text?: string };
+          message?: { mid?: string; text?: string; is_echo?: boolean };
         };
         const senderId = event.sender?.id;
         const recipientId = event.recipient?.id;
@@ -79,6 +86,10 @@ export async function POST(request: Request) {
 
         return (async () => {
           const connection = await readSharedMetaConnection();
+          const isBrandMessage =
+            event.message?.is_echo === true ||
+            senderId === connection?.token?.instagramUserId ||
+            senderId === recipientId;
           // The webhook recipient is the destination Instagram-scoped account ID.
           // It is more reliable for replies than the OAuth profile ID.
           const brandId = recipientId || entry.id || connection?.instagramAccount?.id;
@@ -102,18 +113,93 @@ export async function POST(request: Request) {
 
           senderName ??= senderUsername;
 
-          return appendSharedMetaWebhookMessage({
+          await appendSharedMetaWebhookMessage({
             id: messageId,
-            conversationId: brandId && senderId === brandId ? recipientId || senderId : senderId,
+            conversationId: isBrandMessage ? recipientId || senderId : senderId,
             senderId,
             recipientId,
             businessAccountId: brandId,
             senderUsername,
             senderName,
-            direction: brandId && senderId === brandId ? "brand" : "customer",
+            direction: isBrandMessage ? "brand" : "customer",
             text,
             timestamp: new Date(event.timestamp ?? Date.now()).toISOString(),
           });
+
+          if (isBrandMessage || !connection?.token?.accessToken) {
+            return true;
+          }
+
+          const decision = decideInstagramAutoReply(text);
+          if (decision.kind === "escalate" || !(await claimSharedMetaAutoReply(messageId))) {
+            return true;
+          }
+
+          const endpoint = `https://graph.instagram.com/${META_GRAPH_VERSION}/me/messages`;
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${connection.token.accessToken}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              recipient: { id: senderId },
+              message: { text: decision.text },
+            }),
+            cache: "no-store",
+          }).catch(() => null);
+          const data = (response
+            ? await response.json().catch(() => ({}))
+            : {}) as {
+            message_id?: string;
+            id?: string;
+            error?: {
+              code?: number;
+              error_subcode?: number;
+              type?: string;
+              message?: string;
+              fbtrace_id?: string;
+            };
+          };
+          const ok = Boolean(response?.ok && !data.error);
+          const sentAt = new Date().toISOString();
+
+          await writeSharedMetaSendDiagnostic({
+            timestamp: sentAt,
+            status: response?.status ?? null,
+            ok,
+            endpoint,
+            graphApiVersion: META_GRAPH_VERSION,
+            senderId: "me",
+            recipientId: maskInstagramId(senderId),
+            error: data.error
+              ? {
+                  code: data.error.code,
+                  error_subcode: data.error.error_subcode,
+                  type: data.error.type,
+                  message: data.error.message,
+                  fbtrace_id: data.error.fbtrace_id,
+                }
+              : response
+                ? null
+                : { type: "NetworkError", message: "Instagram could not be reached." },
+            message_id: ok ? data.message_id || data.id : undefined,
+          });
+
+          if (ok) {
+            await appendSharedMetaWebhookMessage({
+              id: data.message_id || data.id || `auto:${sentAt}:${senderId}`,
+              conversationId: senderId,
+              senderId: connection.token.instagramUserId || "me",
+              recipientId: senderId,
+              businessAccountId: connection.token.instagramUserId,
+              direction: "brand",
+              text: decision.text,
+              timestamp: sentAt,
+            });
+          }
+
+          return true;
         })().catch(() => false);
       }),
     ),
