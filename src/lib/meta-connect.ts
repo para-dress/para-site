@@ -3,6 +3,7 @@ import type {
   MetaDebugTokenData,
   MetaInstagramAccount,
   MetaPage,
+  MetaTokenExchangeDiagnostic,
   MetaTokenResponse,
   MetaUserProfile,
 } from "@/lib/meta-connect-types";
@@ -120,6 +121,13 @@ export async function fetchMetaJsonWithResponse<T>(pathname: string, params: URL
   };
 }
 
+export class MetaTokenExchangeError extends Error {
+  constructor(public readonly diagnostic: MetaTokenExchangeDiagnostic) {
+    super(diagnostic.message);
+    this.name = "MetaTokenExchangeError";
+  }
+}
+
 export async function exchangeMetaCodeForToken(code: string) {
   const env = getMetaEnv();
   const body = new URLSearchParams({
@@ -143,6 +151,35 @@ export async function exchangeMetaCodeForToken(code: string) {
 
   if (!response.ok || !data.access_token) {
     throw new Error(data.error_message || data.error_type || "Instagram token exchange failed");
+  }
+
+  return data;
+}
+
+export async function exchangeInstagramTokenForLongLivedToken(shortLivedToken: string) {
+  const env = getMetaEnv();
+  const response = await fetch(`https://graph.instagram.com/access_token?${new URLSearchParams({
+    grant_type: "ig_exchange_token",
+    client_secret: env.appSecret,
+    access_token: shortLivedToken,
+  })}`, { cache: "no-store" });
+  const data = (await response.json().catch(() => ({}))) as MetaTokenResponse & {
+    error?: {
+      code?: number;
+      error_subcode?: number;
+      message?: string;
+      fbtrace_id?: string;
+    };
+  };
+
+  if (!response.ok || !data.access_token || data.error) {
+    throw new MetaTokenExchangeError({
+      status: response.status,
+      code: data.error?.code,
+      errorSubcode: data.error?.error_subcode,
+      message: data.error?.message || "Instagram long-lived token exchange failed",
+      fbtraceId: data.error?.fbtrace_id,
+    });
   }
 
   return data;

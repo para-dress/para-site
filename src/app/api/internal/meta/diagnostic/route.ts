@@ -80,6 +80,16 @@ export async function GET(request: Request) {
       : null,
     userTokenStored: redactTokenState(userToken),
     instagramAccessTokenStored: redactTokenState(userToken),
+    token: connection?.token
+      ? {
+          tokenType: connection.token.tokenType ?? null,
+          obtainedAt: connection.token.obtainedAt ?? null,
+          expiresAt: connection.token.expiresAt ?? null,
+          expiresIn: connection.token.expiresIn ?? null,
+          instagramUserIdStored: redactTokenState(connection.token.instagramUserId),
+        }
+      : null,
+    lastTokenExchangeDiagnostic: connection?.lastTokenExchangeDiagnostic ?? null,
     webhook: {
       endpoint: `${new URL(request.url).origin}/api/meta/webhook`,
       lastEvent: webhookLog,

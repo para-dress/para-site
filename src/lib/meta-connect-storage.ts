@@ -6,6 +6,7 @@ import {
   readSharedMetaConnection,
   writeSharedMetaConnection,
 } from "@/lib/meta-shared-storage";
+import type { MetaTokenExchangeDiagnostic } from "@/lib/meta-connect-types";
 
 export type StoredMetaConnection = {
   status: "connected" | "error";
@@ -17,9 +18,11 @@ export type StoredMetaConnection = {
   };
   token?: {
     accessToken: string;
-    tokenType?: string;
+    tokenType?: "long_lived";
+    obtainedAt?: string;
     expiresIn?: number;
     expiresAt?: string;
+    instagramUserId?: string;
   };
   page?: {
     id: string;
@@ -39,6 +42,7 @@ export type StoredMetaConnection = {
     name: string;
   }>;
   lastError?: string;
+  lastTokenExchangeDiagnostic?: MetaTokenExchangeDiagnostic;
 };
 
 export type MetaConnectionSnapshot = Omit<StoredMetaConnection, "token" | "page"> & {
@@ -98,10 +102,14 @@ export function normalizeStoredMetaConnection(raw: unknown): StoredMetaConnectio
                   ? source.accessToken
                   : "",
             tokenType:
-              typeof token?.tokenType === "string"
-                ? token.tokenType
-                : typeof source.tokenType === "string"
-                  ? source.tokenType
+              token?.tokenType === "long_lived" || source.tokenType === "long_lived"
+                ? "long_lived"
+                : undefined,
+            obtainedAt:
+              typeof token?.obtainedAt === "string"
+                ? token.obtainedAt
+                : typeof source.obtainedAt === "string"
+                  ? source.obtainedAt
                   : undefined,
             expiresIn:
               typeof token?.expiresIn === "number"
@@ -114,6 +122,12 @@ export function normalizeStoredMetaConnection(raw: unknown): StoredMetaConnectio
                 ? token.expiresAt
                 : typeof source.expiresAt === "string"
                   ? source.expiresAt
+                  : undefined,
+            instagramUserId:
+              typeof token?.instagramUserId === "string"
+                ? token.instagramUserId
+                : typeof source.instagramUserId === "string"
+                  ? source.instagramUserId
                   : undefined,
           }
         : undefined,
@@ -190,6 +204,10 @@ export function normalizeStoredMetaConnection(raw: unknown): StoredMetaConnectio
         )
       : undefined,
     lastError: typeof source.lastError === "string" ? source.lastError : undefined,
+    lastTokenExchangeDiagnostic:
+      source.lastTokenExchangeDiagnostic && typeof source.lastTokenExchangeDiagnostic === "object"
+        ? source.lastTokenExchangeDiagnostic as MetaTokenExchangeDiagnostic
+        : undefined,
   };
 }
 

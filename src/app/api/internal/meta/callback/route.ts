@@ -2,6 +2,8 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import {
   META_CONNECT_STATE_COOKIE,
+  MetaTokenExchangeError,
+  exchangeInstagramTokenForLongLivedToken,
   exchangeMetaCodeForToken,
   fetchMetaUserProfile,
 } from "@/lib/meta-connect";
@@ -53,10 +55,12 @@ export async function GET(request: Request) {
 
   try {
     const now = new Date().toISOString();
-    const token = await exchangeMetaCodeForToken(code);
-    const instagramAccount = await fetchMetaUserProfile(token.access_token);
-    const userTokenExpiresAt = token.expires_in
-      ? new Date(Date.now() + token.expires_in * 1000).toISOString()
+    const shortLivedToken = await exchangeMetaCodeForToken(code);
+    const longLivedToken = await exchangeInstagramTokenForLongLivedToken(shortLivedToken.access_token);
+    const instagramAccount = await fetchMetaUserProfile(longLivedToken.access_token);
+    const expiresIn = longLivedToken.expires_in;
+    const expiresAt = expiresIn
+      ? new Date(Date.now() + expiresIn * 1000).toISOString()
       : undefined;
 
     await writeStoredMetaConnection(response.cookies, {
@@ -68,10 +72,12 @@ export async function GET(request: Request) {
         name: instagramAccount.name || instagramAccount.username,
       },
       token: {
-        accessToken: token.access_token,
-        tokenType: token.token_type,
-        expiresIn: token.expires_in,
-        expiresAt: userTokenExpiresAt,
+        accessToken: longLivedToken.access_token,
+        tokenType: "long_lived",
+        obtainedAt: now,
+        expiresIn,
+        expiresAt,
+        instagramUserId: longLivedToken.user_id || shortLivedToken.user_id || instagramAccount.id,
       },
       instagramAccount: {
         id: instagramAccount.id,
@@ -91,6 +97,10 @@ export async function GET(request: Request) {
         callbackError instanceof Error
           ? callbackError.message
           : "Unexpected Meta callback error.",
+      lastTokenExchangeDiagnostic:
+        callbackError instanceof MetaTokenExchangeError
+          ? callbackError.diagnostic
+          : undefined,
     });
     redirectUrl.searchParams.set("connect", "exchange-failed");
   }

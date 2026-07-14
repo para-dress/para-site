@@ -26,6 +26,14 @@ export type MetaTokenResponse = {
   expires_in?: number;
 };
 
+export type MetaTokenExchangeDiagnostic = {
+  status: number | null;
+  code?: number;
+  errorSubcode?: number;
+  message: string;
+  fbtraceId?: string;
+};
+
 export type MetaDebugTokenScope = {
   scope: string;
   target_ids?: string[];
