@@ -25,9 +25,7 @@ export default async function InternalInstagramPage({
       ? connection.storage.mode === "vercel-kv"
         ? "Connected and shared token stored"
         : "Connected in this browser session only"
-      : connection?.hasToken
-        ? "Connected"
-        : "Not connected yet";
+      : dashboardAccount.connectionStatus;
   const connectedAt = connection?.connectedAt
     ? `${new Date(connection.connectedAt).toLocaleString("en-GB", {
         day: "2-digit",
@@ -79,7 +77,6 @@ export default async function InternalInstagramPage({
               {connection?.status === "connected" ? "Reconnect Instagram" : "Connect Instagram"}
             </Link>
 
-
             <form action="/api/internal/meta/disconnect" method="post">
               <button
                 type="submit"
@@ -125,28 +122,14 @@ export default async function InternalInstagramPage({
           </div>
         ) : null}
 
-        {connection?.storage.mode === "vercel-kv" ? (
-          <div className="mt-4 rounded-[1.5rem] border border-[rgba(79,119,78,0.18)] bg-[rgba(79,119,78,0.08)] p-4 text-sm leading-7 text-[var(--color-ink-strong)]">
-            <p className="font-semibold">Shared Meta storage is active.</p>
-            <p className="mt-2">
-              The connection is stored server-side and can be reused across browser sessions.
-            </p>
-          </div>
-        ) : (
+        {connection?.storage.mode !== "vercel-kv" ? (
           <div className="mt-4 rounded-[1.5rem] border border-[rgba(140,62,45,0.18)] bg-[rgba(140,62,45,0.06)] p-4 text-sm leading-7 text-[var(--color-ink-strong)]">
             <p className="font-semibold">Shared Meta storage is not active yet.</p>
             <p className="mt-2">
               Right now the connection only survives in the current browser session. Add Vercel KV environment variables and reconnect Instagram so reviewers can see the same stored token state.
             </p>
           </div>
-        )}
-
-        <div className="mt-4 rounded-[1.5rem] border border-[rgba(157,122,63,0.14)] bg-[rgba(247,240,234,0.56)] p-4 text-sm leading-7 text-[var(--color-ink-strong)]">
-          <p className="font-semibold">Instagram Business Login</p>
-          <p className="mt-2">
-            Connect Instagram uses the Instagram Business Login flow configured in your Meta app. It requests only the Instagram business permissions needed for profile access, comments, and messages.
-          </p>
-        </div>
+        ) : null}
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">

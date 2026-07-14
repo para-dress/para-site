@@ -1,8 +1,6 @@
 export type MetaUserProfile = {
   id: string;
   name?: string;
-  username?: string;
-  profile_picture_url?: string;
 };
 
 export type MetaPage = {
@@ -21,7 +19,6 @@ export type MetaInstagramAccount = {
 
 export type MetaTokenResponse = {
   access_token: string;
-  user_id?: string;
   token_type?: string;
   expires_in?: number;
 };

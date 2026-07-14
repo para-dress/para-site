@@ -1,5 +1,8 @@
 import type { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
-import { readStoredMetaConnection } from "@/lib/meta-connect-storage";
+import {
+  META_PAGE_TOKEN_COOKIE,
+  readStoredMetaConnection,
+} from "@/lib/meta-connect-storage";
 import { META_GRAPH_VERSION } from "@/lib/meta-connect";
 import { hasSharedMetaStorageConfig } from "@/lib/meta-shared-storage";
 import type { Conversation } from "@/lib/internal-dashboard";
@@ -41,7 +44,7 @@ export type ConversationResult = {
 };
 
 function buildGraphUrl(pathname: string, params: URLSearchParams) {
-  return `https://graph.instagram.com/${META_GRAPH_VERSION}${pathname}?${params.toString()}`;
+  return `https://graph.facebook.com/${META_GRAPH_VERSION}${pathname}?${params.toString()}`;
 }
 
 async function fetchGraph<T>(pathname: string, params: URLSearchParams) {
@@ -113,7 +116,8 @@ export async function fetchLiveInbox(
 ): Promise<InboxResult | null> {
   const { connection } = await readStoredMetaConnection(cookieStore);
   const instagramAccountId = connection?.instagramAccount?.id;
-  const instagramAccessToken = connection?.token?.accessToken;
+  const cookiePageAccessToken = cookieStore.get(META_PAGE_TOKEN_COOKIE)?.value;
+  const pageAccessToken = connection?.page?.accessToken ?? cookiePageAccessToken;
   const brandId = connection?.instagramAccount?.id;
 
   if (!connection?.token?.accessToken) {
@@ -127,18 +131,18 @@ export async function fetchLiveInbox(
     };
   }
 
-  if (!instagramAccountId || !instagramAccessToken) {
+  if (!instagramAccountId || !pageAccessToken) {
     return {
       source: "demo",
       warning:
-        "Live inbox is using demo data because the stored Meta connection is missing the Instagram business account ID or access token. Reconnect Instagram after Vercel KV is configured.",
+        "Live inbox is using demo data because the stored Meta connection is missing the Instagram account ID or page access token. Reconnect Instagram after Vercel KV is configured.",
       conversations: [],
     };
   }
 
   try {
     const params = new URLSearchParams({
-      access_token: instagramAccessToken,
+      access_token: pageAccessToken,
       fields: "id,updated_time,participants{id,name,username}",
       limit: "20",
     });
@@ -149,7 +153,7 @@ export async function fetchLiveInbox(
 
     const conversations = await Promise.all(
       (data.data ?? []).map(async (conversation) => {
-        const messages = await fetchConversationMessages(instagramAccessToken, conversation.id);
+        const messages = await fetchConversationMessages(pageAccessToken, conversation.id);
         return buildConversationCard(conversation, messages, brandId);
       }),
     );
@@ -179,7 +183,8 @@ export async function fetchLiveConversation(
   conversationId: string,
 ): Promise<ConversationResult | null> {
   const { connection } = await readStoredMetaConnection(cookieStore);
-  const instagramToken = connection?.token?.accessToken;
+  const cookiePageToken = cookieStore.get(META_PAGE_TOKEN_COOKIE)?.value;
+  const pageToken = connection?.page?.accessToken ?? cookiePageToken;
   const brandId = connection?.instagramAccount?.id;
 
   if (!connection?.token?.accessToken) {
@@ -193,11 +198,11 @@ export async function fetchLiveConversation(
     };
   }
 
-  if (!instagramToken) {
+  if (!pageToken) {
     return {
       source: "demo",
       warning:
-        "Live conversation is using demo data because the stored Meta connection is missing the Instagram access token. Reconnect Instagram after Vercel KV is configured.",
+        "Live conversation is using demo data because the stored Meta connection is missing the page access token. Reconnect Instagram after Vercel KV is configured.",
       conversation: null,
     };
   }
@@ -207,11 +212,11 @@ export async function fetchLiveConversation(
       fetchGraph<MetaConversationNode>(
         `/${conversationId}`,
         new URLSearchParams({
-          access_token: instagramToken,
+          access_token: pageToken,
           fields: "id,updated_time,participants{id,name,username}",
         }),
       ),
-      fetchConversationMessages(instagramToken, conversationId),
+      fetchConversationMessages(pageToken, conversationId),
     ]);
 
     return {

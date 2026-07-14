@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
-import { META_CONNECT_STATE_COOKIE, buildMetaOAuthUrl, createMetaState, getMetaConnectStatus } from "@/lib/meta-connect";
+import {
+  META_CONNECT_STATE_COOKIE,
+  buildMetaOAuthUrl,
+  createMetaState,
+  getMetaConnectStatus,
+} from "@/lib/meta-connect";
 
 export async function GET(request: Request) {
   const status = getMetaConnectStatus();
+
   if (!status.ready) {
     const redirectUrl = new URL("/internal/instagram", request.url);
     redirectUrl.searchParams.set("setup", status.missing.join(","));
