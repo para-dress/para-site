@@ -22,7 +22,10 @@ export type StoredMetaWebhookMessage = {
   id: string;
   conversationId: string;
   senderId: string;
+  recipientId?: string;
   senderUsername?: string;
+  senderName?: string;
+  direction: "customer" | "brand";
   text: string;
   timestamp: string;
 };
@@ -31,6 +34,7 @@ export type StoredMetaWebhookConversation = {
   id: string;
   senderId: string;
   senderUsername?: string;
+  senderName?: string;
   lastMessage: string;
   updatedAt: string;
   unread: number;
@@ -220,11 +224,16 @@ export async function appendSharedMetaWebhookMessage(message: StoredMetaWebhookM
     .slice(-50);
   const conversation: StoredMetaWebhookConversation = {
     id: message.conversationId,
-    senderId: message.senderId,
+    // A conversation belongs to the customer, including for outbound messages
+    // whose sender is the brand account.
+    senderId:
+      previous?.senderId ??
+      (message.direction === "customer" ? message.senderId : message.recipientId ?? message.senderId),
     senderUsername: message.senderUsername ?? previous?.senderUsername,
+    senderName: message.senderName ?? previous?.senderName,
     lastMessage: message.text,
     updatedAt: message.timestamp,
-    unread: (previous?.unread ?? 0) + 1,
+    unread: (previous?.unread ?? 0) + (message.direction === "customer" ? 1 : 0),
     messages,
   };
   const next = [conversation, ...existing.filter((item) => item.id !== message.conversationId)].slice(0, 50);

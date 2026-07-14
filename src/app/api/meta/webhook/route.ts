@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import {
   appendSharedMetaWebhookMessage,
+  readSharedMetaConnection,
   writeSharedMetaWebhookLog,
 } from "@/lib/meta-shared-storage";
+import { META_GRAPH_VERSION } from "@/lib/meta-connect";
 
 function getWebhookVerifyToken() {
   return process.env.META_WEBHOOK_VERIFY_TOKEN ?? "";
@@ -70,18 +72,46 @@ export async function POST(request: Request) {
           message?: { mid?: string; text?: string };
         };
         const senderId = event.sender?.id;
+        const recipientId = event.recipient?.id;
         const messageId = event.message?.mid;
         const text = event.message?.text;
         if (!senderId || !messageId || !text) return [];
 
-        return appendSharedMetaWebhookMessage({
-          id: messageId,
-          conversationId: senderId,
-          senderId,
-          senderUsername: event.sender?.username,
-          text,
-          timestamp: new Date(event.timestamp ?? Date.now()).toISOString(),
-        }).catch(() => false);
+        return (async () => {
+          const connection = await readSharedMetaConnection();
+          const brandId = connection?.instagramAccount?.id;
+          let senderUsername = event.sender?.username;
+          let senderName: string | undefined;
+
+          if ((!senderUsername || !senderName) && connection?.token?.accessToken) {
+            const profileResponse = await fetch(
+              `https://graph.instagram.com/${META_GRAPH_VERSION}/${senderId}?${new URLSearchParams({
+                access_token: connection.token.accessToken,
+                fields: "id,username,name",
+              })}`,
+              { cache: "no-store" },
+            ).catch(() => null);
+            const profile = profileResponse?.ok
+              ? await profileResponse.json().catch(() => null) as { username?: string; name?: string } | null
+              : null;
+            senderUsername = profile?.username ?? senderUsername;
+            senderName = profile?.name ?? senderName;
+          }
+
+          senderName ??= senderUsername;
+
+          return appendSharedMetaWebhookMessage({
+            id: messageId,
+            conversationId: brandId && senderId === brandId ? recipientId || senderId : senderId,
+            senderId,
+            recipientId,
+            senderUsername,
+            senderName,
+            direction: brandId && senderId === brandId ? "brand" : "customer",
+            text,
+            timestamp: new Date(event.timestamp ?? Date.now()).toISOString(),
+          });
+        })().catch(() => false);
       }),
     ),
   );

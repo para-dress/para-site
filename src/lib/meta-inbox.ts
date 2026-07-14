@@ -105,7 +105,7 @@ function buildWebhookConversationCard(conversation: StoredMetaWebhookConversatio
   return {
     id: `webhook:${conversation.id}`,
     handle: conversation.senderUsername ? `@${conversation.senderUsername}` : "@instagram-user",
-    name: conversation.senderUsername || "Instagram contact",
+    name: conversation.senderName || conversation.senderUsername || "Instagram contact",
     lastMessage: conversation.lastMessage,
     lastAt: formatClock(conversation.updatedAt),
     unread: conversation.unread,
@@ -113,7 +113,8 @@ function buildWebhookConversationCard(conversation: StoredMetaWebhookConversatio
       "Thanks for your message — I’m checking the details for you now and will send the clearest next step in just a moment.",
     messages: conversation.messages.map((message) => ({
       id: message.id,
-      sender: "customer",
+      // Webhook records written before direction tracking were inbound messages.
+      sender: message.direction === "brand" ? "brand" : "customer",
       text: message.text,
       at: formatClock(message.timestamp),
     })),

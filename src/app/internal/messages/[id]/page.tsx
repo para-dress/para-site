@@ -84,6 +84,7 @@ export default async function InternalConversationPage({
       <ConversationComposer
         initialDraft={conversation.aiDraft}
         source={isLiveConversation ? "live" : "demo"}
+        conversationId={id}
       />
     </div>
   );
