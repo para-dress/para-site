@@ -10,9 +10,10 @@ import type {
 export const META_CONNECT_STATE_COOKIE = "para_meta_connect_state";
 
 export const metaPermissions = [
+  // Start with the minimum documented Instagram Login permission. Once the
+  // connection succeeds, messaging/comment permissions can be added back in
+  // a fresh consent pass.
   "instagram_business_basic",
-  "instagram_business_manage_messages",
-  "instagram_business_manage_comments",
 ] as const;
 
 export type MetaScopeSet = "full";
@@ -58,11 +59,9 @@ export function buildMetaOAuthUrl(state: string, scopeSet: MetaScopeSet = "full"
   const env = getMetaEnv();
   const redirectUri = buildMetaRedirectUri();
   const params = new URLSearchParams({
-    // Instagram Login apps must bypass the legacy Facebook-login surface.
-    // Without this, Instagram defaults to enable_fb_login=1 and rejects the
-    // Instagram-specific App ID with an invalid-request response.
-    enable_fb_login: "0",
-    force_authentication: "1",
+    // Current Instagram Business Login parameter names from Meta's OAuth docs.
+    enable_fb_login: "false",
+    force_reauth: "true",
     client_id: env.appId,
     redirect_uri: redirectUri,
     response_type: "code",
