@@ -58,7 +58,7 @@ export async function POST(request: Request) {
 
   const entries =
     payload && typeof payload === "object" && "entry" in payload && Array.isArray((payload as { entry?: unknown[] }).entry)
-      ? (payload as { entry: Array<{ messaging?: unknown[] }> }).entry
+      ? (payload as { entry: Array<{ id?: string; messaging?: unknown[] }> }).entry
       : [];
 
   await Promise.all(
@@ -79,7 +79,9 @@ export async function POST(request: Request) {
 
         return (async () => {
           const connection = await readSharedMetaConnection();
-          const brandId = connection?.instagramAccount?.id;
+          // The webhook recipient is the destination Instagram-scoped account ID.
+          // It is more reliable for replies than the OAuth profile ID.
+          const brandId = recipientId || entry.id || connection?.instagramAccount?.id;
           let senderUsername = event.sender?.username;
           let senderName: string | undefined;
 
@@ -105,6 +107,7 @@ export async function POST(request: Request) {
             conversationId: brandId && senderId === brandId ? recipientId || senderId : senderId,
             senderId,
             recipientId,
+            businessAccountId: brandId,
             senderUsername,
             senderName,
             direction: brandId && senderId === brandId ? "brand" : "customer",

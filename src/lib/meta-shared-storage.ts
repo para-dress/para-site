@@ -23,6 +23,7 @@ export type StoredMetaWebhookMessage = {
   conversationId: string;
   senderId: string;
   recipientId?: string;
+  businessAccountId?: string;
   senderUsername?: string;
   senderName?: string;
   direction: "customer" | "brand";
@@ -35,6 +36,7 @@ export type StoredMetaWebhookConversation = {
   senderId: string;
   senderUsername?: string;
   senderName?: string;
+  businessAccountId?: string;
   lastMessage: string;
   updatedAt: string;
   unread: number;
@@ -239,6 +241,7 @@ export async function appendSharedMetaWebhookMessage(message: StoredMetaWebhookM
       message.direction === "customer"
         ? message.senderName ?? previous?.senderName
         : previous?.senderName,
+    businessAccountId: message.businessAccountId ?? previous?.businessAccountId,
     lastMessage: message.text,
     updatedAt: message.timestamp,
     unread: (previous?.unread ?? 0) + (message.direction === "customer" ? 1 : 0),

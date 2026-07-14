@@ -53,7 +53,7 @@ export async function POST(request: Request, { params }: RouteContext) {
   const { connection } = await readStoredMetaConnection(cookieStore);
   const instagramAccountId = connection?.instagramAccount?.id;
   const accessToken = connection?.token?.accessToken;
-  if (!instagramAccountId || !accessToken) {
+  if (!accessToken) {
     return jsonError("Instagram is not connected. Reconnect the business account and try again.", 503);
   }
 
@@ -63,11 +63,16 @@ export async function POST(request: Request, { params }: RouteContext) {
     return jsonError("This Instagram conversation is no longer available in the live inbox.", 404);
   }
 
+  const messagingAccountId = conversation.businessAccountId || instagramAccountId;
+  if (!messagingAccountId) {
+    return jsonError("The connected Instagram business account ID is unavailable. Send a new customer DM and try again.", 503);
+  }
+
   let metaResponse: Response;
   let metaData: SendMessageResponse;
   try {
     metaResponse = await fetch(
-      `https://graph.instagram.com/${META_GRAPH_VERSION}/${instagramAccountId}/messages`,
+      `https://graph.instagram.com/${META_GRAPH_VERSION}/${messagingAccountId}/messages`,
       {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -92,8 +97,9 @@ export async function POST(request: Request, { params }: RouteContext) {
   await appendSharedMetaWebhookMessage({
     id: metaData.message_id || metaData.id || `outgoing:${timestamp}:${recipientId}`,
     conversationId: recipientId,
-    senderId: instagramAccountId,
+    senderId: messagingAccountId,
     recipientId,
+    businessAccountId: messagingAccountId,
     direction: "brand",
     text,
     timestamp,

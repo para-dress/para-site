@@ -6,7 +6,7 @@ import { fetchLiveInbox } from "@/lib/meta-inbox";
 export default async function InternalMessagesPage() {
   const cookieStore = await cookies();
   const liveInbox = await fetchLiveInbox(cookieStore);
-  const isLiveInbox = liveInbox?.source === "live" && liveInbox.conversations.length > 0;
+  const isLiveInbox = liveInbox?.source === "live";
   const conversations =
     isLiveInbox ? liveInbox.conversations : dashboardConversations;
 

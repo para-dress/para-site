@@ -239,7 +239,9 @@ export async function fetchLiveInbox(
     }
 
     return {
-      source: "demo",
+      // A connected account with an unavailable Graph response is still live,
+      // not a demo inbox. Never surface sample conversations in this state.
+      source: "live",
       warning:
         !hasSharedMetaStorageConfig()
           ? "Live inbox is using demo data because Vercel KV is not configured yet. Add KV env vars, reconnect Instagram, and the shared token will become visible to all reviewer sessions."
@@ -285,7 +287,9 @@ export async function fetchLiveInbox(
     }
 
     return {
-      source: "demo",
+      // A connected account with an unavailable Graph response is still live,
+      // not a demo inbox. Never surface sample conversations in this state.
+      source: "live",
       warning:
         error instanceof Error
           ? `Live inbox could not load from Meta yet: ${error.message}`
