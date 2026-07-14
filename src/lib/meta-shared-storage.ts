@@ -8,6 +8,7 @@ const META_CONNECTION_KV_KEY = "para:meta:connection";
 const META_WEBHOOK_LOG_KV_KEY = "para:meta:webhook:last";
 const META_WEBHOOK_INBOX_KV_KEY = "para:meta:webhook:inbox";
 const META_STORAGE_TEST_KV_KEY = "para:meta:storage:test";
+const META_SEND_DIAGNOSTIC_KV_KEY = "para:meta:send-diagnostic:last";
 const META_CONNECTION_KV_TTL_SECONDS = 60 * 60 * 24 * 7;
 const META_WEBHOOK_LOG_TTL_SECONDS = 60 * 60 * 24 * 7;
 
@@ -29,6 +30,24 @@ export type StoredMetaWebhookMessage = {
   direction: "customer" | "brand";
   text: string;
   timestamp: string;
+};
+
+export type StoredMetaSendDiagnostic = {
+  timestamp: string;
+  status: number | null;
+  ok: boolean;
+  endpoint: string;
+  graphApiVersion: string;
+  senderId: string;
+  recipientId: string;
+  error: {
+    code?: number;
+    error_subcode?: number;
+    type?: string;
+    message?: string;
+    fbtrace_id?: string;
+  } | null;
+  message_id?: string;
 };
 
 export type StoredMetaWebhookConversation = {
@@ -250,6 +269,35 @@ export async function appendSharedMetaWebhookMessage(message: StoredMetaWebhookM
   const next = [conversation, ...existing.filter((item) => item.id !== message.conversationId)].slice(0, 50);
 
   await redis.set(META_WEBHOOK_INBOX_KV_KEY, next, { ex: META_WEBHOOK_LOG_TTL_SECONDS });
+  return true;
+}
+
+export async function readSharedMetaSendDiagnostic() {
+  const redis = getRedisClient();
+  if (!redis) return null;
+
+  const stored = await redis.get<StoredMetaSendDiagnostic | string | null>(META_SEND_DIAGNOSTIC_KV_KEY);
+  if (!stored) return null;
+
+  if (typeof stored === "string") {
+    try {
+      return JSON.parse(stored) as StoredMetaSendDiagnostic;
+    } catch {
+      return null;
+    }
+  }
+
+  return stored;
+}
+
+export async function writeSharedMetaSendDiagnostic(diagnostic: StoredMetaSendDiagnostic) {
+  const redis = getRedisClient();
+  if (!redis) return false;
+
+  await redis.set(META_SEND_DIAGNOSTIC_KV_KEY, diagnostic, {
+    ex: META_WEBHOOK_LOG_TTL_SECONDS,
+  });
+
   return true;
 }
 

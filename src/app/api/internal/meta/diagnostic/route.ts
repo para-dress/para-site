@@ -7,6 +7,7 @@ import {
   getSharedStorageEnvPresence,
   getSharedStorageRuntimeInfo,
   readSharedMetaWebhookLog,
+  readSharedMetaSendDiagnostic,
   readSharedStorageTestRecord,
   runSharedStorageHealthcheck,
   writeSharedStorageTestRecord,
@@ -35,6 +36,7 @@ export async function GET(request: Request) {
   const includeLiveTest = url.searchParams.get("live") === "1";
   const stickyStorageAction = url.searchParams.get("stickyStorage");
   const webhookLog = await readSharedMetaWebhookLog().catch(() => null);
+  const lastSendDiagnostic = await readSharedMetaSendDiagnostic().catch(() => null);
   const storageRuntime = getSharedStorageRuntimeInfo();
   const storageHealth = await runSharedStorageHealthcheck().catch(() => ({
     configured: false,
@@ -81,6 +83,7 @@ export async function GET(request: Request) {
       endpoint: `${new URL(request.url).origin}/api/meta/webhook`,
       lastEvent: webhookLog,
     },
+    lastSendDiagnostic,
     storage: {
       ...storageRuntime,
       configured: storageHealth.configured,
