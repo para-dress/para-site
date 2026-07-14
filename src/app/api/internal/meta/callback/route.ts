@@ -15,18 +15,38 @@ export async function GET(request: Request) {
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const error = url.searchParams.get("error") || url.searchParams.get("error_message");
+  const errorDescription =
+    url.searchParams.get("error_description") || url.searchParams.get("error_reason");
   const cookieStore = await cookies();
   const expectedState = cookieStore.get(META_CONNECT_STATE_COOKIE)?.value;
   const redirectUrl = new URL("/internal/instagram", request.url);
 
   if (error) {
     redirectUrl.searchParams.set("connect", "error");
-    return NextResponse.redirect(redirectUrl, { status: 303 });
+    const response = NextResponse.redirect(redirectUrl, { status: 303 });
+    await writeStoredMetaConnection(response.cookies, {
+      status: "error",
+      updatedAt: new Date().toISOString(),
+      lastError: errorDescription ? `${error}: ${errorDescription}` : error,
+    });
+    return response;
   }
 
   if (!code || !state || !expectedState || state !== expectedState) {
     redirectUrl.searchParams.set("connect", "invalid-state");
-    return NextResponse.redirect(redirectUrl, { status: 303 });
+    const response = NextResponse.redirect(redirectUrl, { status: 303 });
+    await writeStoredMetaConnection(response.cookies, {
+      status: "error",
+      updatedAt: new Date().toISOString(),
+      lastError: !code
+        ? "OAuth callback contained no authorization code."
+        : !state
+          ? "OAuth callback contained no state value."
+          : !expectedState
+            ? "OAuth state cookie was not present on callback."
+            : "OAuth state value did not match the browser cookie.",
+    });
+    return response;
   }
 
   const response = NextResponse.redirect(redirectUrl, { status: 303 });
