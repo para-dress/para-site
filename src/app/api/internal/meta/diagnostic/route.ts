@@ -1,12 +1,16 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { DASHBOARD_COOKIE } from "@/lib/internal-dashboard-constants";
+import { META_GRAPH_VERSION } from "@/lib/meta-connect";
 import {
-  META_GRAPH_VERSION,
-  debugMetaToken,
-  fetchMetaJsonWithResponse,
-} from "@/lib/meta-connect";
-import { readSharedMetaWebhookLog } from "@/lib/meta-shared-storage";
+  clearSharedStorageTestRecord,
+  getSharedStorageEnvPresence,
+  getSharedStorageRuntimeInfo,
+  readSharedMetaWebhookLog,
+  readSharedStorageTestRecord,
+  runSharedStorageHealthcheck,
+  writeSharedStorageTestRecord,
+} from "@/lib/meta-shared-storage";
 import { readStoredMetaConnection } from "@/lib/meta-connect-storage";
 
 function unauthorized() {
@@ -26,15 +30,27 @@ export async function GET(request: Request) {
 
   const { connection, source } = await readStoredMetaConnection(cookieStore);
   const userToken = connection?.token?.accessToken;
-  const pageToken = connection?.page?.accessToken;
   const instagramAccountId = connection?.instagramAccount?.id;
-  const includeLiveTest = new URL(request.url).searchParams.get("live") === "1";
+  const url = new URL(request.url);
+  const includeLiveTest = url.searchParams.get("live") === "1";
+  const stickyStorageAction = url.searchParams.get("stickyStorage");
   const webhookLog = await readSharedMetaWebhookLog().catch(() => null);
+  const storageRuntime = getSharedStorageRuntimeInfo();
+  const storageHealth = await runSharedStorageHealthcheck().catch(() => ({
+    configured: false,
+    write: false,
+    read: false,
+    delete: false,
+  }));
 
-  const [userTokenDebug, pageTokenDebug] = await Promise.all([
-    userToken ? debugMetaToken(userToken).catch(() => null) : Promise.resolve(null),
-    pageToken ? debugMetaToken(pageToken).catch(() => null) : Promise.resolve(null),
-  ]);
+  if (stickyStorageAction === "clear") {
+    await clearSharedStorageTestRecord().catch(() => false);
+  }
+
+  const stickyRecord =
+    stickyStorageAction === "write"
+      ? await writeSharedStorageTestRecord().catch(() => null)
+      : await readSharedStorageTestRecord().catch(() => null);
 
   const response: Record<string, unknown> = {
     connectionExists: Boolean(connection),
@@ -58,68 +74,60 @@ export async function GET(request: Request) {
         }
       : null,
     userTokenStored: redactTokenState(userToken),
-    pageAccessTokenStored: redactTokenState(pageToken),
-    userTokenDebug: userTokenDebug
-      ? {
-          app_id: userTokenDebug.app_id,
-          user_id: userTokenDebug.user_id,
-          scopes: userTokenDebug.scopes,
-          granular_scopes: userTokenDebug.granular_scopes,
-          expires_at: userTokenDebug.expires_at,
-          data_access_expires_at: userTokenDebug.data_access_expires_at,
-        }
-      : null,
-    pageTokenDebug: pageTokenDebug
-      ? {
-          app_id: pageTokenDebug.app_id,
-          user_id: pageTokenDebug.user_id,
-          scopes: pageTokenDebug.scopes,
-          granular_scopes: pageTokenDebug.granular_scopes,
-          expires_at: pageTokenDebug.expires_at,
-          data_access_expires_at: pageTokenDebug.data_access_expires_at,
-        }
-      : null,
+    instagramAccessTokenStored: redactTokenState(userToken),
     webhook: {
       endpoint: `${new URL(request.url).origin}/api/meta/webhook`,
       lastEvent: webhookLog,
     },
+    storage: {
+      ...storageRuntime,
+      configured: storageHealth.configured,
+      env: getSharedStorageEnvPresence().map((entry) => ({
+        variable: entry.variable,
+        present: entry.present ? "yes" : "no",
+        environment: storageRuntime.environment,
+      })),
+      writeTest: storageHealth.write ? "pass" : "fail",
+      readTest: storageHealth.read ? "pass" : "fail",
+      deleteTest: storageHealth.delete ? "pass" : "fail",
+      stickyRecord,
+    },
   };
 
   if (includeLiveTest) {
-    if (!instagramAccountId || !pageToken) {
+    if (!instagramAccountId || !userToken) {
       response.liveConversationsTest = {
         attempted: false,
         blocked: true,
         reason: !instagramAccountId
           ? "Missing Instagram account ID in stored connection"
-          : "Missing page access token in stored connection",
+          : "Missing Instagram access token in stored connection",
       };
 
       return NextResponse.json(response, { status: 200 });
     }
 
-    const metaResponse = await fetchMetaJsonWithResponse<{ data?: unknown[] }>(
-      `/${instagramAccountId}/conversations`,
-      new URLSearchParams({
-        access_token: pageToken,
-        fields: "id,updated_time,participants{id,name,username}",
-        limit: "20",
-      }),
-    );
+    const endpoint = `https://graph.instagram.com/${META_GRAPH_VERSION}/${instagramAccountId}/conversations`;
+    const metaResponse = await fetch(`${endpoint}?${new URLSearchParams({
+      access_token: userToken,
+      fields: "id,updated_time,participants{id,name,username}",
+      limit: "20",
+    })}`, { cache: "no-store" });
+    const data = (await metaResponse.json()) as { data?: unknown[]; error?: { message?: string; type?: string; code?: number; error_subcode?: number; fbtrace_id?: string } };
 
     response.liveConversationsTest = {
       attempted: true,
-      endpoint: `https://graph.facebook.com/${META_GRAPH_VERSION}/${instagramAccountId}/conversations?fields=id,updated_time,participants{id,name,username}&limit=20`,
+      endpoint: `${endpoint}?fields=id,updated_time,participants{id,name,username}&limit=20`,
       status: metaResponse.status,
-      ok: metaResponse.ok,
-      conversationCount: Array.isArray(metaResponse.data?.data) ? metaResponse.data.data.length : null,
-      error: metaResponse.data?.error
+      ok: metaResponse.ok && !data.error,
+      conversationCount: Array.isArray(data.data) ? data.data.length : null,
+      error: data.error
         ? {
-            message: metaResponse.data.error.message,
-            type: metaResponse.data.error.type,
-            code: metaResponse.data.error.code,
-            error_subcode: metaResponse.data.error.error_subcode,
-            fbtrace_id: metaResponse.data.error.fbtrace_id,
+            message: data.error.message,
+            type: data.error.type,
+            code: data.error.code,
+            error_subcode: data.error.error_subcode,
+            fbtrace_id: data.error.fbtrace_id,
           }
         : null,
     };
