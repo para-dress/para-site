@@ -11,6 +11,7 @@ import {
   readSharedMetaSubscriptionDiagnostic,
   readSharedStorageTestRecord,
   runSharedStorageHealthcheck,
+  writeSharedMetaConnection,
   writeSharedMetaSubscriptionDiagnostic,
   writeSharedStorageTestRecord,
 } from "@/lib/meta-shared-storage";
@@ -137,21 +138,37 @@ export async function GET(request: Request) {
         data?: Array<{ id?: string; name?: string; subscribed_fields?: string[] }>;
         error?: { code?: number; error_subcode?: number; message?: string; fbtrace_id?: string };
       };
-      const instagramAppId = process.env.META_INSTAGRAM_APP_ID || "2520572738421450";
       const rawData = (data.data ?? []).map((item) => ({
         id: item.id ?? null,
         name: item.name ?? null,
         subscribed_fields: item.subscribed_fields ?? [],
       }));
-      const app = rawData.find((item) => item.id === instagramAppId);
+      const subscribedAccount = rawData.find((item) => item.subscribed_fields.includes("messages"));
+
+      if (connection?.token?.accessToken && !connection.token.instagramUserId && subscribedAccount?.id) {
+        await writeSharedMetaConnection({
+          ...connection,
+          updatedAt: new Date().toISOString(),
+          token: {
+            ...connection.token,
+            instagramUserId: subscribedAccount.id,
+          },
+        }).catch(() => false);
+        response.token = {
+          tokenType: connection.token.tokenType ?? null,
+          obtainedAt: connection.token.obtainedAt ?? null,
+          expiresAt: connection.token.expiresAt ?? null,
+          expiresIn: connection.token.expiresIn ?? null,
+          instagramUserIdStored: "yes",
+        };
+      }
 
       response.subscriptionDiagnostic = {
         status: metaResponse.status,
         ok: metaResponse.ok && !data.error,
-        instagramAppId,
         rawData,
-        appSubscribed: Boolean(app),
-        subscribed_fields: app?.subscribed_fields ?? [],
+        appSubscribed: Boolean(subscribedAccount),
+        subscribed_fields: subscribedAccount?.subscribed_fields ?? [],
         error: data.error
           ? {
               code: data.error.code,
