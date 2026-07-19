@@ -8,6 +8,10 @@ import {
 } from "@/lib/meta-shared-storage";
 import { enqueueInstagramObservation, getInstagramAiRuntimeConfig, runDueInstagramObservationJobs } from "@/lib/meta-ai-observation";
 
+// The debounce plus OpenAI and Telegram work runs in `after()`. Extend the
+// function budget so Vercel does not cut that background work off at 15 seconds.
+export const maxDuration = 60;
+
 function getWebhookVerifyToken() {
   return process.env.META_WEBHOOK_VERIFY_TOKEN ?? "";
 }
