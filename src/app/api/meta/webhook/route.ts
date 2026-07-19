@@ -6,7 +6,7 @@ import {
   readSharedMetaConnection,
   writeSharedMetaWebhookLog,
 } from "@/lib/meta-shared-storage";
-import { getInstagramAiRuntimeConfig, processInstagramObservation } from "@/lib/meta-ai-observation";
+import { enqueueInstagramObservation, getInstagramAiRuntimeConfig, runDueInstagramObservationJobs } from "@/lib/meta-ai-observation";
 
 function getWebhookVerifyToken() {
   return process.env.META_WEBHOOK_VERIFY_TOKEN ?? "";
@@ -113,7 +113,7 @@ export async function POST(request: Request) {
           const senderUsername = event.sender?.username;
           const senderName = senderUsername;
 
-          await appendSharedMetaWebhookMessage({
+          const stored = await appendSharedMetaWebhookMessage({
             id: messageId,
             conversationId: isBrandMessage ? recipientId || senderId : senderId,
             senderId,
@@ -134,13 +134,20 @@ export async function POST(request: Request) {
             return true;
           }
 
-          // Draft-only: no Instagram sender is called from this webhook.
-          // The explicit false check is a safety lock; processing itself never sends.
+          if (!stored) {
+            return false;
+          }
+
+          const queued = await enqueueInstagramObservation(messageId, senderId);
+          if (!queued.queued) return false;
+
+          // The durable Redis record is the source of truth. `after()` is only
+          // a low-latency accelerator; the production cron worker is the retry path.
           after(async () => {
             const { debounceSeconds, autoreplyEnabled } = getInstagramAiRuntimeConfig();
             if (autoreplyEnabled) return;
             await pause(debounceSeconds * 1_000);
-            await processInstagramObservation(messageId, senderId);
+            await runDueInstagramObservationJobs();
           });
 
           return true;

@@ -17,6 +17,10 @@ const META_INBOUND_EVENT_KV_PREFIX = "para:meta:inbound-event:";
 const META_AI_DRAFT_KV_PREFIX = "para:meta:ai-draft:";
 const META_AI_CONVERSATION_CLAIM_KV_PREFIX = "para:meta:ai-conversation-claim:";
 const META_AI_DAILY_REQUEST_KV_PREFIX = "para:meta:ai-daily-request:";
+const META_AI_RUN_KV_PREFIX = "para:meta:ai-run:";
+const META_AI_RUN_INDEX_KV_KEY = "para:meta:ai-runs:recent";
+const META_AI_JOB_KV_PREFIX = "para:meta:ai-job:";
+const META_AI_JOB_QUEUE_KV_KEY = "para:meta:ai-jobs:queue";
 const META_CONNECTION_KV_TTL_SECONDS = 60 * 60 * 24 * 7;
 const META_WEBHOOK_LOG_TTL_SECONDS = 60 * 60 * 24 * 7;
 
@@ -62,6 +66,38 @@ export type StoredInstagramAiDraft = {
   ownerActionRequired?: boolean;
   priority?: "LOW" | "MEDIUM" | "HIGH";
   error?: string;
+};
+
+export type InstagramAiRunStage = {
+  status: "pending" | "ok" | "skipped" | "failed";
+  at: string;
+  httpStatus?: number;
+  detail?: string;
+};
+
+export type StoredInstagramAiRun = {
+  messageId: string;
+  conversationId: string;
+  createdAt: string;
+  updatedAt: string;
+  status: "queued" | "processing" | "ready" | "failed" | "skipped";
+  webhook: InstagramAiRunStage;
+  dedupe: InstagramAiRunStage;
+  inbound: InstagramAiRunStage;
+  debounce: InstagramAiRunStage & { dueAt?: string };
+  history: InstagramAiRunStage & { count?: number };
+  openai: InstagramAiRunStage & { model?: string };
+  draft: InstagramAiRunStage;
+  telegram: InstagramAiRunStage;
+  instagramReplySent: false;
+};
+
+export type StoredInstagramAiJob = {
+  messageId: string;
+  conversationId: string;
+  dueAt: string;
+  createdAt: string;
+  attempts: number;
 };
 
 export type StoredMetaSendDiagnostic = {
@@ -382,6 +418,79 @@ export async function readSharedInstagramAiDraft(messageId: string) {
     }
   }
   return stored;
+}
+
+async function readJsonRecord<T>(key: string): Promise<T | null> {
+  const redis = getRedisClient();
+  if (!redis) return null;
+  const stored = await redis.get<T | string | null>(key);
+  if (!stored) return null;
+  if (typeof stored === "string") {
+    try {
+      return JSON.parse(stored) as T;
+    } catch {
+      return null;
+    }
+  }
+  return stored;
+}
+
+export async function writeSharedInstagramAiRun(run: StoredInstagramAiRun) {
+  const redis = getRedisClient();
+  if (!redis) return false;
+  await redis.set(`${META_AI_RUN_KV_PREFIX}${run.messageId}`, run, { ex: META_WEBHOOK_LOG_TTL_SECONDS });
+  const current = (await redis.get<string[] | null>(META_AI_RUN_INDEX_KV_KEY)) ?? [];
+  const next = [run.messageId, ...current.filter((id) => id !== run.messageId)].slice(0, 10);
+  await redis.set(META_AI_RUN_INDEX_KV_KEY, next, { ex: META_WEBHOOK_LOG_TTL_SECONDS });
+  return true;
+}
+
+export async function readSharedInstagramAiRun(messageId: string) {
+  return readJsonRecord<StoredInstagramAiRun>(`${META_AI_RUN_KV_PREFIX}${messageId}`);
+}
+
+export async function readRecentSharedInstagramAiRuns() {
+  const redis = getRedisClient();
+  if (!redis) return [];
+  const ids = (await redis.get<string[] | null>(META_AI_RUN_INDEX_KV_KEY)) ?? [];
+  const runs = await Promise.all(ids.slice(0, 10).map((id) => readSharedInstagramAiRun(id)));
+  return runs.filter((run): run is StoredInstagramAiRun => Boolean(run));
+}
+
+export async function enqueueSharedInstagramAiJob(job: StoredInstagramAiJob) {
+  const redis = getRedisClient();
+  if (!redis) return false;
+  await redis.set(`${META_AI_JOB_KV_PREFIX}${job.messageId}`, job, { ex: META_WEBHOOK_LOG_TTL_SECONDS });
+  await redis.zadd(META_AI_JOB_QUEUE_KV_KEY, { score: new Date(job.dueAt).getTime(), member: job.messageId });
+  await redis.expire(META_AI_JOB_QUEUE_KV_KEY, META_WEBHOOK_LOG_TTL_SECONDS);
+  return true;
+}
+
+export async function claimDueSharedInstagramAiJobs(now = new Date()) {
+  const redis = getRedisClient();
+  if (!redis) return [];
+  const ids = await redis.zrange(META_AI_JOB_QUEUE_KV_KEY, "-inf", now.getTime(), { byScore: true, offset: 0, count: 10 });
+  const claimed: StoredInstagramAiJob[] = [];
+  for (const id of ids) {
+    const job = await readJsonRecord<StoredInstagramAiJob>(`${META_AI_JOB_KV_PREFIX}${id}`);
+    if (!job) {
+      await redis.zrem(META_AI_JOB_QUEUE_KV_KEY, id);
+      continue;
+    }
+    const lock = await redis.set(`${META_AI_JOB_KV_PREFIX}${id}:claim`, "claimed", { ex: 55, nx: true });
+    if (lock === "OK") {
+      claimed.push({ ...job, attempts: job.attempts + 1 });
+    }
+  }
+  return claimed;
+}
+
+export async function completeSharedInstagramAiJob(messageId: string) {
+  const redis = getRedisClient();
+  if (!redis) return false;
+  await redis.del(`${META_AI_JOB_KV_PREFIX}${messageId}`, `${META_AI_JOB_KV_PREFIX}${messageId}:claim`);
+  await redis.zrem(META_AI_JOB_QUEUE_KV_KEY, messageId);
+  return true;
 }
 
 export async function readSharedMetaSendDiagnostic() {
