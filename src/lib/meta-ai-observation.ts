@@ -12,6 +12,7 @@ import {
   type StoredInstagramAiDraft,
   type StoredInstagramAiRun,
 } from "@/lib/meta-shared-storage";
+import { extractOpenAiStructuredJson } from "@/lib/meta-ai-response";
 
 const OPENAI_API_URL = "https://api.openai.com/v1/responses";
 const DEFAULT_DEBOUNCE_SECONDS = 7;
@@ -102,14 +103,14 @@ async function createAiDraft(history: Array<{ direction: string; text: string; t
     }),
     cache: "no-store",
   });
-  const body = (await response.json().catch(() => null)) as { output_text?: string; error?: { message?: string } } | null;
-  if (!response.ok || !body?.output_text) return { result: null, httpStatus: response.status, error: `OpenAI Responses request failed (HTTP ${response.status}).` };
-  try {
-    const result = parseAiResult(JSON.parse(body.output_text));
-    return result ? { result, httpStatus: response.status } : { result: null, httpStatus: response.status, error: "OpenAI returned an invalid structured draft." };
-  } catch {
-    return { result: null, httpStatus: response.status, error: "OpenAI returned non-JSON structured output." };
-  }
+  const body = await response.json().catch(() => null);
+  const extracted = extractOpenAiStructuredJson(body);
+  if (!response.ok) return { result: null, httpStatus: response.status, responseShape: extracted.shape, error: `OpenAI Responses request failed (HTTP ${response.status}).` };
+  if (!extracted.value) return { result: null, httpStatus: response.status, responseShape: extracted.shape, error: `OpenAI structured output could not be extracted (${extracted.error ?? "unknown"}).` };
+  const result = parseAiResult(extracted.value);
+  return result
+    ? { result, httpStatus: response.status, responseShape: extracted.shape, extractionPath: extracted.extractionPath }
+    : { result: null, httpStatus: response.status, responseShape: extracted.shape, extractionPath: extracted.extractionPath, error: "OpenAI structured output failed draft schema validation." };
 }
 
 async function notifyOwner(draft: StoredInstagramAiDraft, customer: { senderUsername?: string; senderId: string; lastMessage: string }): Promise<TelegramResult> {
@@ -185,12 +186,12 @@ async function processInstagramObservation(messageId: string, conversationId: st
   const ai = await createAiDraft(history, config.model, config.maxOutputTokens);
   if (!ai.result) {
     await writeSharedInstagramAiDraft({ ...baseDraft, status: "failed", error: ai.error });
-    await updateRun(messageId, { status: "failed", openai: { ...stage("failed", ai.error, ai.httpStatus), model: config.model }, draft: stage("ok", "stored"), telegram: stage("skipped", "openai_failed") });
+    await updateRun(messageId, { status: "failed", openai: { ...stage("failed", ai.error, ai.httpStatus), model: config.model, responseShape: ai.responseShape }, draft: stage("ok", "stored"), telegram: stage("skipped", "openai_failed") });
     return;
   }
   const draft: StoredInstagramAiDraft = { ...baseDraft, status: "ready", ...ai.result, telegramNotification: "disabled" };
   await writeSharedInstagramAiDraft(draft);
-  await updateRun(messageId, { openai: { ...stage("ok", "structured_output_valid", ai.httpStatus), model: config.model }, draft: stage("ok", "stored") });
+  await updateRun(messageId, { openai: { ...stage("ok", `structured_output_valid:${ai.extractionPath}`, ai.httpStatus), model: config.model, responseShape: ai.responseShape }, draft: stage("ok", "stored") });
   const telegram = await notifyOwner(draft, conversation);
   await writeSharedInstagramAiDraft({ ...draft, telegramNotification: telegram.status });
   await updateRun(messageId, { status: telegram.status === "failed" ? "failed" : "ready", telegram: stage(telegram.status === "failed" ? "failed" : telegram.status === "sent" ? "ok" : "skipped", telegram.status, telegram.httpStatus) });

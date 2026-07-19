@@ -73,6 +73,14 @@ export type InstagramAiRunStage = {
   at: string;
   httpStatus?: number;
   detail?: string;
+  responseShape?: {
+    topLevelKeys: string[];
+    outputItemCount: number;
+    outputItemTypes: string[];
+    contentTypes: string[];
+    hasOutputText: boolean;
+    hasParsedObject: boolean;
+  };
 };
 
 export type StoredInstagramAiRun = {
