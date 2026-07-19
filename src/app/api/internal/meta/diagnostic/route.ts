@@ -252,6 +252,12 @@ export async function POST(request: Request) {
   const timestamp = new Date().toISOString();
 
   if (body?.action === "meReplyTest") {
+    // A diagnostic send would be an automated customer reply, so it is deliberately
+    // blocked whenever draft-only safety is active.
+    if (process.env.INSTAGRAM_AI_AUTOREPLY_ENABLED?.trim().toLowerCase() === "false") {
+      return NextResponse.json({ error: "Instagram send tests are disabled in draft-only mode." }, { status: 403 });
+    }
+
     const latestWebhook = await readSharedMetaWebhookLog().catch(() => null);
     const recipientId = (latestWebhook?.sample as {
       messaging?: Array<{ sender?: { id?: string } }>;

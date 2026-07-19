@@ -1,21 +1,28 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import crypto from "node:crypto";
 import {
   appendSharedMetaWebhookMessage,
-  claimSharedMetaAutoReply,
-  claimSharedMetaAutoReplyText,
+  claimSharedMetaInboundEvent,
   readSharedMetaConnection,
-  writeSharedMetaSendDiagnostic,
   writeSharedMetaWebhookLog,
 } from "@/lib/meta-shared-storage";
-import { META_GRAPH_VERSION } from "@/lib/meta-connect";
-import { decideInstagramAutoReply } from "@/lib/meta-auto-reply";
+import { getInstagramAiRuntimeConfig, processInstagramObservation } from "@/lib/meta-ai-observation";
 
 function getWebhookVerifyToken() {
   return process.env.META_WEBHOOK_VERIFY_TOKEN ?? "";
 }
 
-function maskInstagramId(value: string) {
-  return `…${value.slice(-6)}`;
+function pause(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function validWebhookSignature(rawBody: string, signature: string | null) {
+  const appSecret = process.env.META_APP_SECRET;
+  if (!appSecret || !signature?.startsWith("sha256=")) return false;
+  const expected = `sha256=${crypto.createHmac("sha256", appSecret).update(rawBody).digest("hex")}`;
+  const received = Buffer.from(signature);
+  const expectedBuffer = Buffer.from(expected);
+  return received.length === expectedBuffer.length && crypto.timingSafeEqual(received, expectedBuffer);
 }
 
 export async function GET(request: Request) {
@@ -43,7 +50,11 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const payload = await request.json().catch(() => null);
+  const rawBody = await request.text();
+  if (!validWebhookSignature(rawBody, request.headers.get("x-hub-signature-256"))) {
+    return NextResponse.json({ error: "Invalid webhook signature" }, { status: 403 });
+  }
+  const payload = JSON.parse(rawBody) as unknown;
 
   await writeSharedMetaWebhookLog({
     receivedAt: new Date().toISOString(),
@@ -55,13 +66,7 @@ export async function POST(request: Request) {
       Array.isArray((payload as { entry?: unknown[] }).entry)
         ? ((payload as { entry?: unknown[] }).entry?.length ?? 0)
         : 0,
-    sample:
-      payload &&
-      typeof payload === "object" &&
-      "entry" in payload &&
-      Array.isArray((payload as { entry?: unknown[] }).entry)
-        ? (payload as { entry?: unknown[] }).entry?.[0] ?? null
-        : payload,
+    // Do not retain raw customer payloads in diagnostics.
   }).catch(() => false);
 
   const entries =
@@ -77,13 +82,19 @@ export async function POST(request: Request) {
           sender?: { id?: string; username?: string };
           recipient?: { id?: string };
           timestamp?: number;
-          message?: { mid?: string; text?: string; is_echo?: boolean };
+          message?: {
+            mid?: string;
+            text?: string;
+            is_echo?: boolean;
+            attachments?: Array<{ type?: string; payload?: { url?: string } }>;
+          };
         };
         const senderId = event.sender?.id;
         const recipientId = event.recipient?.id;
         const messageId = event.message?.mid;
-        const text = event.message?.text;
-        if (!senderId || !messageId || !text) return [];
+        const text = event.message?.text?.trim();
+        const attachments = event.message?.attachments;
+        if (!senderId || !messageId || (!text && !attachments?.length)) return [];
 
         return (async () => {
           const connection = await readSharedMetaConnection();
@@ -91,28 +102,16 @@ export async function POST(request: Request) {
             event.message?.is_echo === true ||
             senderId === connection?.token?.instagramUserId ||
             senderId === recipientId;
+          if (!isBrandMessage && !(await claimSharedMetaInboundEvent(messageId))) {
+            return true;
+          }
           // The webhook recipient is the destination Instagram-scoped account ID.
           // It is more reliable for replies than the OAuth profile ID.
           const brandId = recipientId || entry.id || connection?.instagramAccount?.id;
-          let senderUsername = event.sender?.username;
-          let senderName: string | undefined;
-
-          if ((!senderUsername || !senderName) && connection?.token?.accessToken) {
-            const profileResponse = await fetch(
-              `https://graph.instagram.com/${META_GRAPH_VERSION}/${senderId}?${new URLSearchParams({
-                access_token: connection.token.accessToken,
-                fields: "id,username,name",
-              })}`,
-              { cache: "no-store" },
-            ).catch(() => null);
-            const profile = profileResponse?.ok
-              ? await profileResponse.json().catch(() => null) as { username?: string; name?: string } | null
-              : null;
-            senderUsername = profile?.username ?? senderUsername;
-            senderName = profile?.name ?? senderName;
-          }
-
-          senderName ??= senderUsername;
+          // Do not make a profile lookup on the webhook path: Meta expects a fast acknowledgement.
+          // The sender ID is always stored; a supplied username is retained when Meta provides one.
+          const senderUsername = event.sender?.username;
+          const senderName = senderUsername;
 
           await appendSharedMetaWebhookMessage({
             id: messageId,
@@ -123,86 +122,26 @@ export async function POST(request: Request) {
             senderUsername,
             senderName,
             direction: isBrandMessage ? "brand" : "customer",
-            text,
+            text: text || `[Attachment: ${attachments?.map((attachment) => attachment.type || "unknown").join(", ")}]`,
             timestamp: new Date(event.timestamp ?? Date.now()).toISOString(),
+            attachments: attachments?.map((attachment) => ({
+              type: attachment.type,
+              url: attachment.payload?.url,
+            })),
           });
 
-          if (isBrandMessage || !connection?.token?.accessToken) {
+          if (isBrandMessage) {
             return true;
           }
 
-          const decision = decideInstagramAutoReply(text);
-          if (
-            decision.kind === "escalate" ||
-            !(await claimSharedMetaAutoReply(messageId)) ||
-            !(await claimSharedMetaAutoReplyText(senderId, text))
-          ) {
-            return true;
-          }
-
-          const endpoint = `https://graph.instagram.com/${META_GRAPH_VERSION}/me/messages`;
-          const response = await fetch(endpoint, {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${connection.token.accessToken}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              recipient: { id: senderId },
-              message: { text: decision.text },
-            }),
-            cache: "no-store",
-          }).catch(() => null);
-          const data = (response
-            ? await response.json().catch(() => ({}))
-            : {}) as {
-            message_id?: string;
-            id?: string;
-            error?: {
-              code?: number;
-              error_subcode?: number;
-              type?: string;
-              message?: string;
-              fbtrace_id?: string;
-            };
-          };
-          const ok = Boolean(response?.ok && !data.error);
-          const sentAt = new Date().toISOString();
-
-          await writeSharedMetaSendDiagnostic({
-            timestamp: sentAt,
-            status: response?.status ?? null,
-            ok,
-            endpoint,
-            graphApiVersion: META_GRAPH_VERSION,
-            senderId: "me",
-            recipientId: maskInstagramId(senderId),
-            error: data.error
-              ? {
-                  code: data.error.code,
-                  error_subcode: data.error.error_subcode,
-                  type: data.error.type,
-                  message: data.error.message,
-                  fbtrace_id: data.error.fbtrace_id,
-                }
-              : response
-                ? null
-                : { type: "NetworkError", message: "Instagram could not be reached." },
-            message_id: ok ? data.message_id || data.id : undefined,
+          // Draft-only: no Instagram sender is called from this webhook.
+          // The explicit false check is a safety lock; processing itself never sends.
+          after(async () => {
+            const { debounceSeconds, autoreplyEnabled } = getInstagramAiRuntimeConfig();
+            if (autoreplyEnabled) return;
+            await pause(debounceSeconds * 1_000);
+            await processInstagramObservation(messageId, senderId);
           });
-
-          if (ok) {
-            await appendSharedMetaWebhookMessage({
-              id: data.message_id || data.id || `auto:${sentAt}:${senderId}`,
-              conversationId: senderId,
-              senderId: connection.token.instagramUserId || "me",
-              recipientId: senderId,
-              businessAccountId: connection.token.instagramUserId,
-              direction: "brand",
-              text: decision.text,
-              timestamp: sentAt,
-            });
-          }
 
           return true;
         })().catch(() => false);

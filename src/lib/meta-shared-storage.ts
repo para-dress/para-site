@@ -13,6 +13,10 @@ const META_SEND_DIAGNOSTIC_KV_KEY = "para:meta:send-diagnostic:last";
 const META_SUBSCRIPTION_DIAGNOSTIC_KV_KEY = "para:meta:subscription-diagnostic:last";
 const META_AUTO_REPLY_KV_PREFIX = "para:meta:auto-reply:";
 const META_AUTO_REPLY_TEXT_KV_PREFIX = "para:meta:auto-reply-text:";
+const META_INBOUND_EVENT_KV_PREFIX = "para:meta:inbound-event:";
+const META_AI_DRAFT_KV_PREFIX = "para:meta:ai-draft:";
+const META_AI_CONVERSATION_CLAIM_KV_PREFIX = "para:meta:ai-conversation-claim:";
+const META_AI_DAILY_REQUEST_KV_PREFIX = "para:meta:ai-daily-request:";
 const META_CONNECTION_KV_TTL_SECONDS = 60 * 60 * 24 * 7;
 const META_WEBHOOK_LOG_TTL_SECONDS = 60 * 60 * 24 * 7;
 
@@ -34,6 +38,30 @@ export type StoredMetaWebhookMessage = {
   direction: "customer" | "brand";
   text: string;
   timestamp: string;
+  attachments?: Array<{
+    type?: string;
+    url?: string;
+  }>;
+};
+
+export type StoredInstagramAiDraft = {
+  messageId: string;
+  conversationId: string;
+  createdAt: string;
+  status: "ready" | "waiting_for_openai_config" | "daily_request_limit_reached" | "failed";
+  pipeline?: "draft_only";
+  debounceCompletedAt?: string;
+  debounceSeconds?: number;
+  historyCount?: number;
+  model?: string;
+  telegramNotification?: "sent" | "disabled" | "not_configured" | "failed";
+  instagramReplySent?: false;
+  intent?: string;
+  suggestedReply?: string;
+  missingInformation?: string;
+  ownerActionRequired?: boolean;
+  priority?: "LOW" | "MEDIUM" | "HIGH";
+  error?: string;
 };
 
 export type StoredMetaSendDiagnostic = {
@@ -288,6 +316,72 @@ export async function appendSharedMetaWebhookMessage(message: StoredMetaWebhookM
 
   await redis.set(META_WEBHOOK_INBOX_KV_KEY, next, { ex: META_WEBHOOK_LOG_TTL_SECONDS });
   return true;
+}
+
+export async function claimSharedMetaInboundEvent(messageId: string) {
+  const redis = getRedisClient();
+  if (!redis) return false;
+
+  const result = await redis.set(`${META_INBOUND_EVENT_KV_PREFIX}${messageId}`, "claimed", {
+    ex: META_WEBHOOK_LOG_TTL_SECONDS,
+    nx: true,
+  });
+  return result === "OK";
+}
+
+export async function readSharedMetaWebhookConversation(conversationId: string) {
+  const conversations = await readSharedMetaWebhookInbox();
+  return conversations.find((conversation) => conversation.id === conversationId) ?? null;
+}
+
+export async function claimSharedInstagramAiConversation(conversationId: string) {
+  const redis = getRedisClient();
+  if (!redis) return false;
+
+  const result = await redis.set(`${META_AI_CONVERSATION_CLAIM_KV_PREFIX}${conversationId}`, "claimed", {
+    ex: 15,
+    nx: true,
+  });
+  return result === "OK";
+}
+
+export async function claimSharedInstagramAiDailyRequest(limit: number) {
+  const redis = getRedisClient();
+  if (!redis) return false;
+
+  const date = new Date().toISOString().slice(0, 10);
+  const key = `${META_AI_DAILY_REQUEST_KV_PREFIX}${date}`;
+  const count = await redis.incr(key);
+  if (count === 1) {
+    await redis.expire(key, 60 * 60 * 48);
+  }
+  return count <= limit;
+}
+
+export async function writeSharedInstagramAiDraft(draft: StoredInstagramAiDraft) {
+  const redis = getRedisClient();
+  if (!redis) return false;
+
+  await redis.set(`${META_AI_DRAFT_KV_PREFIX}${draft.messageId}`, draft, {
+    ex: META_WEBHOOK_LOG_TTL_SECONDS,
+  });
+  return true;
+}
+
+export async function readSharedInstagramAiDraft(messageId: string) {
+  const redis = getRedisClient();
+  if (!redis) return null;
+
+  const stored = await redis.get<StoredInstagramAiDraft | string | null>(`${META_AI_DRAFT_KV_PREFIX}${messageId}`);
+  if (!stored) return null;
+  if (typeof stored === "string") {
+    try {
+      return JSON.parse(stored) as StoredInstagramAiDraft;
+    } catch {
+      return null;
+    }
+  }
+  return stored;
 }
 
 export async function readSharedMetaSendDiagnostic() {

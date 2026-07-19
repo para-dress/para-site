@@ -80,6 +80,12 @@ export async function POST(request: Request, { params }: RouteContext) {
 
   // Official Instagram Login Messaging API route: the current token identifies
   // the sending professional account, while the webhook sender is the IGSID recipient.
+  // This endpoint is exclusively for a deliberate dashboard action. The AI webhook
+  // never reaches it; draft-only mode remains locked while autoreply is false.
+  if (process.env.INSTAGRAM_AI_AUTOREPLY_ENABLED?.trim().toLowerCase() === "true") {
+    return jsonError("Automatic Instagram replies are not permitted in draft-only mode.", 403);
+  }
+
   const endpoint = `https://graph.instagram.com/${META_GRAPH_VERSION}/me/messages`;
   let metaResponse: Response;
   let metaData: SendMessageResponse;
